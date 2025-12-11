@@ -1,5 +1,10 @@
+<?php
+$active_page = 'anggota';
+?>
+
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,124 +14,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="bg-white text-gray-900">
-  <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm border-b border-gray-100">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
-        <!-- Logo -->
-        <a href="index.html" class="group">
-          <div class="flex items-center gap-3">
-            <span class="inline-flex h-12 w-12 rounded-xl to-blue-600 items-center justify-center group-hover:shadow-xl transition-all duration-300">
-              <img src="assets/img/logo.png" alt="" class="w-full h-full object-cover rounded-xl">
-            </span>
-            <div>
-              <div class="font-bold text-[#1f2937] text-lg">Lab Data Technologies</div>
-              <div class="text-sm text-gray-500 font-medium">Politeknik Negeri Malang</div>
-            </div>
-          </div>
-        </a>
-        
-        <!-- Navigation -->
-        <nav class="hidden lg:flex items-center gap-0,5">
-          <a class="relative px-6 py-2 text-[15px] font-semibold text-[#00A0D6] transition-all duration-300 group" href="index.html">
-            <span class="relative z-10">Beranda</span>
-            <div class="absolute inset-0 bg-blue-50 rounded-lg opacity-100 group-hover:opacity-80 transition-opacity duration-300"></div>
-            <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-8 h-0.5 bg-[#00A0D6] rounded-full"></div>
-          </a>
-          <a class="relative px-6 py-2 text-[15px] font-medium text-[#1f2937] hover:text-[#00A0D6] transition-all duration-300 group" href="pages/profil-lab.html">
-            <span class="relative z-10">Profil Lab</span>
-            <div class="absolute inset-0 bg-gray-50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          </a>
-          <a class="relative px-6 py-2 text-[15px] font-medium text-[#1f2937] hover:text-[#00A0D6] transition-all duration-300 group" href="pages/berita.html">
-            <span class="relative z-10">Berita</span>
-            <div class="absolute inset-0 bg-gray-50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          </a>
-          <a class="relative px-6 py-2 text-[15px] font-medium text-[#1f2937] hover:text-[#00A0D6] transition-all duration-300 group" href="pages/galeri.html">
-            <span class="relative z-10">Galeri</span>
-            <div class="absolute inset-0 bg-gray-50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          </a>
-          <a class="relative px-6 py-2 text-[15px] font-medium text-[#1f2937] hover:text-[#00A0D6] transition-all duration-300 group" href="pages/penelitian.html">
-            <span class="relative z-10">Publikasi</span>
-            <div class="absolute inset-0 bg-gray-50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          </a>
-          <a class="relative px-6 py-2 text-[15px] font-medium text-[#1f2937] hover:text-[#00A0D6] transition-all duration-300 group" href="pages/fasilitas.html">
-            <span class="relative z-10">Fasilitas</span>
-            <div class="absolute inset-0 bg-gray-50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          </a>
-          <a class="relative px-6 py-2 text-[15px] font-medium text-[#1f2937] hover:text-[#00A0D6] transition-all duration-300 group" href="pages/anggota.html">
-            <span class="relative z-10">Anggota</span>
-            <div class="absolute inset-0 bg-gray-50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          </a>
-          <a class="relative px-6 py-2 text-[15px] font-medium text-[#1f2937] hover:text-[#00A0D6] transition-all duration-300 group" href="pages/kontak.html">
-            <span class="relative z-10">Kontak</span>
-            <div class="absolute inset-0 bg-gray-50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          </a>
-        </nav>
-        
-        <!-- Mobile Menu Button -->
-        <button class="lg:hidden inline-flex items-center justify-center h-11 w-11 rounded-xl border border-gray-200 hover:border-[#00A0D6] hover:bg-blue-50 transition-all duration-300 group" data-nav-toggle="#mnav">
-          <svg class="w-5 h-5 text-gray-600 group-hover:text-[#00A0D6] transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-          </svg>
-        </button>
-      </div>
-      
-      <!-- Mobile Navigation -->
-      <div id="mnav" class="lg:hidden hidden pb-6 border-t border-gray-100 mt-4 animate-slide-down">
-        <div class="grid gap-2 text-[15px] font-medium pt-6">
-          <a class="py-3 px-4 text-[#00A0D6] font-semibold bg-gradient-to-r from-blue-50 to-blue-50/50 rounded-xl border border-blue-100" href="index.html">
-            <div class="flex items-center gap-3">
-              <div class="w-2 h-2 bg-[#00A0D6] rounded-full"></div>
-              Beranda
-            </div>
-          </a>
-          <a class="py-3 px-4 text-[#1f2937] hover:text-[#00A0D6] hover:bg-gray-50 rounded-xl transition-all duration-300" href="pages/profil-lab.html">
-            <div class="flex items-center gap-3">
-              <div class="w-2 h-2 bg-gray-300 rounded-full"></div>
-              Profil Lab
-            </div>
-          </a>
-          <a class="py-3 px-4 text-[#1f2937] hover:text-[#00A0D6] hover:bg-gray-50 rounded-xl transition-all duration-300" href="pages/berita.html">
-            <div class="flex items-center gap-3">
-              <div class="w-2 h-2 bg-gray-300 rounded-full"></div>
-              Berita
-            </div>
-          </a>
-          <a class="py-3 px-4 text-[#1f2937] hover:text-[#00A0D6] hover:bg-gray-50 rounded-xl transition-all duration-300" href="pages/galeri.html">
-            <div class="flex items-center gap-3">
-              <div class="w-2 h-2 bg-gray-300 rounded-full"></div>
-              Galeri
-            </div>
-          </a>
-          <a class="py-3 px-4 text-[#1f2937] hover:text-[#00A0D6] hover:bg-gray-50 rounded-xl transition-all duration-300" href="pages/penelitian.html">
-            <div class="flex items-center gap-3">
-              <div class="w-2 h-2 bg-gray-300 rounded-full"></div>
-              Publikasi
-            </div>
-          </a>
-          <a class="py-3 px-4 text-[#1f2937] hover:text-[#00A0D6] hover:bg-gray-50 rounded-xl transition-all duration-300" href="pages/fasilitas.html">
-            <div class="flex items-center gap-3">
-              <div class="w-2 h-2 bg-gray-300 rounded-full"></div>
-              Fasilitas
-            </div>
-          </a>
-          <a class="py-3 px-4 text-[#1f2937] hover:text-[#00A0D6] hover:bg-gray-50 rounded-xl transition-all duration-300" href="pages/anggota.html">
-            <div class="flex items-center gap-3">
-              <div class="w-2 h-2 bg-gray-300 rounded-full"></div>
-              Anggota
-            </div>
-          </a>
-          <a class="py-3 px-4 text-[#1f2937] hover:text-[#00A0D6] hover:bg-gray-50 rounded-xl transition-all duration-300" href="pages/kontak.html">
-            <div class="flex items-center gap-3">
-              <div class="w-2 h-2 bg-gray-300 rounded-full"></div>
-              Kontak
-            </div>
-          </a>
-        </div>
-      </div>
-    </div>
-  </header>
 
+<body class="bg-white text-gray-900">
+  <?php
+  require_once 'includes/header.php';
+  ?>
   <main>
     <!-- Hero Section - 2 Column Layout -->
     <section class="bg-gradient-to-br from-blue-50 via-white to-green-50 py-20 lg:py-28">
@@ -140,19 +32,19 @@
               </svg>
               <span>Laboratorium Terdepan</span>
             </div>
-            
+
             <h1 class="text-4xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight" data-editable="heading" data-element-id="hero-title">
               Laboratorium<br>
               <span class="text-gradient">Data Technologies</span>
             </h1>
-            
+
             <p class="text-xl text-gray-600 mb-8 leading-relaxed" data-editable="text" data-element-id="hero-description">
-              Pusat penelitian dan pengembangan teknologi data terdepan di Politeknik Negeri Malang. 
-              Mengintegrasikan <span class="font-semibold text-[#00A0D6]">AI</span>, 
-              <span class="font-semibold text-[#6AC259]">Machine Learning</span>, dan 
+              Pusat penelitian dan pengembangan teknologi data terdepan di Politeknik Negeri Malang.
+              Mengintegrasikan <span class="font-semibold text-[#00A0D6]">AI</span>,
+              <span class="font-semibold text-[#6AC259]">Machine Learning</span>, dan
               <span class="font-semibold text-purple-600">Big Data Analytics</span> untuk solusi masa depan.
             </p>
-            
+
             <div class="flex flex-col sm:flex-row gap-4 mb-12">
               <a href="pages/profil-lab.html" class="group inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-[#00A0D6] to-blue-600 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -174,15 +66,15 @@
               </a>
             </div>
           </div>
-          
+
           <!-- Right Column - Lab Image -->
           <div class="relative">
             <div class="relative rounded-3xl overflow-hidden shadow-2xl">
-              <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=1200&auto=format&fit=crop" 
-                   alt="Lab Data Technologies" 
-                   class="w-full h-96 lg:h-[500px] object-cover" data-editable="image" data-element-id="hero-image">
+              <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=1200&auto=format&fit=crop"
+                alt="Lab Data Technologies"
+                class="w-full h-96 lg:h-[500px] object-cover" data-editable="image" data-element-id="hero-image">
               <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
-              
+
               <!-- Floating Elements -->
               <div class="absolute top-6 right-6 bg-white/90 backdrop-blur rounded-2xl p-4 shadow-lg">
                 <div class="flex items-center gap-3">
@@ -190,13 +82,13 @@
                   <span class="text-sm font-medium text-gray-700">Lab Aktif</span>
                 </div>
               </div>
-              
+
               <div class="absolute bottom-6 left-6 bg-white/90 backdrop-blur rounded-2xl p-4 shadow-lg">
                 <div class="text-sm text-gray-600">Fasilitas Modern</div>
                 <div class="font-bold text-gray-900">25+ Workstation</div>
               </div>
             </div>
-            
+
             <!-- Decorative Elements -->
             <div class="absolute -top-4 -left-4 w-24 h-24 bg-[#00A0D6]/10 rounded-full blur-xl"></div>
             <div class="absolute -bottom-4 -right-4 w-32 h-32 bg-[#6AC259]/10 rounded-full blur-xl"></div>
@@ -264,11 +156,11 @@
           <!-- Left Column - Lab Image -->
           <div class="relative">
             <div class="relative rounded-3xl overflow-hidden shadow-xl">
-              <img src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?q=80&w=1200&auto=format&fit=crop" 
-                   alt="Ruangan Lab Data Technologies" 
-                   class="w-full h-80 lg:h-96 object-cover" data-editable="image" data-element-id="about-image">
+              <img src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?q=80&w=1200&auto=format&fit=crop"
+                alt="Ruangan Lab Data Technologies"
+                class="w-full h-80 lg:h-96 object-cover" data-editable="image" data-element-id="about-image">
               <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
-              
+
               <!-- Lab Info Overlay -->
               <div class="absolute bottom-6 left-6 right-6">
                 <div class="bg-white/90 backdrop-blur rounded-2xl p-4">
@@ -285,11 +177,11 @@
                 </div>
               </div>
             </div>
-            
+
             <!-- Decorative Elements -->
             <div class="absolute -top-6 -right-6 w-32 h-32 bg-gradient-to-br from-[#00A0D6]/20 to-[#6AC259]/20 rounded-full blur-2xl"></div>
           </div>
-          
+
           <!-- Right Column - Text Content -->
           <div>
             <div class="inline-flex items-center gap-2 bg-[#00A0D6]/10 text-[#00A0D6] px-4 py-2 rounded-full font-medium mb-6 text-sm">
@@ -298,16 +190,16 @@
               </svg>
               <span>Tentang Laboratorium</span>
             </div>
-            
+
             <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-6" data-editable="heading" data-element-id="about-title">
               Pusat Inovasi <span class="text-gradient">Teknologi Data</span>
             </h2>
-            
+
             <p class="text-lg text-gray-600 mb-6 leading-relaxed" data-editable="text" data-element-id="about-description">
-              Laboratorium Data Technologies merupakan pusat unggulan penelitian dan pengembangan di bidang teknologi data. 
+              Laboratorium Data Technologies merupakan pusat unggulan penelitian dan pengembangan di bidang teknologi data.
               Kami berkomitmen menghasilkan lulusan yang kompeten dan penelitian berkualitas tinggi.
             </p>
-            
+
             <div class="space-y-4 mb-8">
               <div class="flex items-start gap-3">
                 <div class="w-6 h-6 bg-[#00A0D6]/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -320,7 +212,7 @@
                   <div class="text-gray-600">Fokus pada AI, Machine Learning, dan Big Data Analytics</div>
                 </div>
               </div>
-              
+
               <div class="flex items-start gap-3">
                 <div class="w-6 h-6 bg-[#6AC259]/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
                   <svg class="w-4 h-4 text-[#6AC259]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -332,7 +224,7 @@
                   <div class="text-gray-600">Kerjasama dengan perusahaan teknologi terkemuka</div>
                 </div>
               </div>
-              
+
               <div class="flex items-start gap-3">
                 <div class="w-6 h-6 bg-purple-500/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
                   <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -345,7 +237,7 @@
                 </div>
               </div>
             </div>
-            
+
             <a href="pages/profil-lab.html" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#00A0D6] to-blue-600 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 hover:scale-105 shadow-lg">
               Pelajari Lebih Lanjut
               <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -503,9 +395,9 @@
           <!-- News Item 1 -->
           <article class="card-magic rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
             <div class="relative">
-              <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=800&auto=format&fit=crop" 
-                   alt="AI Research" 
-                   class="w-full h-48 object-cover">
+              <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=800&auto=format&fit=crop"
+                alt="AI Research"
+                class="w-full h-48 object-cover">
               <div class="absolute top-4 left-4">
                 <span class="bg-[#00A0D6] text-white px-3 py-1 rounded-full text-xs font-medium">Penelitian</span>
               </div>
@@ -530,9 +422,9 @@
           <!-- News Item 2 -->
           <article class="card-magic rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
             <div class="relative">
-              <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop" 
-                   alt="Data Analytics" 
-                   class="w-full h-48 object-cover">
+              <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop"
+                alt="Data Analytics"
+                class="w-full h-48 object-cover">
               <div class="absolute top-4 left-4">
                 <span class="bg-[#6AC259] text-white px-3 py-1 rounded-full text-xs font-medium">Publikasi</span>
               </div>
@@ -557,9 +449,9 @@
           <!-- News Item 3 -->
           <article class="card-magic rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
             <div class="relative">
-              <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=800&auto=format&fit=crop" 
-                   alt="Workshop" 
-                   class="w-full h-48 object-cover">
+              <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=800&auto=format&fit=crop"
+                alt="Workshop"
+                class="w-full h-48 object-cover">
               <div class="absolute top-4 left-4">
                 <span class="bg-purple-500 text-white px-3 py-1 rounded-full text-xs font-medium">Kegiatan</span>
               </div>
@@ -597,33 +489,33 @@
               </svg>
               <span>Bidang Penelitian</span>
             </div>
-            
+
             <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
               <span class="text-gradient">Riset Unggulan</span>
             </h2>
             <p class="text-lg text-gray-600 mb-8 leading-relaxed">
               Topik prioritas pengembangan dan penelitian terapan yang menjadi fokus utama laboratorium kami.
             </p>
-            
+
             <div class="grid sm:grid-cols-2 gap-4">
               <div class="p-6 rounded-2xl border border-gray-200 hover:shadow-lg hover:scale-105 transition-all duration-300 bg-white">
                 <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#00A0D6] to-[#0078A6] flex items-center justify-center text-white font-bold mb-4">AI</div>
                 <div class="font-bold text-gray-900 mb-2">AI Terapan</div>
                 <div class="text-sm text-gray-600">Computer vision, NLP, MLOps</div>
               </div>
-              
+
               <div class="p-6 rounded-2xl border border-gray-200 hover:shadow-lg hover:scale-105 transition-all duration-300 bg-white">
                 <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#6AC259] to-[#4BAE45] flex items-center justify-center text-white font-bold mb-4">IoT</div>
                 <div class="font-bold text-gray-900 mb-2">IoT & Edge</div>
                 <div class="text-sm text-gray-600">Sensor, data streaming, integrasi</div>
               </div>
-              
+
               <div class="p-6 rounded-2xl border border-gray-200 hover:shadow-lg hover:scale-105 transition-all duration-300 bg-white">
                 <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#00A0D6] to-[#0078A6] flex items-center justify-center text-white font-bold mb-4">DB</div>
                 <div class="font-bold text-gray-900 mb-2">Data Engineering</div>
                 <div class="text-sm text-gray-600">ETL, warehousing, governance</div>
               </div>
-              
+
               <div class="p-6 rounded-2xl border border-gray-200 hover:shadow-lg hover:scale-105 transition-all duration-300 bg-white">
                 <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#6AC259] to-[#4BAE45] flex items-center justify-center text-white font-bold mb-4">WEB</div>
                 <div class="font-bold text-gray-900 mb-2">Smart Web</div>
@@ -631,13 +523,13 @@
               </div>
             </div>
           </div>
-          
+
           <!-- Right Column - Research Image -->
           <div class="relative">
             <div class="rounded-3xl overflow-hidden shadow-xl border border-gray-200">
               <img class="w-full h-96 object-cover" src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1500&auto=format&fit=crop" alt="Research highlight" />
             </div>
-            
+
             <!-- Decorative Elements -->
             <div class="absolute -top-6 -left-6 w-32 h-32 bg-gradient-to-br from-[#00A0D6]/20 to-[#6AC259]/20 rounded-full blur-2xl"></div>
             <div class="absolute -bottom-6 -right-6 w-24 h-24 bg-gradient-to-br from-[#6AC259]/20 to-[#00A0D6]/20 rounded-full blur-2xl"></div>
@@ -728,7 +620,7 @@
         <!-- Right Column - Contact & Social Media -->
         <div>
           <h3 class="font-bold text-lg text-white mb-6">Kontak & Media Sosial</h3>
-          
+
           <!-- Contact Info -->
           <div class="space-y-4 mb-8">
             <div class="flex items-start gap-3">
@@ -742,7 +634,7 @@
                 <div class="text-gray-300">lab.dt@polinema.ac.id</div>
               </div>
             </div>
-            
+
             <div class="flex items-start gap-3">
               <div class="w-8 h-8 bg-[#6AC259]/10 rounded-lg flex items-center justify-center flex-shrink-0">
                 <svg class="w-4 h-4 text-[#6AC259]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -762,24 +654,24 @@
             <div class="flex gap-3">
               <a href="#" class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-white hover:scale-110 transition-transform">
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
                 </svg>
               </a>
               <a href="#" class="w-10 h-10 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center text-white hover:scale-110 transition-transform">
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                  <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
                 </svg>
               </a>
               <a href="#" class="w-10 h-10 bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl flex items-center justify-center text-white hover:scale-110 transition-transform">
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641.001 12.017.001z"/>
+                  <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641.001 12.017.001z" />
                 </svg>
               </a>
             </div>
           </div>
         </div>
       </div>
-      
+
       <!-- Bottom Border -->
       <div class="mt-12 pt-8 border-t border-gray-700 text-center">
         <p class="text-sm text-gray-400">
@@ -788,5 +680,9 @@
       </div>
     </div>
   </footer>
+  <?php
+  require_once 'includes/footer.php';
+  ?>
 </body>
+
 </html>
