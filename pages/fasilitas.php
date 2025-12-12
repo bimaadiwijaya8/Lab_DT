@@ -15,11 +15,29 @@ $active_page = 'fasilitas';
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Gradient Utama untuk Judul di Hero dan Konten (dari berita.php) */
+        .text-gradient {
+            background-image: linear-gradient(to right, #00A0D6, #6AC259);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+        }
+
+        /* Hero Section Style dari berita.php: Background gelap dengan blend mode dan gambar */
+        .hero-section {
+            background-image: linear-gradient(180deg, #1f2937, #1f2937 50%, rgba(31, 41, 55, 0.9) 100%), url('../assets/img/hero-bg-dark.jpg');
+            background-size: cover;
+            background-position: center;
+            background-blend-mode: multiply;
+            position: relative;
+        }
+    </style>
 </head>
 
-<body class="bg-white text-gray-900">
-    <?php require_once '../includes/header.php'; ?>
+<body class="bg-white text-gray-900 font-[Inter]"> <?php require_once '../includes/header.php'; ?>
     <main>
         <section class="hero-section text-white py-20 lg:py-28">
             <div class="max-w-7xl mx-auto px-6 lg:px-8">
@@ -34,12 +52,12 @@ $active_page = 'fasilitas';
                         <span>Fasilitas & Infrastruktur</span>
                     </div>
 
-                    <h1 class="text-4xl lg:text-6xl font-bold text-white-900 mb-6 leading-tight">
+                    <h1 class="text-4xl lg:text-6xl font-bold text-white mb-6 leading-tight">
                         Fasilitas<br>
                         <span class="text-gradient">& Infrastruktur</span>
                     </h1>
 
-                    <p class="text-xl text-white-600 mb-8 leading-relaxed max-w-4xl mx-auto">
+                    <p class="text-xl text-white-400 mb-8 leading-relaxed max-w-4xl mx-auto font-light">
                         Perangkat keras, perangkat lunak, jaringan, dan ruang pembelajaran modern untuk mendukung kegiatan riset dan praktikum di <span class="font-semibold text-[#00A0D6]">Laboratorium Data Technologies</span>
                     </p>
 
@@ -58,7 +76,7 @@ $active_page = 'fasilitas';
                         <a href="#facilities-container"
                             class="group inline-flex items-center justify-center px-8 py-4 bg-white border-2 border-gray-200 text-gray-700 font-semibold rounded-xl hover:border-[#00A0D6] hover:text-[#00A0D6] transition-all duration-300 hover:scale-105 shadow-sm hover:shadow-md">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                             </svg>
                             Peralatan Penelitian
@@ -72,13 +90,13 @@ $active_page = 'fasilitas';
             </div>
         </section>
 
-        <section class="py-20 bg-white">
+        <section class="py-20 bg-gradient-to-br from-gray-50/50 via-white to-blue-50/30">
             <div class="max-w-7xl mx-auto px-6 lg:px-8">
                 <div class="text-center mb-16">
                     <h2 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
                         <span class="text-gradient">Fasilitas & Infrastruktur</span>
                     </h2>
-                    <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                    <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed font-light">
                         Infrastruktur lengkap dan modern untuk mendukung pembelajaran serta penelitian di bidang teknologi data
                     </p>
                 </div>
