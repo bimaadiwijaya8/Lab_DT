@@ -16,9 +16,122 @@ $active_page = 'anggota';
 </head>
 
 <body class="bg-white text-gray-900">
-  <?php
-  require_once 'includes/header.php';
-  ?>
+  <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo -->
+        <a href="index.html" class="group">
+          <div class="flex items-center gap-3">
+            <span class="inline-flex h-12 w-12 rounded-xl to-blue-600 items-center justify-center group-hover:shadow-xl transition-all duration-300">
+              <img src="assets/img/logo.png" alt="" class="w-full h-full object-cover rounded-xl">
+            </span>
+            <div>
+              <div class="font-bold text-[#1f2937] text-lg">Lab Data Technologies</div>
+              <div class="text-sm text-gray-500 font-medium">Politeknik Negeri Malang</div>
+            </div>
+          </div>
+        </a>
+
+        <!-- Navigation -->
+        <nav class="hidden lg:flex items-center gap-0,5">
+          <a class="relative px-6 py-2 text-[15px] font-semibold text-[#00A0D6] transition-all duration-300 group" href="index.php">
+            <span class="relative z-10">Beranda</span>
+            <div class="absolute inset-0 bg-blue-50 rounded-lg opacity-100 group-hover:opacity-80 transition-opacity duration-300"></div>
+            <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-8 h-0.5 bg-[#00A0D6] rounded-full"></div>
+          </a>
+          <a class="relative px-6 py-2 text-[15px] font-medium text-[#1f2937] hover:text-[#00A0D6] transition-all duration-300 group" href="pages/profil-lab.php">
+            <span class="relative z-10">Profil Lab</span>
+            <div class="absolute inset-0 bg-gray-50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          </a>
+          <a class="relative px-6 py-2 text-[15px] font-medium text-[#1f2937] hover:text-[#00A0D6] transition-all duration-300 group" href="pages/berita.php">
+            <span class="relative z-10">Berita</span>
+            <div class="absolute inset-0 bg-gray-50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          </a>
+          <a class="relative px-6 py-2 text-[15px] font-medium text-[#1f2937] hover:text-[#00A0D6] transition-all duration-300 group" href="pages/galeri.php">
+            <span class="relative z-10">Galeri</span>
+            <div class="absolute inset-0 bg-gray-50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          </a>
+          <a class="relative px-6 py-2 text-[15px] font-medium text-[#1f2937] hover:text-[#00A0D6] transition-all duration-300 group" href="pages/penelitian.php">
+            <span class="relative z-10">Publikasi</span>
+            <div class="absolute inset-0 bg-gray-50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          </a>
+          <a class="relative px-6 py-2 text-[15px] font-medium text-[#1f2937] hover:text-[#00A0D6] transition-all duration-300 group" href="pages/fasilitas.php">
+            <span class="relative z-10">Fasilitas</span>
+            <div class="absolute inset-0 bg-gray-50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          </a>
+          <a class="relative px-6 py-2 text-[15px] font-medium text-[#1f2937] hover:text-[#00A0D6] transition-all duration-300 group" href="pages/anggota.php">
+            <span class="relative z-10">Anggota</span>
+            <div class="absolute inset-0 bg-gray-50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          </a>
+          <a class="relative px-6 py-2 text-[15px] font-medium text-[#1f2937] hover:text-[#00A0D6] transition-all duration-300 group" href="pages/kontak.php">
+            <span class="relative z-10">Kontak</span>
+            <div class="absolute inset-0 bg-gray-50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          </a>
+        </nav>
+
+        <!-- Mobile Menu Button -->
+        <button class="lg:hidden inline-flex items-center justify-center h-11 w-11 rounded-xl border border-gray-200 hover:border-[#00A0D6] hover:bg-blue-50 transition-all duration-300 group" data-nav-toggle="#mnav">
+          <svg class="w-5 h-5 text-gray-600 group-hover:text-[#00A0D6] transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Mobile Navigation -->
+      <div id="mnav" class="lg:hidden hidden pb-6 border-t border-gray-100 mt-4 animate-slide-down">
+        <div class="grid gap-2 text-[15px] font-medium pt-6">
+          <a class="py-3 px-4 text-[#00A0D6] font-semibold bg-gradient-to-r from-blue-50 to-blue-50/50 rounded-xl border border-blue-100" href="index.php">
+            <div class="flex items-center gap-3">
+              <div class="w-2 h-2 bg-[#00A0D6] rounded-full"></div>
+              Beranda
+            </div>
+          </a>
+          <a class="py-3 px-4 text-[#1f2937] hover:text-[#00A0D6] hover:bg-gray-50 rounded-xl transition-all duration-300" href="pages/profil-lab.php">
+            <div class="flex items-center gap-3">
+              <div class="w-2 h-2 bg-gray-300 rounded-full"></div>
+              Profil Lab
+            </div>
+          </a>
+          <a class="py-3 px-4 text-[#1f2937] hover:text-[#00A0D6] hover:bg-gray-50 rounded-xl transition-all duration-300" href="pages/berita.php">
+            <div class="flex items-center gap-3">
+              <div class="w-2 h-2 bg-gray-300 rounded-full"></div>
+              Berita
+            </div>
+          </a>
+          <a class="py-3 px-4 text-[#1f2937] hover:text-[#00A0D6] hover:bg-gray-50 rounded-xl transition-all duration-300" href="pages/galeri.php">
+            <div class="flex items-center gap-3">
+              <div class="w-2 h-2 bg-gray-300 rounded-full"></div>
+              Galeri
+            </div>
+          </a>
+          <a class="py-3 px-4 text-[#1f2937] hover:text-[#00A0D6] hover:bg-gray-50 rounded-xl transition-all duration-300" href="pages/penelitian.php">
+            <div class="flex items-center gap-3">
+              <div class="w-2 h-2 bg-gray-300 rounded-full"></div>
+              Publikasi
+            </div>
+          </a>
+          <a class="py-3 px-4 text-[#1f2937] hover:text-[#00A0D6] hover:bg-gray-50 rounded-xl transition-all duration-300" href="pages/fasilitas.php">
+            <div class="flex items-center gap-3">
+              <div class="w-2 h-2 bg-gray-300 rounded-full"></div>
+              Fasilitas
+            </div>
+          </a>
+          <a class="py-3 px-4 text-[#1f2937] hover:text-[#00A0D6] hover:bg-gray-50 rounded-xl transition-all duration-300" href="pages/anggota.php">
+            <div class="flex items-center gap-3">
+              <div class="w-2 h-2 bg-gray-300 rounded-full"></div>
+              Anggota
+            </div>
+          </a>
+          <a class="py-3 px-4 text-[#1f2937] hover:text-[#00A0D6] hover:bg-gray-50 rounded-xl transition-all duration-300" href="pages/kontak.php">
+            <div class="flex items-center gap-3">
+              <div class="w-2 h-2 bg-gray-300 rounded-full"></div>
+              Kontak
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
   <main>
     <!-- Hero Section - 2 Column Layout -->
     <section class="bg-gradient-to-br from-blue-50 via-white to-green-50 py-20 lg:py-28">
