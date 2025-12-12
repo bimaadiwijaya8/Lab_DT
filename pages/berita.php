@@ -45,7 +45,7 @@ if (file_exists($db_connect_path)) {
             // kita gunakan logika sederhana untuk mapping ke kategori frontend.
             $category = 'berita'; // Default
             if (strtoupper($row['status']) === 'PENDING') {
-                $category = 'pengumuman'; 
+                $category = 'berita'; 
             } 
             // Catatan: Untuk mendukung kategori 'agenda', Anda perlu menambahkan kolom 'kategori' di tabel 'berita'.
             
