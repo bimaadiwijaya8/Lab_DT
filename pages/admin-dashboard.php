@@ -246,15 +246,38 @@ if ($active_page === 'berita' && $pdo) {
     }
 } 
 
-
 // 6. Pengaturan Judul Halaman
 $page_title = "Admin Panel - ";
 switch ($active_page) {
+    case 'verifikasi-member':
+        $page_title .= "Verifikasi Member";
+        break;
+    case 'persetujuan-konten':
+        $page_title .= "Persetujuan Konten";
+        break;
     case 'berita':
         $page_title .= "Kelola Berita";
         break;
+    case 'publikasi':
+        $page_title .= "Kelola Publikasi";
+        break;
+    case 'agenda':
+        $page_title .= "Kelola Agenda";
+        break;
     case 'galeri':
         $page_title .= "Kelola Galeri";
+        break;
+    case 'anggota':
+        $page_title .= "Kelola Anggota";
+        break;
+    case 'fasilitas':
+        $page_title .= "Kelola Fasilitas";
+        break;
+    case 'pengumuman':
+        $page_title .= "Kelola Pengumuman";
+        break;
+    case 'edit-halaman':
+        $page_title .= "Edit Halaman";
         break;
     default:
         $page_title .= "Dashboard Utama";
@@ -304,21 +327,45 @@ switch ($active_page) {
                 <i class="fas fa-tachometer-alt w-5 h-5 mr-3 <?php echo ($active_page === 'dashboard' ? 'text-primary' : ''); ?>"></i>
                 Dashboard
             </a>
+            <a href="admin-dashboard.php?page=verifikasi-member" class="flex items-center p-3 rounded-lg hover:bg-gray-100 hover:text-gray-800 transition-colors duration-200 <?php echo ($active_page === 'verifikasi-member' ? 'bg-blue-50 text-gray-800 font-semibold' : 'text-gray-600'); ?>">
+                <i class="fas fa-user-check w-5 h-5 mr-3 <?php echo ($active_page === 'verifikasi-member' ? 'text-primary' : ''); ?>"></i>
+                Verifikasi Member
+            </a>
+            <a href="admin-dashboard.php?page=persetujuan-konten" class="flex items-center p-3 rounded-lg hover:bg-gray-100 hover:text-gray-800 transition-colors duration-200 <?php echo ($active_page === 'persetujuan-konten' ? 'bg-blue-50 text-gray-800 font-semibold' : 'text-gray-600'); ?>">
+                <i class="fas fa-check-circle w-5 h-5 mr-3 <?php echo ($active_page === 'persetujuan-konten' ? 'text-primary' : ''); ?>"></i>
+                Persetujuan Konten
+            </a>
             <a href="admin-dashboard.php?page=berita" class="flex items-center p-3 rounded-lg hover:bg-gray-100 hover:text-gray-800 transition-colors duration-200 <?php echo ($active_page === 'berita' ? 'bg-blue-50 text-gray-800 font-semibold' : 'text-gray-600'); ?>">
                 <i class="fas fa-newspaper w-5 h-5 mr-3 <?php echo ($active_page === 'berita' ? 'text-primary' : ''); ?>"></i>
                 Kelola Berita
+            </a>
+            <a href="admin-dashboard.php?page=publikasi" class="flex items-center p-3 rounded-lg hover:bg-gray-100 hover:text-gray-800 transition-colors duration-200 <?php echo ($active_page === 'publikasi' ? 'bg-blue-50 text-gray-800 font-semibold' : 'text-gray-600'); ?>">
+                <i class="fas fa-book w-5 h-5 mr-3 <?php echo ($active_page === 'publikasi' ? 'text-primary' : ''); ?>"></i>
+                Kelola Publikasi
+            </a>
+            <a href="admin-dashboard.php?page=agenda" class="flex items-center p-3 rounded-lg hover:bg-gray-100 hover:text-gray-800 transition-colors duration-200 <?php echo ($active_page === 'agenda' ? 'bg-blue-50 text-gray-800 font-semibold' : 'text-gray-600'); ?>">
+                <i class="fas fa-calendar-alt w-5 h-5 mr-3 <?php echo ($active_page === 'agenda' ? 'text-primary' : ''); ?>"></i>
+                Kelola Agenda
             </a>
             <a href="admin-dashboard.php?page=galeri" class="flex items-center p-3 rounded-lg hover:bg-gray-100 hover:text-gray-800 transition-colors duration-200 <?php echo ($active_page === 'galeri' ? 'bg-blue-50 text-gray-800 font-semibold' : 'text-gray-600'); ?>">
                 <i class="fas fa-image w-5 h-5 mr-3 <?php echo ($active_page === 'galeri' ? 'text-primary' : ''); ?>"></i>
                 Kelola Galeri
             </a>
-            <a href="#" class="flex items-center p-3 text-gray-600 rounded-lg hover:bg-gray-100 hover:text-gray-800 transition-colors duration-200">
-                <i class="fas fa-users w-5 h-5 mr-3"></i>
+            <a href="admin-dashboard.php?page=anggota" class="flex items-center p-3 rounded-lg hover:bg-gray-100 hover:text-gray-800 transition-colors duration-200 <?php echo ($active_page === 'anggota' ? 'bg-blue-50 text-gray-800 font-semibold' : 'text-gray-600'); ?>">
+                <i class="fas fa-users w-5 h-5 mr-3 <?php echo ($active_page === 'anggota' ? 'text-primary' : ''); ?>"></i>
                 Kelola Anggota
             </a>
-            <a href="#" class="flex items-center p-3 text-gray-600 rounded-lg hover:bg-gray-100 hover:text-gray-800 transition-colors duration-200">
-                <i class="fas fa-cogs w-5 h-5 mr-3"></i>
-                Pengaturan
+            <a href="admin-dashboard.php?page=fasilitas" class="flex items-center p-3 rounded-lg hover:bg-gray-100 hover:text-gray-800 transition-colors duration-200 <?php echo ($active_page === 'fasilitas' ? 'bg-blue-50 text-gray-800 font-semibold' : 'text-gray-600'); ?>">
+                <i class="fas fa-building w-5 h-5 mr-3 <?php echo ($active_page === 'fasilitas' ? 'text-primary' : ''); ?>"></i>
+                Kelola Fasilitas
+            </a>
+            <a href="admin-dashboard.php?page=pengumuman" class="flex items-center p-3 rounded-lg hover:bg-gray-100 hover:text-gray-800 transition-colors duration-200 <?php echo ($active_page === 'pengumuman' ? 'bg-blue-50 text-gray-800 font-semibold' : 'text-gray-600'); ?>">
+                <i class="fas fa-bullhorn w-5 h-5 mr-3 <?php echo ($active_page === 'pengumuman' ? 'text-primary' : ''); ?>"></i>
+                Kelola Pengumuman
+            </a>
+            <a href="admin-dashboard.php?page=edit-halaman" class="flex items-center p-3 rounded-lg hover:bg-gray-100 hover:text-gray-800 transition-colors duration-200 <?php echo ($active_page === 'edit-halaman' ? 'bg-blue-50 text-gray-800 font-semibold' : 'text-gray-600'); ?>">
+                <i class="fas fa-edit w-5 h-5 mr-3 <?php echo ($active_page === 'edit-halaman' ? 'text-primary' : ''); ?>"></i>
+                Edit Halaman
             </a>
         </nav>
         
@@ -478,9 +525,257 @@ switch ($active_page) {
                     </table>
                 </div>
             </div>
-        <?php endif; ?>
-    </div>
 
+        <?php elseif ($active_page === 'verifikasi-member'): ?>
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-semibold text-gray-800">Verifikasi Member</h2>
+                    <button class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors duration-200 flex items-center space-x-2">
+                        <i class="fas fa-sync"></i>
+                        <span>Refresh Data</span>
+                    </button>
+                </div>
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                    <p class="text-blue-800"><i class="fas fa-info-circle mr-2"></i>Halaman untuk verifikasi pendaftaran member baru yang menunggu persetujuan.</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Daftar</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr><td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">Tidak ada member yang menunggu verifikasi.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        <?php elseif ($active_page === 'persetujuan-konten'): ?>
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-semibold text-gray-800">Persetujuan Konten</h2>
+                    <button class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors duration-200 flex items-center space-x-2">
+                        <i class="fas fa-sync"></i>
+                        <span>Refresh Data</span>
+                    </button>
+                </div>
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                    <p class="text-yellow-800"><i class="fas fa-exclamation-triangle mr-2"></i>Halaman untuk menyetujui atau menolak konten yang diajukan oleh editor.</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul Konten</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipe</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pengaju</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr><td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">Tidak ada konten yang menunggu persetujuan.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        <?php elseif ($active_page === 'publikasi'): ?>
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-semibold text-gray-800">Kelola Publikasi</h2>
+                    <button class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors duration-200 flex items-center space-x-2">
+                        <i class="fas fa-plus"></i>
+                        <span>Tambah Publikasi</span>
+                    </button>
+                </div>
+                <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                    <p class="text-green-800"><i class="fas fa-book mr-2"></i>Kelola jurnal, paper, dan publikasi ilmiah laboratorium.</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Penulis</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tahun</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr><td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">Belum ada data publikasi.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        <?php elseif ($active_page === 'agenda'): ?>
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-semibold text-gray-800">Kelola Agenda</h2>
+                    <button class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors duration-200 flex items-center space-x-2">
+                        <i class="fas fa-plus"></i>
+                        <span>Tambah Agenda</span>
+                    </button>
+                </div>
+                <div class="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-6">
+                    <p class="text-purple-800"><i class="fas fa-calendar-alt mr-2"></i>Kelola jadwal kegiatan, seminar, dan acara laboratorium.</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Agenda</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Waktu</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lokasi</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr><td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">Belum ada agenda terjadwal.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        <?php elseif ($active_page === 'anggota'): ?>
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-semibold text-gray-800">Kelola Anggota</h2>
+                    <button class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors duration-200 flex items-center space-x-2">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Tambah Anggota</span>
+                    </button>
+                </div>
+                <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-4 mb-6">
+                    <p class="text-indigo-800"><i class="fas fa-users mr-2"></i>Kelola data anggota laboratorium, peneliti, dan staf.</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Posisi</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr><td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">Belum ada data anggota.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        <?php elseif ($active_page === 'fasilitas'): ?>
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-semibold text-gray-800">Kelola Fasilitas</h2>
+                    <button class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors duration-200 flex items-center space-x-2">
+                        <i class="fas fa-plus"></i>
+                        <span>Tambah Fasilitas</span>
+                    </button>
+                </div>
+                <div class="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-6">
+                    <p class="text-orange-800"><i class="fas fa-building mr-2"></i>Kelola data fasilitas, laboratorium, dan peralatan penelitian.</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Fasilitas</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipe</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lokasi</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kapasitas</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr><td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">Belum ada data fasilitas.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        <?php elseif ($active_page === 'pengumuman'): ?>
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-semibold text-gray-800">Kelola Pengumuman</h2>
+                    <button class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors duration-200 flex items-center space-x-2">
+                        <i class="fas fa-plus"></i>
+                        <span>Tambah Pengumuman</span>
+                    </button>
+                </div>
+                <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                    <p class="text-red-800"><i class="fas fa-bullhorn mr-2"></i>Kelola pengumuman penting untuk seluruh anggota laboratorium.</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Isi</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Mulai</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr><td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">Belum ada pengumuman.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        <?php elseif ($active_page === 'edit-halaman'): ?>
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-semibold text-gray-800">Edit Halaman</h2>
+                    <button class="px-4 py-2 bg-secondary text-white rounded-lg hover:bg-green-600 transition-colors duration-200 flex items-center space-x-2">
+                        <i class="fas fa-save"></i>
+                        <span>Simpan Perubahan</span>
+                    </button>
+                </div>
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
+                    <p class="text-gray-800"><i class="fas fa-edit mr-2"></i>Edit konten halaman statis seperti About, Contact, dll.</p>
+                </div>
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Pilih Halaman</label>
+                        <select class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                            <option>Halaman Utama (Home)</option>
+                            <option>Tentang Kami (About)</option>
+                            <option>Kontak (Contact)</option>
+                            <option>Layanan (Services)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Judul Halaman</label>
+                        <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" placeholder="Masukkan judul halaman">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Konten Halaman</label>
+                        <textarea rows="10" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" placeholder="Masukkan konten halaman"></textarea>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
 
     <div id="add-news-modal" class="modal fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-[100]">
         <div class="relative top-10 mx-auto p-5 border w-full max-w-2xl shadow-lg rounded-md bg-white">
@@ -519,7 +814,6 @@ switch ($active_page) {
             </form>
         </div>
     </div>
-
 
     <div id="edit-news-modal" class="modal fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-[100]">
         <div class="relative top-10 mx-auto p-5 border w-full max-w-2xl shadow-lg rounded-md bg-white">
