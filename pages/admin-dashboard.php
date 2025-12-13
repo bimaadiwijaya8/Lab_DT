@@ -193,6 +193,28 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'berita') 
             }
         }
     }
+
+    // --- VERIFICATION (Approve/Reject Berita) ---
+    if ($action === 'verify_news') {
+        $id_berita = (int)$_POST['id_berita'];
+        $status = $_POST['status']; // 'approved' or 'rejected'
+        
+        if (in_array($status, ['approved', 'rejected'])) {
+            try {
+                $sql = "UPDATE berita SET status = :status WHERE id_berita = :id";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute([
+                    ':status' => $status,
+                    ':id' => $id_berita
+                ]);
+                
+                $status_text = $status === 'approved' ? 'disetujui' : 'ditolak';
+                $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Berita ID {$id_berita} berhasil {$status_text}!</div>";
+            } catch (Exception $e) {
+                $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Gagal memperbarui status berita: " . htmlspecialchars($e->getMessage()) . "</div>";
+            }
+        }
+    }
 }
 
 // --- DELETE (Hapus Berita - Menggunakan GET request) ---
@@ -236,9 +258,10 @@ $galeri_data = [];
 if ($active_page === 'berita' && $pdo) {
     try {
         // READ: Mengambil semua data berita dari database
-        $sql = "SELECT id_berita, judul, tanggal, informasi, gambar, author, status 
-                FROM berita 
-                ORDER BY tanggal DESC";
+        $sql = "SELECT b.id_berita, b.judul, b.tanggal, b.informasi, b.gambar, b.author, b.status, a.nama_gelar as author_name
+                FROM berita b
+                LEFT JOIN anggota a ON b.author = a.id_anggota 
+                ORDER BY b.tanggal DESC";
         $stmt = $pdo->query($sql);
         $news_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
@@ -455,7 +478,7 @@ switch ($active_page) {
                             <tr>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Informasi (Konten)</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Author</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                                 <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
@@ -477,7 +500,9 @@ switch ($active_page) {
                                         
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo $news['id_berita']; ?></td>
                                         <td class="px-6 py-4 whitespace-normal text-sm font-medium text-gray-900 w-48"><?php echo htmlspecialchars($news['judul']); ?></td>
-                                        <td class="px-6 py-4 whitespace-normal text-sm text-gray-500 truncate max-w-sm" title="<?php echo htmlspecialchars($news['informasi']); ?>"><?php echo substr(strip_tags($news['informasi']), 0, 100) . '...'; ?></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <?php echo !empty($news['author_name']) ? htmlspecialchars($news['author_name']) : 'Anggota ID ' . $news['author']; ?>
+                                        </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo date('d M Y', strtotime($news['tanggal'])); ?></td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <?php echo ($news['status'] === 'approved' ? 'bg-green-100 text-green-800' : ($news['status'] === 'rejected' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800')); ?>">
@@ -485,8 +510,20 @@ switch ($active_page) {
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <button onclick="openEditNewsModal(<?php echo $news['id_berita']; ?>)" class="text-primary hover:text-blue-800 mr-3" <?php echo ($db_error ? 'disabled' : ''); ?>>Edit</button>
-                                            <a href="admin-dashboard.php?page=berita&action=delete&id=<?php echo $news['id_berita']; ?>" onclick="return confirm('Anda yakin ingin menghapus berita: <?php echo htmlspecialchars($news['judul']); ?>?')" class="text-red-600 hover:text-red-900" <?php echo ($db_error ? 'onclick="return false;"' : ''); ?>>Hapus</a>
+                                            <?php if ($news['status'] === 'pending'): ?>
+                                                <button onclick="verifyNews(<?php echo $news['id_berita']; ?>, 'approved')" class="text-green-600 hover:text-green-800 mr-2" <?php echo ($db_error ? 'disabled' : ''); ?> title="Setujui">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                                <button onclick="verifyNews(<?php echo $news['id_berita']; ?>, 'rejected')" class="text-red-600 hover:text-red-800 mr-2" <?php echo ($db_error ? 'disabled' : ''); ?> title="Tolak">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            <?php endif; ?>
+                                            <button onclick="openEditNewsModal(<?php echo $news['id_berita']; ?>)" class="text-primary hover:text-blue-800 mr-3" <?php echo ($db_error ? 'disabled' : ''); ?> title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <a href="admin-dashboard.php?page=berita&action=delete&id=<?php echo $news['id_berita']; ?>" onclick="return confirm('Anda yakin ingin menghapus berita: <?php echo htmlspecialchars($news['judul']); ?>?')" class="text-red-600 hover:text-red-900" <?php echo ($db_error ? 'onclick="return false;"' : ''); ?> title="Hapus">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -888,6 +925,42 @@ switch ($active_page) {
             const sidebar = document.getElementById('sidebar');
             sidebar.classList.toggle('-translate-x-full');
             sidebar.classList.toggle('translate-x-0');
+        }
+
+        // --- Fungsi Verifikasi Berita ---
+        function verifyNews(id, status) {
+            const confirmText = status === 'approved' ? 'menyetujui' : 'menolak';
+            if (confirm(`Anda yakin ingin ${confirmText} berita ini?`)) {
+                // Create form for POST request
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = 'admin-dashboard.php?page=berita';
+                
+                // Add action input
+                const actionInput = document.createElement('input');
+                actionInput.type = 'hidden';
+                actionInput.name = 'action';
+                actionInput.value = 'verify_news';
+                form.appendChild(actionInput);
+                
+                // Add id input
+                const idInput = document.createElement('input');
+                idInput.type = 'hidden';
+                idInput.name = 'id_berita';
+                idInput.value = id;
+                form.appendChild(idInput);
+                
+                // Add status input
+                const statusInput = document.createElement('input');
+                statusInput.type = 'hidden';
+                statusInput.name = 'status';
+                statusInput.value = status;
+                form.appendChild(statusInput);
+                
+                // Submit form
+                document.body.appendChild(form);
+                form.submit();
+            }
         }
 
         // --- Fungsi Modal Berita (CRUD) ---
