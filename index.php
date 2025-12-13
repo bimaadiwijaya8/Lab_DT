@@ -20,7 +20,7 @@ $active_page = 'anggota';
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
         <!-- Logo -->
-        <a href="index.html" class="group">
+        <a href="index.php" class="group">
           <div class="flex items-center gap-3">
             <span class="inline-flex h-12 w-12 rounded-xl to-blue-600 items-center justify-center group-hover:shadow-xl transition-all duration-300">
               <img src="assets/img/logo.png" alt="" class="w-full h-full object-cover rounded-xl">
@@ -793,9 +793,6 @@ $active_page = 'anggota';
       </div>
     </div>
   </footer>
-  <?php
-  require_once 'includes/footer.php';
-  ?>
 </body>
 
 </html>
