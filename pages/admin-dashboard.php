@@ -1255,41 +1255,74 @@ if ($active_page === 'pengumuman' && $pdo) {
         .z-\[100\] { z-index: 100; }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-gradient-to-br from-slate-100 via-slate-50 to-slate-200 min-h-screen text-gray-900 antialiased">
     
-    <div class="fixed top-0 left-0 h-full w-64 bg-white shadow-xl p-4 flex flex-col transition-transform duration-300 ease-in-out">
-        <div class="mb-8 text-center">
-            <h2 class="text-2xl font-bold text-gray-800">Admin Panel</h2>
-            <p class="text-sm text-gray-500">LDT - <?php echo $current_year; ?></p>
+    <div class="fixed top-0 left-0 h-full w-64 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-100 shadow-xl border-r border-slate-800/60 px-5 py-6 flex flex-col transition-transform duration-300 ease-in-out">
+        <div class="mb-8 flex items-center gap-3">
+            <div class="h-10 w-10 rounded-2xl bg-primary/20 flex items-center justify-center text-primary">
+                <i class="fas fa-flask text-lg"></i>
+            </div>
+            <div>
+                <h2 class="text-lg font-semibold text-white leading-snug">Admin Panel</h2>
+                <p class="text-xs text-slate-400">LDT • <?php echo $current_year; ?></p>
+            </div>
         </div>
         
         <div class="flex-grow">
-            <p class="text-xs uppercase text-gray-400 mb-2">Navigasi Utama</p>
-            <nav class="space-y-2">
+            <p class="text-[11px] font-semibold tracking-[0.16em] uppercase text-slate-500 mb-3">Navigasi Utama</p>
+            <nav class="space-y-1.5">
                 <ul>
-                    <li><a href="admin-dashboard.php?page=dashboard" class="flex items-center p-3 rounded-lg <?php echo $active_page === 'dashboard' ? 'bg-primary text-white' : 'text-gray-700 hover:bg-gray-100'; ?>"><i class="fas fa-home w-5 h-5 mr-3"></i> Dashboard</a></li>
-                    <li><a href="admin-dashboard.php?page=berita" class="flex items-center p-3 rounded-lg <?php echo $active_page === 'berita' ? 'bg-primary text-white' : 'text-gray-700 hover:bg-gray-100'; ?>"><i class="fas fa-newspaper w-5 h-5 mr-3"></i> Kelola Berita</a></li>
-                    <li><a href="admin-dashboard.php?page=fasilitas" class="flex items-center p-3 rounded-lg <?php echo $active_page === 'fasilitas' ? 'bg-primary text-white' : 'text-gray-700 hover:bg-gray-100'; ?>"><i class="fas fa-building w-5 h-5 mr-3"></i> Kelola Fasilitas</a></li>
-                    <li><a href="admin-dashboard.php?page=galeri" class="flex items-center p-3 rounded-lg <?php echo $active_page === 'galeri' ? 'bg-primary text-white' : 'text-gray-700 hover:bg-gray-100'; ?>"><i class="fas fa-image w-5 h-5 mr-3"></i> Kelola Galeri</a></li>
-                    <li><a href="admin-dashboard.php?page=publikasi" class="flex items-center p-3 rounded-lg <?php echo $active_page === 'publikasi' ? 'bg-primary text-white' : 'text-gray-700 hover:bg-gray-100'; ?>"><i class="fas fa-book-open w-5 h-5 mr-3"></i> Kelola Publikasi</a></li>
-                    <li><a href="admin-dashboard.php?page=agenda" class="flex items-center p-3 rounded-lg <?php echo $active_page === 'agenda' ? 'bg-primary text-white' : 'text-gray-700 hover:bg-gray-100'; ?>"><i class="fas fa-calendar-alt w-5 h-5 mr-3"></i> Kelola Agenda</a></li>
-                    <li><a href="admin-dashboard.php?page=pengumuman" class="flex items-center p-3 rounded-lg <?php echo $active_page === 'pengumuman' ? 'bg-primary text-white' : 'text-gray-700 hover:bg-gray-100'; ?>"><i class="fas fa-bullhorn w-5 h-5 mr-3"></i> Kelola Pengumuman</a></li>
-                    <li><a href="admin-dashboard.php?page=anggota" class="flex items-center p-3 rounded-lg <?php echo $active_page === 'anggota' ? 'bg-primary text-white' : 'text-gray-700 hover:bg-gray-100'; ?>"><i class="fas fa-users w-5 h-5 mr-3"></i> Kelola Anggota</a></li>
+                    <li><a href="admin-dashboard.php?page=dashboard" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 <?php echo $active_page === 'dashboard' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'; ?>"><i class="fas fa-home w-5 h-5 mr-3"></i> Dashboard</a></li>
+                    <li><a href="admin-dashboard.php?page=berita" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 <?php echo $active_page === 'berita' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'; ?>"><i class="fas fa-newspaper w-5 h-5 mr-3"></i> Kelola Berita</a></li>
+                    <li><a href="admin-dashboard.php?page=fasilitas" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 <?php echo $active_page === 'fasilitas' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'; ?>"><i class="fas fa-building w-5 h-5 mr-3"></i> Kelola Fasilitas</a></li>
+                    <li><a href="admin-dashboard.php?page=galeri" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 <?php echo $active_page === 'galeri' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'; ?>"><i class="fas fa-image w-5 h-5 mr-3"></i> Kelola Galeri</a></li>
+                    <li><a href="admin-dashboard.php?page=publikasi" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 <?php echo $active_page === 'publikasi' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'; ?>"><i class="fas fa-book-open w-5 h-5 mr-3"></i> Kelola Publikasi</a></li>
+                    <li><a href="admin-dashboard.php?page=agenda" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 <?php echo $active_page === 'agenda' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'; ?>"><i class="fas fa-calendar-alt w-5 h-5 mr-3"></i> Kelola Agenda</a></li>
+                    <li><a href="admin-dashboard.php?page=pengumuman" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 <?php echo $active_page === 'pengumuman' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'; ?>"><i class="fas fa-bullhorn w-5 h-5 mr-3"></i> Kelola Pengumuman</a></li>
+                    <li><a href="admin-dashboard.php?page=anggota" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 <?php echo $active_page === 'anggota' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'; ?>"><i class="fas fa-users w-5 h-5 mr-3"></i> Kelola Anggota</a></li>
                 </ul>
             </nav>
         </div>
 
-        <div class="mt-8">
-            <a href="logout.php" class="flex items-center p-3 rounded-lg text-red-500 hover:bg-red-50 hover:text-red-700">
+        <div class="mt-6 pt-4 border-t border-slate-800/60">
+            <a href="logout.php" class="flex items-center px-3 py-2 rounded-lg text-red-300 hover:bg-red-500/10 hover:text-red-100 text-sm font-medium transition-colors duration-150">
                 <i class="fas fa-sign-out-alt w-5 h-5 mr-3"></i> Logout (<?php echo htmlspecialchars($username); ?>)
             </a>
         </div>
     </div>
 
-    <div class="ml-64 p-8">
-        <header class="flex justify-between items-center mb-8">
-            <h1 class="text-4xl font-extrabold text-gray-800">Selamat Datang di Admin Dashboard</h1>
-            <p class="text-gray-500"><?php echo date('d F Y'); ?></p>
+    <div class="ml-64 p-6 md:p-10">
+        <header class="flex flex-wrap items-center justify-between gap-4 mb-8">
+            <div>
+                <p class="flex items-center gap-2 text-sm text-gray-500">
+                    <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-primary">
+                        <i class="fas fa-shield-alt text-[11px]"></i>
+                    </span>
+                    <span class="font-medium">Panel Admin LDT</span>
+                </p>
+                <h1 class="mt-2 text-3xl font-extrabold tracking-tight text-gray-900">
+                    Selamat Datang, <?php echo htmlspecialchars($username); ?>
+                </h1>
+                <p class="mt-1 text-sm text-gray-500">
+                    Halaman aktif: 
+                    <span class="font-semibold text-gray-700"><?php echo ucfirst($active_page); ?></span>
+                </p>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="text-right">
+                    <p class="text-xs uppercase tracking-wide text-gray-400">Tanggal</p>
+                    <p class="text-sm font-medium text-gray-700"><?php echo date('d F Y'); ?></p>
+                </div>
+                <div class="flex items-center gap-3 rounded-full bg-white/80 backdrop-blur px-3 py-2 shadow-sm border border-gray-100">
+                    <div class="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
+                        <?php echo strtoupper(substr($username, 0, 1)); ?>
+                    </div>
+                    <div class="leading-tight">
+                        <p class="text-sm font-semibold text-gray-800"><?php echo htmlspecialchars($username); ?></p>
+                        <p class="text-xs text-gray-400">Administrator</p>
+                    </div>
+                </div>
+            </div>
         </header>
 
         <?php if ($db_error): ?>
