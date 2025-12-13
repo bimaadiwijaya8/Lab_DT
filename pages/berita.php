@@ -21,7 +21,7 @@ if (file_exists($db_connect_path)) {
         // Panggil metode static dari class Database
         $pdo = Database::getConnection(); 
 
-        // Query untuk mengambil semua data berita
+        // Query untuk mengambil data berita yang hanya status 'approved'
         // Menggunakan LEFT(informasi, 150) untuk ringkasan singkat (summary)
         $sql = "SELECT 
                     id_berita, 
@@ -31,6 +31,7 @@ if (file_exists($db_connect_path)) {
                     tanggal, 
                     status 
                 FROM berita 
+                WHERE status = 'approved'
                 -- Urutkan dari tanggal terbaru
                 ORDER BY tanggal DESC"; 
         
