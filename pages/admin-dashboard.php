@@ -767,282 +767,285 @@ switch ($active_page) {
 
             <main class="flex-grow p-4 md:p-8">
                 <?php if ($active_page === 'dashboard'): ?>
-                <h1 class="text-3xl font-bold text-gray-800 mb-6">Dashboard Ringkasan</h1>
+                    <h1 class="text-3xl font-bold text-gray-800 mb-6">Dashboard Ringkasan</h1>
 
-                <?php echo $message; // Tampilkan notifikasi koneksi DB ?>
+                    <?php echo $message; // Tampilkan notifikasi koneksi DB 
+                    ?>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-primary">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <p class="text-sm font-medium text-gray-500 uppercase">Total Berita</p>
-                                <p class="text-3xl font-bold text-gray-900 mt-1"><?php echo $total_news; ?></p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-primary">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-500 uppercase">Total Berita</p>
+                                    <p class="text-3xl font-bold text-gray-900 mt-1"><?php echo $total_news; ?></p>
+                                </div>
+                                <i class="fas fa-newspaper text-4xl text-primary opacity-30"></i>
                             </div>
-                            <i class="fas fa-newspaper text-4xl text-primary opacity-30"></i>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-secondary">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-500 uppercase">Total Fasilitas</p>
+                                    <p class="text-3xl font-bold text-gray-900 mt-1"><?php echo $total_facilities; ?></p>
+                                </div>
+                                <i class="fas fa-tools text-4xl text-secondary opacity-30"></i>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-green-500">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-500 uppercase">Total Foto Galeri</p>
+                                    <p class="text-3xl font-bold text-gray-900 mt-1"><?php echo $total_gallery; ?></p>
+                                </div>
+                                <i class="fas fa-images text-4xl text-green-500 opacity-30"></i>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-red-500">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-500 uppercase">Total Anggota</p>
+                                    <p class="text-3xl font-bold text-gray-900 mt-1"><?php echo $total_members; ?></p>
+                                </div>
+                                <i class="fas fa-users text-4xl text-red-500 opacity-30"></i>
+                            </div>
                         </div>
                     </div>
-
-                    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-secondary">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <p class="text-sm font-medium text-gray-500 uppercase">Total Fasilitas</p>
-                                <p class="text-3xl font-bold text-gray-900 mt-1"><?php echo $total_facilities; ?></p>
-                            </div>
-                            <i class="fas fa-tools text-4xl text-secondary opacity-30"></i>
-                        </div>
-                    </div>
-
-                    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-green-500">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <p class="text-sm font-medium text-gray-500 uppercase">Total Foto Galeri</p>
-                                <p class="text-3xl font-bold text-gray-900 mt-1"><?php echo $total_gallery; ?></p>
-                            </div>
-                            <i class="fas fa-images text-4xl text-green-500 opacity-30"></i>
-                        </div>
-                    </div>
-
-                    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-red-500">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <p class="text-sm font-medium text-gray-500 uppercase">Total Anggota</p>
-                                <p class="text-3xl font-bold text-gray-900 mt-1"><?php echo $total_members; ?></p>
-                            </div>
-                            <i class="fas fa-users text-4xl text-red-500 opacity-30"></i>
-                        </div>
-                    </div>
-                </div>
 
 
                 <?php elseif ($active_page === 'berita'): ?>
-                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-                    <?php echo $message; ?>
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-xl font-semibold text-gray-800">Daftar Berita</h2>
-                        <button onclick="openAddNewsModal()" class="flex items-center px-4 py-2 bg-primary text-white text-sm font-medium rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                            <i class="fas fa-plus mr-2"></i> Tambah Berita Baru
-                        </button>
-                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                        <?php echo $message; ?>
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-xl font-semibold text-gray-800">Daftar Berita</h2>
+                            <button onclick="openAddNewsModal()" class="flex items-center px-4 py-2 bg-primary text-white text-sm font-medium rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                <i class="fas fa-plus mr-2"></i> Tambah Berita Baru
+                            </button>
+                        </div>
 
-                    <div class="shadow overflow-x-auto border-b border-gray-200 sm:rounded-lg">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gambar</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider max-w-sm">Informasi</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Author</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th scope="col" class="relative px-6 py-3">
-                                        <span class="sr-only">Aksi</span>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                <?php if (!empty($news_data)): ?>
-                                <?php foreach ($news_data as $news): ?>
-                                <tr data-id="<?php echo $news['id_berita']; ?>" 
-                                    data-judul="<?php echo htmlspecialchars($news['judul']); ?>" 
-                                    data-informasi="<?php echo htmlspecialchars($news['informasi']); ?>" 
-                                    data-tanggal="<?php echo htmlspecialchars($news['tanggal']); ?>" 
-                                    data-gambar="<?php echo htmlspecialchars($news['gambar']); ?>">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo $news['id_berita']; ?></td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex-shrink-0 h-10 w-10">
-                                            <img class="h-10 w-10 rounded object-cover" src="<?php echo htmlspecialchars($news['gambar']); ?>" alt="<?php echo htmlspecialchars($news['judul']); ?>">
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 text-sm font-medium text-gray-900 max-w-xs"><?php echo htmlspecialchars($news['judul']); ?></td>
-                                    <td class="px-6 py-4 text-sm text-gray-500 max-w-xs overflow-hidden text-ellipsis line-clamp-2" style="max-width: 300px;">
-                                        <?php echo htmlspecialchars(substr($news['informasi'], 0, 100)) . (strlen($news['informasi']) > 100 ? '...' : ''); ?>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars(date('d M Y', strtotime($news['tanggal']))); ?></td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($news['author_name'] ?? 'Admin'); ?></td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <?php if ($news['status'] === 'approved') echo 'bg-green-100 text-green-800'; else if ($news['status'] === 'rejected') echo 'bg-red-100 text-red-800'; else echo 'bg-yellow-100 text-yellow-800'; ?>">
-                                            <?php echo ucfirst($news['status']); ?>
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end space-x-2">
-                                        <button onclick="openEditNewsModal(this)" class="text-indigo-600 hover:text-indigo-900 p-2 rounded-md hover:bg-gray-100">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <a href="admin-dashboard.php?page=berita&action=delete&id=<?php echo $news['id_berita']; ?>" onclick="return confirm('Apakah Anda yakin ingin menghapus berita ini?')" class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
-                                        <?php if ($news['status'] === 'pending'): ?>
-                                        <form method="POST" action="admin-dashboard.php?page=berita" class="inline">
-                                            <input type="hidden" name="action" value="verify_news">
-                                            <input type="hidden" name="id_berita" value="<?php echo $news['id_berita']; ?>">
-                                            <button type="submit" name="status" value="approved" class="text-green-600 hover:text-green-900 p-2 rounded-md hover:bg-gray-100">
-                                                <i class="fas fa-check"></i>
-                                            </button>
-                                            <button type="submit" name="status" value="rejected" class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
-                                                <i class="fas fa-times"></i>
-                                            </button>
-                                        </form>
-                                        <?php endif; ?>
-                                    </td>
-                                </tr>
-                                <?php endforeach; ?>
-                                <?php else: ?>
-                                <tr>
-                                    <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">Belum ada data berita.</td>
-                                </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
+                        <div class="shadow overflow-x-auto border-b border-gray-200 sm:rounded-lg">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gambar</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider max-w-sm">Informasi</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Author</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th scope="col" class="relative px-6 py-3">
+                                            <span class="sr-only">Aksi</span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <?php if (!empty($news_data)): ?>
+                                        <?php foreach ($news_data as $news): ?>
+                                            <tr data-id="<?php echo $news['id_berita']; ?>"
+                                                data-judul="<?php echo htmlspecialchars($news['judul']); ?>"
+                                                data-informasi="<?php echo htmlspecialchars($news['informasi']); ?>"
+                                                data-tanggal="<?php echo htmlspecialchars($news['tanggal']); ?>"
+                                                data-gambar="<?php echo htmlspecialchars($news['gambar']); ?>">
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo $news['id_berita']; ?></td>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <div class="flex-shrink-0 h-10 w-10">
+                                                        <img class="h-10 w-10 rounded object-cover" src="<?php echo htmlspecialchars($news['gambar']); ?>" alt="<?php echo htmlspecialchars($news['judul']); ?>">
+                                                    </div>
+                                                </td>
+                                                <td class="px-6 py-4 text-sm font-medium text-gray-900 max-w-xs"><?php echo htmlspecialchars($news['judul']); ?></td>
+                                                <td class="px-6 py-4 text-sm text-gray-500 max-w-xs overflow-hidden text-ellipsis line-clamp-2" style="max-width: 300px;">
+                                                    <?php echo htmlspecialchars(substr($news['informasi'], 0, 100)) . (strlen($news['informasi']) > 100 ? '...' : ''); ?>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars(date('d M Y', strtotime($news['tanggal']))); ?></td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($news['author_name'] ?? 'Admin'); ?></td>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <?php if ($news['status'] === 'approved') echo 'bg-green-100 text-green-800';
+                                                                                                                                else if ($news['status'] === 'rejected') echo 'bg-red-100 text-red-800';
+                                                                                                                                else echo 'bg-yellow-100 text-yellow-800'; ?>">
+                                                        <?php echo ucfirst($news['status']); ?>
+                                                    </span>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end space-x-2">
+                                                    <button onclick="openEditNewsModal(this)" class="text-indigo-600 hover:text-indigo-900 p-2 rounded-md hover:bg-gray-100">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <a href="admin-dashboard.php?page=berita&action=delete&id=<?php echo $news['id_berita']; ?>" onclick="return confirm('Apakah Anda yakin ingin menghapus berita ini?')" class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                    <?php if ($news['status'] === 'pending'): ?>
+                                                        <form method="POST" action="admin-dashboard.php?page=berita" class="inline">
+                                                            <input type="hidden" name="action" value="verify_news">
+                                                            <input type="hidden" name="id_berita" value="<?php echo $news['id_berita']; ?>">
+                                                            <button type="submit" name="status" value="approved" class="text-green-600 hover:text-green-900 p-2 rounded-md hover:bg-gray-100">
+                                                                <i class="fas fa-check"></i>
+                                                            </button>
+                                                            <button type="submit" name="status" value="rejected" class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
+                                                                <i class="fas fa-times"></i>
+                                                            </button>
+                                                        </form>
+                                                    <?php endif; ?>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <tr>
+                                            <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">Belum ada data berita.</td>
+                                        </tr>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
 
                 <?php elseif ($active_page === 'fasilitas'): ?>
-                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-                    <?php echo $message; ?>
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-xl font-semibold text-gray-800">Daftar Fasilitas</h2>
-                        <button onclick="openAddFasilitasModal()" class="flex items-center px-4 py-2 bg-primary text-white text-sm font-medium rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                            <i class="fas fa-plus mr-2"></i> Tambah Fasilitas
-                        </button>
-                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                        <?php echo $message; ?>
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-xl font-semibold text-gray-800">Daftar Fasilitas</h2>
+                            <button onclick="openAddFasilitasModal()" class="flex items-center px-4 py-2 bg-primary text-white text-sm font-medium rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                <i class="fas fa-plus mr-2"></i> Tambah Fasilitas
+                            </button>
+                        </div>
 
-                    <div class="shadow overflow-x-auto border-b border-gray-200 sm:rounded-lg">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Foto</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Fasilitas</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deskripsi</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dibuat Oleh</th>
-                                    <th scope="col" class="relative px-6 py-3">
-                                        <span class="sr-only">Aksi</span>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                <?php if (!empty($fasilitas_data)): ?>
-                                <?php foreach ($fasilitas_data as $fasilitas): ?>
-                                <tr data-id="<?php echo $fasilitas['id_fasilitas']; ?>" data-nama="<?php echo htmlspecialchars($fasilitas['nama_fasilitas']); ?>" data-deskripsi="<?php echo htmlspecialchars($fasilitas['deskripsi']); ?>" data-foto="<?php echo htmlspecialchars($fasilitas['foto']); ?>">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo $fasilitas['id_fasilitas']; ?></td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <img src="<?php echo htmlspecialchars($fasilitas['foto']); ?>" alt="<?php echo htmlspecialchars($fasilitas['nama_fasilitas']); ?>" class="h-10 w-10 rounded object-cover">
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo htmlspecialchars($fasilitas['nama_fasilitas']); ?></td>
-                                    <td class="px-6 py-4 text-sm text-gray-500 max-w-xs truncate"><?php echo htmlspecialchars(substr($fasilitas['deskripsi'], 0, 50)) . (strlen($fasilitas['deskripsi']) > 50 ? '...' : ''); ?></td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($fasilitas['creator_name'] ?? 'Admin'); ?></td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end space-x-2">
-                                        <button onclick="openEditFasilitasModal(this)" class="text-indigo-600 hover:text-indigo-900 p-2 rounded-md hover:bg-gray-100">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <a href="admin-dashboard.php?page=fasilitas&action=delete&id=<?php echo $fasilitas['id_fasilitas']; ?>" onclick="return confirm('Apakah Anda yakin ingin menghapus fasilitas ini?')" class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <?php endforeach; ?>
-                                <?php else: ?>
-                                <tr>
-                                    <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">Belum ada data fasilitas.</td>
-                                </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
+                        <div class="shadow overflow-x-auto border-b border-gray-200 sm:rounded-lg">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Foto</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Fasilitas</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deskripsi</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dibuat Oleh</th>
+                                        <th scope="col" class="relative px-6 py-3">
+                                            <span class="sr-only">Aksi</span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <?php if (!empty($fasilitas_data)): ?>
+                                        <?php foreach ($fasilitas_data as $fasilitas): ?>
+                                            <tr data-id="<?php echo $fasilitas['id_fasilitas']; ?>" data-nama="<?php echo htmlspecialchars($fasilitas['nama_fasilitas']); ?>" data-deskripsi="<?php echo htmlspecialchars($fasilitas['deskripsi']); ?>" data-foto="<?php echo htmlspecialchars($fasilitas['foto']); ?>">
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo $fasilitas['id_fasilitas']; ?></td>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <img src="<?php echo htmlspecialchars($fasilitas['foto']); ?>" alt="<?php echo htmlspecialchars($fasilitas['nama_fasilitas']); ?>" class="h-10 w-10 rounded object-cover">
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo htmlspecialchars($fasilitas['nama_fasilitas']); ?></td>
+                                                <td class="px-6 py-4 text-sm text-gray-500 max-w-xs truncate"><?php echo htmlspecialchars(substr($fasilitas['deskripsi'], 0, 50)) . (strlen($fasilitas['deskripsi']) > 50 ? '...' : ''); ?></td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($fasilitas['creator_name'] ?? 'Admin'); ?></td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end space-x-2">
+                                                    <button onclick="openEditFasilitasModal(this)" class="text-indigo-600 hover:text-indigo-900 p-2 rounded-md hover:bg-gray-100">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <a href="admin-dashboard.php?page=fasilitas&action=delete&id=<?php echo $fasilitas['id_fasilitas']; ?>" onclick="return confirm('Apakah Anda yakin ingin menghapus fasilitas ini?')" class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <tr>
+                                            <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">Belum ada data fasilitas.</td>
+                                        </tr>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
 
                 <?php elseif ($active_page === 'galeri'): ?>
-                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-                    <?php echo $message; ?>
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-xl font-semibold text-gray-800">Daftar Foto Galeri</h2>
-                        <button onclick="openAddGaleriModal()" class="flex items-center px-4 py-2 bg-primary text-white text-sm font-medium rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                            <i class="fas fa-plus mr-2"></i> Tambah Foto Galeri
-                        </button>
-                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                        <?php echo $message; ?>
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-xl font-semibold text-gray-800">Daftar Foto Galeri</h2>
+                            <button onclick="openAddGaleriModal()" class="flex items-center px-4 py-2 bg-primary text-white text-sm font-medium rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                <i class="fas fa-plus mr-2"></i> Tambah Foto Galeri
+                            </button>
+                        </div>
 
-                    <div class="shadow overflow-x-auto border-b border-gray-200 sm:rounded-lg">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Foto</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Foto</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deskripsi</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dibuat Oleh</th>
-                                    <th scope="col" class="relative px-6 py-3">
-                                        <span class="sr-only">Aksi</span>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                <?php if (!empty($galeri_data)): ?>
-                                <?php foreach ($galeri_data as $galeri): ?>
-                                <tr data-id="<?php echo $galeri['id_foto']; ?>" 
-                                    data-nama="<?php echo htmlspecialchars($galeri['nama_foto']); ?>" 
-                                    data-deskripsi="<?php echo htmlspecialchars($galeri['deskripsi']); ?>" 
-                                    data-file_foto="<?php echo htmlspecialchars($galeri['file_foto']); ?>">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo $galeri['id_foto']; ?></td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <img src="<?php echo htmlspecialchars($galeri['file_foto']); ?>" alt="<?php echo htmlspecialchars($galeri['nama_foto']); ?>" class="h-10 w-10 rounded object-cover">
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo htmlspecialchars($galeri['nama_foto']); ?></td>
-                                    <td class="px-6 py-4 text-sm text-gray-500 max-w-xs truncate"><?php echo htmlspecialchars(substr($galeri['deskripsi'], 0, 50)) . (strlen($galeri['deskripsi']) > 50 ? '...' : ''); ?></td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($galeri['anggota_name'] ?? 'Admin'); ?></td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end space-x-2">
-                                        <button onclick="openEditGaleriModal(this)" class="text-indigo-600 hover:text-indigo-900 p-2 rounded-md hover:bg-gray-100">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <a href="admin-dashboard.php?page=galeri&action=delete&id=<?php echo $galeri['id_foto']; ?>" onclick="return confirm('Apakah Anda yakin ingin menghapus foto galeri ini? File juga akan terhapus dari server.')" class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <?php endforeach; ?>
-                                <?php else: ?>
-                                <tr>
-                                    <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">Belum ada data galeri.</td>
-                                </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
+                        <div class="shadow overflow-x-auto border-b border-gray-200 sm:rounded-lg">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Foto</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Foto</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deskripsi</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dibuat Oleh</th>
+                                        <th scope="col" class="relative px-6 py-3">
+                                            <span class="sr-only">Aksi</span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <?php if (!empty($galeri_data)): ?>
+                                        <?php foreach ($galeri_data as $galeri): ?>
+                                            <tr data-id="<?php echo $galeri['id_foto']; ?>"
+                                                data-nama="<?php echo htmlspecialchars($galeri['nama_foto']); ?>"
+                                                data-deskripsi="<?php echo htmlspecialchars($galeri['deskripsi']); ?>"
+                                                data-file_foto="<?php echo htmlspecialchars($galeri['file_foto']); ?>">
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo $galeri['id_foto']; ?></td>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <img src="<?php echo htmlspecialchars($galeri['file_foto']); ?>" alt="<?php echo htmlspecialchars($galeri['nama_foto']); ?>" class="h-10 w-10 rounded object-cover">
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo htmlspecialchars($galeri['nama_foto']); ?></td>
+                                                <td class="px-6 py-4 text-sm text-gray-500 max-w-xs truncate"><?php echo htmlspecialchars(substr($galeri['deskripsi'], 0, 50)) . (strlen($galeri['deskripsi']) > 50 ? '...' : ''); ?></td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($galeri['anggota_name'] ?? 'Admin'); ?></td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end space-x-2">
+                                                    <button onclick="openEditGaleriModal(this)" class="text-indigo-600 hover:text-indigo-900 p-2 rounded-md hover:bg-gray-100">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <a href="admin-dashboard.php?page=galeri&action=delete&id=<?php echo $galeri['id_foto']; ?>" onclick="return confirm('Apakah Anda yakin ingin menghapus foto galeri ini? File juga akan terhapus dari server.')" class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <tr>
+                                            <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">Belum ada data galeri.</td>
+                                        </tr>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
 
                 <?php elseif ($active_page === 'agenda'): ?>
-                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Daftar Agenda</h2>
-                    <p class="text-gray-600">Fitur Kelola Agenda akan ditambahkan kemudian.</p>
-                </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                        <h2 class="text-xl font-semibold text-gray-800 mb-4">Daftar Agenda</h2>
+                        <p class="text-gray-600">Fitur Kelola Agenda akan ditambahkan kemudian.</p>
+                    </div>
 
                 <?php elseif ($active_page === 'publikasi'): ?>
-                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Daftar Publikasi</h2>
-                    <p class="text-gray-600">Fitur Kelola Publikasi akan ditambahkan kemudian.</p>
-                </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                        <h2 class="text-xl font-semibold text-gray-800 mb-4">Daftar Publikasi</h2>
+                        <p class="text-gray-600">Fitur Kelola Publikasi akan ditambahkan kemudian.</p>
+                    </div>
 
                 <?php elseif ($active_page === 'pengumuman'): ?>
-                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Daftar Pengumuman</h2>
-                    <p class="text-gray-600">Fitur Kelola Pengumuman akan ditambahkan kemudian.</p>
-                </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                        <h2 class="text-xl font-semibold text-gray-800 mb-4">Daftar Pengumuman</h2>
+                        <p class="text-gray-600">Fitur Kelola Pengumuman akan ditambahkan kemudian.</p>
+                    </div>
 
                 <?php elseif ($active_page === 'settings'): ?>
-                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Pengaturan Sistem</h2>
-                    <form>
-                        <div class="mb-4">
-                            <label for="nama_lab" class="block text-sm font-medium text-gray-700">Nama Laboratorium/Institusi</label>
-                            <input type="text" id="nama_lab" name="nama_lab" value="Laboratorium XYZ" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
-                        </div>
-                        <div class="mb-4">
-                            <label for="email_admin" class="block text-sm font-medium text-gray-700">Email Kontak Admin</label>
-                            <input type="email" id="email_admin" name="email_admin" value="admin@example.com" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
-                        </div>
-                        <button type="submit" class="px-4 py-2 bg-primary text-white text-base font-medium rounded-md shadow-sm hover:bg-blue-600">Simpan Pengaturan</button>
-                    </form>
-                </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                        <h2 class="text-xl font-semibold text-gray-800 mb-4">Pengaturan Sistem</h2>
+                        <form>
+                            <div class="mb-4">
+                                <label for="nama_lab" class="block text-sm font-medium text-gray-700">Nama Laboratorium/Institusi</label>
+                                <input type="text" id="nama_lab" name="nama_lab" value="Laboratorium XYZ" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                            </div>
+                            <div class="mb-4">
+                                <label for="email_admin" class="block text-sm font-medium text-gray-700">Email Kontak Admin</label>
+                                <input type="email" id="email_admin" name="email_admin" value="admin@example.com" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                            </div>
+                            <button type="submit" class="px-4 py-2 bg-primary text-white text-base font-medium rounded-md shadow-sm hover:bg-blue-600">Simpan Pengaturan</button>
+                        </form>
+                    </div>
                 <?php endif; ?>
 
             </main>
@@ -1132,13 +1135,119 @@ switch ($active_page) {
 
 
     <div id="add-fasilitas-modal" class="modal fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-[100]">
+        <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-1/2 lg:w-1/3 shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Tambah Fasilitas Baru</h3>
+                <form id="add-fasilitas-form" action="admin-dashboard.php?page=fasilitas" method="POST" enctype="multipart/form-data" class="mt-4 text-left">
+                    <input type="hidden" name="action" value="add_fasilitas">
+                    <div class="mb-4">
+                        <label for="nama_fasilitas" class="block text-sm font-medium text-gray-700">Nama Fasilitas</label>
+                        <input type="text" id="nama_fasilitas" name="nama_fasilitas" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                    </div>
+                    <div class="mb-4">
+                        <label for="deskripsi" class="block text-sm font-medium text-gray-700">Deskripsi</label>
+                        <textarea id="deskripsi" name="deskripsi" rows="4" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="foto" class="block text-sm font-medium text-gray-700">Upload Foto Fasilitas</label>
+                        <input type="file" id="foto" name="foto" accept="image/jpeg,image/png,image/webp" required class="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none">
+                    </div>
+                    <div class="items-center px-4 py-3">
+                        <button type="submit" class="px-4 py-2 bg-primary text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"> Tambah Fasilitas </button>
+                        <button type="button" onclick="closeAddFasilitasModal()" class="mt-2 px-4 py-2 bg-gray-200 text-gray-800 text-base font-medium rounded-md w-full shadow-sm hover:bg-gray-300"> Batal </button>
+                    </div>
+                </form>
+            </div>
         </div>
+    </div>
     <div id="edit-fasilitas-modal" class="modal fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-[100]">
+        <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-1/2 lg:w-1/3 shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Edit Fasilitas</h3>
+                <form id="edit-fasilitas-form" action="admin-dashboard.php?page=fasilitas" method="POST" enctype="multipart/form-data" class="mt-4 text-left">
+                    <input type="hidden" name="action" value="edit_fasilitas">
+                    <input type="hidden" name="id_fasilitas" id="edit_id_fasilitas">
+                    <input type="hidden" name="current_foto" id="edit_current_foto">
+
+                    <div class="mb-4">
+                        <label for="edit_nama_fasilitas" class="block text-sm font-medium text-gray-700">Nama Fasilitas</label>
+                        <input type="text" id="edit_nama_fasilitas" name="nama_fasilitas" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                    </div>
+                    <div class="mb-4">
+                        <label for="edit_deskripsi_fasilitas" class="block text-sm font-medium text-gray-700">Deskripsi</label>
+                        <textarea id="edit_deskripsi_fasilitas" name="deskripsi" rows="4" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="edit_foto_fasilitas" class="block text-sm font-medium text-gray-700">Ganti Foto Fasilitas (Kosongkan jika tidak diubah)</label>
+                        <p class="text-xs text-gray-500 mb-1">Foto saat ini: <span id="current-foto-name-fasilitas" class="font-semibold"></span></p>
+                        <input type="file" id="edit_foto_fasilitas" name="foto" accept="image/jpeg,image/png,image/webp" class="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none">
+                    </div>
+
+                    <div class="items-center px-4 py-3">
+                        <button type="submit" class="px-4 py-2 bg-indigo-600 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"> Simpan Perubahan </button>
+                        <button type="button" onclick="closeEditFasilitasModal()" class="mt-2 px-4 py-2 bg-gray-200 text-gray-800 text-base font-medium rounded-md w-full shadow-sm hover:bg-gray-300"> Batal </button>
+                    </div>
+                </form>
+            </div>
         </div>
+    </div>
     <div id="add-galeri-modal" class="modal fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-[100]">
+        <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-1/2 lg:w-1/3 shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Tambah Foto Galeri Baru</h3>
+                <form id="add-galeri-form" action="admin-dashboard.php?page=galeri" method="POST" enctype="multipart/form-data" class="mt-4 text-left">
+                    <input type="hidden" name="action" value="add_galeri">
+                    <div class="mb-4">
+                        <label for="nama_foto" class="block text-sm font-medium text-gray-700">Nama Foto / Judul</label>
+                        <input type="text" id="nama_foto" name="nama_foto" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                    </div>
+                    <div class="mb-4">
+                        <label for="deskripsi_galeri" class="block text-sm font-medium text-gray-700">Deskripsi (Opsional)</label>
+                        <textarea id="deskripsi_galeri" name="deskripsi" rows="3" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="file_foto" class="block text-sm font-medium text-gray-700">Upload File Foto</label>
+                        <input type="file" id="file_foto" name="file_foto" accept="image/jpeg,image/png,image/webp" required class="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none">
+                    </div>
+                    <div class="items-center px-4 py-3">
+                        <button type="submit" class="px-4 py-2 bg-primary text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"> Tambah Foto </button>
+                        <button type="button" onclick="closeAddGaleriModal()" class="mt-2 px-4 py-2 bg-gray-200 text-gray-800 text-base font-medium rounded-md w-full shadow-sm hover:bg-gray-300"> Batal </button>
+                    </div>
+                </form>
+            </div>
         </div>
+    </div>
     <div id="edit-galeri-modal" class="modal fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-[100]">
+        <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-1/2 lg:w-1/3 shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Edit Foto Galeri</h3>
+                <form id="edit-galeri-form" action="admin-dashboard.php?page=galeri" method="POST" enctype="multipart/form-data" class="mt-4 text-left">
+                    <input type="hidden" name="action" value="edit_galeri">
+                    <input type="hidden" name="id_foto" id="edit_id_foto">
+                    <input type="hidden" name="current_file_foto" id="edit_current_file_foto">
+
+                    <div class="mb-4">
+                        <label for="edit_nama_foto" class="block text-sm font-medium text-gray-700">Nama Foto / Judul</label>
+                        <input type="text" id="edit_nama_foto" name="nama_foto" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                    </div>
+                    <div class="mb-4">
+                        <label for="edit_deskripsi_galeri" class="block text-sm font-medium text-gray-700">Deskripsi (Opsional)</label>
+                        <textarea id="edit_deskripsi_galeri" name="deskripsi" rows="3" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="edit_file_foto" class="block text-sm font-medium text-gray-700">Ganti File Foto (Kosongkan jika tidak diubah)</label>
+                        <p class="text-xs text-gray-500 mb-1">File saat ini: <span id="current-file-foto-name" class="font-semibold"></span></p>
+                        <input type="file" id="edit_file_foto" name="file_foto" accept="image/jpeg,image/png,image/webp" class="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none">
+                    </div>
+
+                    <div class="items-center px-4 py-3">
+                        <button type="submit" class="px-4 py-2 bg-indigo-600 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"> Simpan Perubahan </button>
+                        <button type="button" onclick="closeEditGaleriModal()" class="mt-2 px-4 py-2 bg-gray-200 text-gray-800 text-base font-medium rounded-md w-full shadow-sm hover:bg-gray-300"> Batal </button>
+                    </div>
+                </form>
+            </div>
         </div>
+    </div>
 
     <script>
         // --- START: Fungsi Modal Berita (Ditambahkan) ---
@@ -1146,7 +1255,7 @@ switch ($active_page) {
             document.getElementById('add-news-modal').classList.remove('hidden');
             document.getElementById('add-news-modal').querySelector('form').reset();
             // Set tanggal default ke hari ini
-            document.getElementById('tanggal').valueAsDate = new Date(); 
+            document.getElementById('tanggal').valueAsDate = new Date();
         }
 
         function closeAddNewsModal() {
@@ -1195,23 +1304,37 @@ switch ($active_page) {
             document.getElementById('add-fasilitas-modal').querySelector('form').reset();
         }
 
+        // ... (Kode JS Modal Berita yang sudah ada) ...
+
+        // --- START: Fungsi Modal Fasilitas ---
+        function openAddFasilitasModal() {
+            document.getElementById('add-fasilitas-modal').classList.remove('hidden');
+            document.getElementById('add-fasilitas-modal').querySelector('form').reset();
+        }
+
+        function closeAddFasilitasModal() {
+            document.getElementById('add-fasilitas-modal').classList.add('hidden');
+            document.getElementById('add-fasilitas-modal').querySelector('form').reset();
+        }
+
         function openEditFasilitasModal(button) {
             const row = button.closest('tr');
             const id = row.getAttribute('data-id');
             const nama = row.getAttribute('data-nama');
             const deskripsi = row.getAttribute('data-deskripsi');
             const foto = row.getAttribute('data-foto');
-            const filename = foto.substring(foto.lastIndexOf('/') + 1); // Ambil nama file saja
+            // Ambil nama file saja dari path lengkap
+            const filename = foto.substring(foto.lastIndexOf('/') + 1);
 
             // Isi form modal
             document.getElementById('edit_id_fasilitas').value = id;
             document.getElementById('edit_nama_fasilitas').value = nama;
-            document.getElementById('edit_deskripsi').value = deskripsi;
+            document.getElementById('edit_deskripsi_fasilitas').value = deskripsi;
             document.getElementById('edit_current_foto').value = foto; // Simpan path foto saat ini
-            document.getElementById('current-foto-name').textContent = filename;
+            document.getElementById('current-foto-name-fasilitas').textContent = filename;
 
             // Hapus nilai input file saat edit modal dibuka
-            document.getElementById('edit_foto').value = '';
+            document.getElementById('edit_foto_fasilitas').value = '';
 
             // Tampilkan modal
             document.getElementById('edit-fasilitas-modal').classList.remove('hidden');
@@ -1240,7 +1363,8 @@ switch ($active_page) {
             const nama = row.getAttribute('data-nama');
             const deskripsi = row.getAttribute('data-deskripsi');
             const file_foto = row.getAttribute('data-file_foto');
-            const filename = file_foto.substring(file_foto.lastIndexOf('/') + 1); // Ambil nama file saja
+            // Ambil nama file saja dari path lengkap
+            const filename = file_foto.substring(file_foto.lastIndexOf('/') + 1);
 
             // Isi form modal
             document.getElementById('edit_id_foto').value = id;
