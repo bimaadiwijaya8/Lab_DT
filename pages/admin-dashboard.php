@@ -1429,10 +1429,8 @@ if ($active_page === 'pengumuman' && $pdo) {
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gambar</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ringkasan</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Author</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
@@ -1448,14 +1446,10 @@ if ($active_page === 'pengumuman' && $pdo) {
                                     data-tanggal="<?php echo htmlspecialchars($news['tanggal']); ?>" 
                                     data-author="<?php echo htmlspecialchars($news['author']); ?>"
                                     data-gambar="<?php echo htmlspecialchars($news['gambar']); ?>">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo $news['id_berita']; ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         <img src="<?php echo htmlspecialchars($news['gambar']); ?>" alt="Gambar Berita" class="h-10 w-10 rounded object-cover">
                                     </td>
-                                    <td class="px-6 py-4 text-sm font-medium text-gray-900 line-clamp-2" style="max-width: 250px;"><?php echo htmlspecialchars($news['judul']); ?></td>
-                                    <td class="px-6 py-4 text-sm text-gray-500 text-ellipsis line-clamp-2" style="max-width: 300px;">
-                                        <?php echo htmlspecialchars(substr($news['informasi'], 0, 100)) . (strlen($news['informasi']) > 100 ? '...' : ''); ?>
-                                    </td>
+                                    <td class="px-6 py-4 text-sm font-medium text-gray-900 line-clamp-2" style="max-width: 300px;"><?php echo htmlspecialchars($news['judul']); ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($news['tanggal']); ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($news['author_name'] ?? 'Admin'); ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap">
@@ -1479,14 +1473,17 @@ if ($active_page === 'pengumuman' && $pdo) {
                                            class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
                                             <i class="fas fa-trash"></i>
                                         </a>
-                                        <button onclick="openVerifyModal(<?php echo $news['id_berita']; ?>, '<?php echo $news['status']; ?>')" class="text-gray-500 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100">
+                                        <button onclick="quickReject(<?php echo $news['id_berita']; ?>)" class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100" title="Tolak Berita">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                        <button onclick="openVerifyModal(<?php echo $news['id_berita']; ?>, '<?php echo $news['status']; ?>')" class="text-gray-500 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100" title="Verifikasi Berita">
                                             <i class="fas fa-check-double"></i>
                                         </button>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
-                            <tr><td colspan="8" class="px-6 py-4 text-center text-gray-500">Belum ada data berita.</td></tr>
+                            <tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Belum ada data berita.</td></tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
@@ -2534,6 +2531,39 @@ if ($active_page === 'pengumuman' && $pdo) {
 
         function closeVerifyModal() {
             document.getElementById('verifyModal').classList.add('hidden');
+        }
+        
+        function quickReject(id) {
+            if (confirm('Apakah Anda yakin ingin menolak berita ini?')) {
+                // Create form for quick reject
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = 'admin-dashboard.php?page=berita';
+                
+                // Add hidden inputs
+                const actionInput = document.createElement('input');
+                actionInput.type = 'hidden';
+                actionInput.name = 'action';
+                actionInput.value = 'verify_news';
+                
+                const idInput = document.createElement('input');
+                idInput.type = 'hidden';
+                idInput.name = 'id_berita';
+                idInput.value = id;
+                
+                const statusInput = document.createElement('input');
+                statusInput.type = 'hidden';
+                statusInput.name = 'status';
+                statusInput.value = 'rejected';
+                
+                form.appendChild(actionInput);
+                form.appendChild(idInput);
+                form.appendChild(statusInput);
+                
+                // Submit form
+                document.body.appendChild(form);
+                form.submit();
+            }
         }
         
         // --- Fasilitas Modals ---
