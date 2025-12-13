@@ -57,6 +57,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'berita') 
         $judul = trim($_POST['judul']);
         $informasi = trim($_POST['informasi']);
         $tanggal = trim($_POST['tanggal']);
+        $author = trim($_POST['author']); // Get selected author from dropdown
 
         $upload_ok = true;
         $gambar_path_for_db = '';
@@ -109,7 +110,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'berita') 
                     ':gambar' => $gambar_path_for_db, // Path yang sudah tersimpan di server
                     ':informasi' => $informasi,
                     ':tanggal' => $tanggal,
-                    ':author' => $admin_user_id
+                    ':author' => $author
                 ]);
                 $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Berita baru berhasil ditambahkan!</div>";
             } catch (Exception $e) {
@@ -220,12 +221,26 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'berita') 
 if ($pdo && $active_page === 'berita' && isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
     $id_berita = (int)$_GET['id'];
     try {
-        // Ambil path gambar sebelum dihapus (Opsional: tambahkan logika penghapusan file di sini jika ada)
-        // ...
+        // 1. Ambil path gambar sebelum dihapus untuk dihapus dari server
+        $gambar_to_delete = '';
+        $sql_select = "SELECT gambar FROM berita WHERE id_berita = :id";
+        $stmt_select = $pdo->prepare($sql_select);
+        $stmt_select->execute([':id' => $id_berita]);
+        $result = $stmt_select->fetch(PDO::FETCH_ASSOC);
+        if ($result) {
+            $gambar_to_delete = $result['gambar'];
+        }
 
+        // 2. Hapus dari database
         $sql = "DELETE FROM berita WHERE id_berita = :id";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([':id' => $id_berita]);
+
+        // 3. Hapus gambar dari server (jika ada)
+        if ($gambar_to_delete && file_exists($gambar_to_delete)) {
+            @unlink($gambar_to_delete);
+        }
+
         $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Berita ID {$id_berita} berhasil dihapus!</div>";
     } catch (Exception $e) {
         $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Gagal menghapus berita: " . htmlspecialchars($e->getMessage()) . "</div>";
@@ -862,6 +877,20 @@ if ($active_page === 'berita' && $pdo) {
 }
 // --- END: Data Berita ---
 
+// --- START: Data Anggota (for Author Dropdown) ---
+$anggota_data = [];
+if ($active_page === 'berita' && $pdo) {
+    try {
+        // READ: Mengambil semua data anggota untuk dropdown author
+        $sql = "SELECT id_anggota, nama_gelar, jabatan FROM anggota ORDER BY nama_gelar ASC";
+        $stmt = $pdo->query($sql);
+        $anggota_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Gagal mengambil data anggota: " . htmlspecialchars($e->getMessage()) . "</div>";
+    }
+}
+// --- END: Data Anggota ---
+
 // --- START: Data Fasilitas ---
 $fasilitas_data = [];
 if ($active_page === 'fasilitas' && $pdo) {
@@ -1096,7 +1125,6 @@ if ($active_page === 'agenda' && $pdo) {
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gambar</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Informasi (Snippet)</th>
@@ -1110,13 +1138,12 @@ if ($active_page === 'agenda' && $pdo) {
                         <?php if (!empty($news_data)): ?>
                             <?php foreach ($news_data as $news): ?>
                             <tr data-id="<?php echo $news['id_berita']; ?>" data-judul="<?php echo htmlspecialchars($news['judul']); ?>" data-informasi="<?php echo htmlspecialchars($news['informasi']); ?>" data-tanggal="<?php echo htmlspecialchars($news['tanggal']); ?>" data-gambar="<?php echo htmlspecialchars($news['gambar']); ?>">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo $news['id_berita']; ?></td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex-shrink-0 h-10 w-10">
                                         <img class="h-10 w-10 rounded object-cover" src="<?php echo htmlspecialchars($news['gambar']); ?>" alt="<?php echo htmlspecialchars($news['judul']); ?>">
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 text-sm font-medium text-gray-900 max-w-xs"><?php echo htmlspecialchars($news['judul']); ?></td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo htmlspecialchars($news['judul']); ?></td>
                                 <td class="px-6 py-4 text-sm text-gray-500 max-w-xs overflow-hidden text-ellipsis line-clamp-2" style="max-width: 300px;">
                                     <?php echo htmlspecialchars(substr($news['informasi'], 0, 100)) . (strlen($news['informasi']) > 100 ? '...' : ''); ?>
                                 </td>
@@ -1135,6 +1162,14 @@ if ($active_page === 'agenda' && $pdo) {
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end space-x-2">
+                                    <?php if ($news['status'] === 'pending'): ?>
+                                        <button onclick="approveNews(<?php echo $news['id_berita']; ?>)" class="text-green-600 hover:text-green-900 p-2 rounded-md hover:bg-gray-100" title="Setujui">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                        <button onclick="rejectNews(<?php echo $news['id_berita']; ?>)" class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100" title="Tolak">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    <?php endif; ?>
                                     <button onclick="openEditNewsModal(this)" class="text-indigo-600 hover:text-indigo-900 p-2 rounded-md hover:bg-gray-100">
                                         <i class="fas fa-edit"></i>
                                     </button>
@@ -1145,7 +1180,7 @@ if ($active_page === 'agenda' && $pdo) {
                             </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
-                            <tr><td colspan="8" class="px-6 py-4 text-center text-gray-500">Belum ada data berita.</td></tr>
+                            <tr><td colspan="7" class="px-6 py-4 text-center text-gray-500">Belum ada data berita.</td></tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
@@ -1461,12 +1496,23 @@ if ($active_page === 'agenda' && $pdo) {
                         <input type="date" id="add_tanggal" name="tanggal" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
                     </div>
                     <div class="mb-4">
+                        <label for="add_author" class="block text-sm font-medium text-gray-700">Author</label>
+                        <select id="add_author" name="author" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                            <option value="">Pilih Author</option>
+                            <?php foreach ($anggota_data as $anggota): ?>
+                                <option value="<?php echo htmlspecialchars($anggota['id_anggota']); ?>">
+                                    <?php echo htmlspecialchars($anggota['nama_gelar'] . (!empty($anggota['jabatan']) ? ' - ' . $anggota['jabatan'] : '')); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="mb-4">
                         <label for="add_informasi" class="block text-sm font-medium text-gray-700">Informasi/Isi Berita</label>
                         <textarea id="add_informasi" name="informasi" rows="4" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"></textarea>
                     </div>
                     <div class="mb-4">
                         <label for="add_gambar" class="block text-sm font-medium text-gray-700">Gambar Utama (Max 2MB)</label>
-                        <input type="file" id="add_gambar" name="gambar" accept="image/*" required class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-dark">
+                        <input type="file" id="add_gambar" name="gambar" accept="image/*" required class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-black hover:file:bg-primary-dark">
                     </div>
                     <div class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
                         <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary text-base font-medium text-white hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:col-start-2 sm:text-sm">
@@ -1974,6 +2020,69 @@ if ($active_page === 'agenda' && $pdo) {
             document.getElementById('edit-publikasi-modal').querySelector('form').reset();
         }
         // --- END: Fungsi Modal Publikasi ---
+
+
+        // --- START: Fungsi Approve/Reject Berita ---
+        function approveNews(id_berita) {
+            if (confirm('Apakah Anda yakin ingin menyetujui berita ini?')) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = 'admin-dashboard.php?page=berita';
+                
+                const actionInput = document.createElement('input');
+                actionInput.type = 'hidden';
+                actionInput.name = 'action';
+                actionInput.value = 'verify_news';
+                
+                const idInput = document.createElement('input');
+                idInput.type = 'hidden';
+                idInput.name = 'id_berita';
+                idInput.value = id_berita;
+                
+                const statusInput = document.createElement('input');
+                statusInput.type = 'hidden';
+                statusInput.name = 'status';
+                statusInput.value = 'approved';
+                
+                form.appendChild(actionInput);
+                form.appendChild(idInput);
+                form.appendChild(statusInput);
+                
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+
+        function rejectNews(id_berita) {
+            if (confirm('Apakah Anda yakin ingin menolak berita ini?')) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = 'admin-dashboard.php?page=berita';
+                
+                const actionInput = document.createElement('input');
+                actionInput.type = 'hidden';
+                actionInput.name = 'action';
+                actionInput.value = 'verify_news';
+                
+                const idInput = document.createElement('input');
+                idInput.type = 'hidden';
+                idInput.name = 'id_berita';
+                idInput.value = id_berita;
+                
+                const statusInput = document.createElement('input');
+                statusInput.type = 'hidden';
+                statusInput.name = 'status';
+                statusInput.value = 'rejected';
+                
+                form.appendChild(actionInput);
+                form.appendChild(idInput);
+                form.appendChild(statusInput);
+                
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+        // --- END: Fungsi Approve/Reject Berita ---
     </script>
 </body>
 
