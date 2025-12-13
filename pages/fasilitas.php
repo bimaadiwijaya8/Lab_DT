@@ -10,6 +10,8 @@ $pdo = null;
 $db_error = false;
 $db_connect_path = '../assets/php/db_connect.php'; 
 $fasilitas_data = [];
+$paginated_fasilitas = [];
+$items_per_page = 6; // Dibatasi 6 item per halaman
 
 // Cek apakah file koneksi ada
 if (file_exists($db_connect_path)) {
@@ -17,14 +19,35 @@ if (file_exists($db_connect_path)) {
     
     try {
         // Panggil metode static untuk mendapatkan koneksi PDO
-        // ASUMSI: Class Database dan metode getConnection() sudah ada di db_connect.php
         $pdo = Database::getConnection(); 
         
         // Query untuk mengambil semua data fasilitas
-        // Menggunakan SELECT * karena ini halaman display
         $sql = "SELECT id_fasilitas, nama_fasilitas, deskripsi, foto FROM fasilitas ORDER BY id_fasilitas DESC";
         $stmt = $pdo->query($sql);
         $fasilitas_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // --- LOGIKA PAGINATION BARU ---
+        $total_items = count($fasilitas_data);
+        $total_pages = ceil($total_items / $items_per_page);
+        
+        // Ambil halaman saat ini dari parameter GET, default ke 1
+        $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        
+        // Validasi halaman
+        if ($current_page < 1) {
+            $current_page = 1;
+        } elseif ($current_page > $total_pages && $total_pages > 0) {
+            $current_page = $total_pages;
+        } elseif ($total_pages === 0) {
+            $current_page = 1;
+        }
+        
+        // Hitung index awal untuk array_slice
+        $start_index = ($current_page - 1) * $items_per_page;
+        
+        // Potong array untuk data yang akan ditampilkan di halaman ini
+        $paginated_fasilitas = array_slice($fasilitas_data, $start_index, $items_per_page);
+        // --- END LOGIKA PAGINATION ---
         
     } catch (PDOException $e) {
         $db_error = true;
@@ -150,7 +173,10 @@ if (file_exists($db_connect_path)) {
                                 <p class="text-gray-600">Gagal memuat data fasilitas. Harap cek konfigurasi file `db_connect.php`.</p>
                             </div>
                         </div>
-                    <?php elseif (empty($fasilitas_data)): ?>
+                    <?php 
+                        // Cek apakah ada data fasilitas di halaman ini
+                        elseif (empty($paginated_fasilitas)): 
+                    ?>
                         <div class="col-span-full">
                             <div class="empty-state text-center py-16 bg-white/60 backdrop-blur-xl border border-white/40 rounded-3xl shadow-lg">
                                 <div class="w-20 h-20 bg-gradient-to-br from-[#00A0D6]/10 to-[#6AC259]/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
@@ -167,7 +193,7 @@ if (file_exists($db_connect_path)) {
                             </div>
                         </div>
                     <?php else: ?>
-                        <?php foreach ($fasilitas_data as $fasilitas): ?>
+                        <?php foreach ($paginated_fasilitas as $fasilitas): ?>
                             <div class="card-fasilitas group bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg hover:scale-105 transition-all duration-300">
                                 <img src="<?php echo htmlspecialchars($fasilitas['foto']); ?>" 
                                      class="w-full h-48 object-cover" 
@@ -187,6 +213,43 @@ if (file_exists($db_connect_path)) {
 
                 </div>
                 
+                <?php if ($total_pages > 1): ?>
+                    <div class="flex justify-center items-center mt-12 space-x-2" id="pagination-controls">
+                        
+                        <?php if ($current_page > 1): ?>
+                            <a href="?page=<?php echo $current_page - 1; ?>" class="px-4 py-2 text-sm font-medium rounded-xl bg-white text-gray-700 border border-gray-200 hover:bg-gray-50">
+                                &larr; Sebelumnya
+                            </a>
+                        <?php else: ?>
+                            <button class="px-4 py-2 text-sm font-medium rounded-xl border border-gray-200 text-gray-400 cursor-not-allowed">
+                                &larr; Sebelumnya
+                            </button>
+                        <?php endif; ?>
+
+                        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                            <?php if ($i == $current_page): ?>
+                                <button class="px-4 py-2 text-sm font-bold rounded-xl bg-[#00A0D6] text-white shadow-md">
+                                    <?php echo $i; ?>
+                                </button>
+                            <?php else: ?>
+                                <a href="?page=<?php echo $i; ?>" class="px-4 py-2 text-sm font-medium rounded-xl bg-white text-gray-700 border border-gray-200 hover:bg-gray-50">
+                                    <?php echo $i; ?>
+                                </a>
+                            <?php endif; ?>
+                        <?php endfor; ?>
+
+                        <?php if ($current_page < $total_pages): ?>
+                            <a href="?page=<?php echo $current_page + 1; ?>" class="px-4 py-2 text-sm font-medium rounded-xl bg-white text-gray-700 border border-gray-200 hover:bg-gray-50">
+                                Selanjutnya &rarr;
+                            </a>
+                        <?php else: ?>
+                            <button class="px-4 py-2 text-sm font-medium rounded-xl border border-gray-200 text-gray-400 cursor-not-allowed">
+                                Selanjutnya &rarr;
+                            </button>
+                        <?php endif; ?>
+
+                    </div>
+                <?php endif; ?>
                 </div>
         </section>
     </main>
