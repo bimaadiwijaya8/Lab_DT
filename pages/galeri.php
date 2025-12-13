@@ -1,5 +1,45 @@
 <?php
 $active_page = 'galeri';
+
+// --- Bagian Logika PHP untuk Koneksi & Ambil Data ---
+$pdo = null;
+$db_connect_path = '../assets/php/db_connect.php';
+$galeri_data = [];
+$message = ''; // Untuk notifikasi error
+
+if (file_exists($db_connect_path)) {
+    require_once $db_connect_path;
+
+    try {
+        // Panggil metode static dari class Database
+        $pdo = Database::getConnection();
+    } catch (PDOException $e) {
+        $message = "Kesalahan Koneksi Database.";
+        $pdo = null;
+    } catch (Exception $e) {
+        $message = "Kesalahan Sistem.";
+        $pdo = null;
+    }
+} else {
+    $message = "Kesalahan Koneksi: File '{$db_connect_path}' tidak ditemukan. Galeri tidak dapat dimuat.";
+}
+
+// 2. Data Fetching (READ) - Diambil dari DB jika koneksi berhasil
+if ($pdo) {
+    try {
+        // READ: Mengambil semua data galeri dari database
+        // Join ke tabel anggota/user untuk mendapatkan nama uploader (id_anggota)
+        $sql = "SELECT g.id_foto, g.nama_foto, g.deskripsi, g.file_foto, g.id_anggota, a.nama_gelar AS anggota_name 
+                FROM galeri g 
+                LEFT JOIN anggota a ON g.id_anggota = a.id_anggota 
+                ORDER BY g.id_foto DESC";
+        $stmt = $pdo->query($sql);
+        $galeri_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        $message = "Gagal mengambil data galeri dari database.";
+    }
+}
+// --- Akhir Bagian Logika PHP ---
 ?>
 
 <!DOCTYPE html>
@@ -65,20 +105,15 @@ $active_page = 'galeri';
               <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
               </svg>
-              Foto Kegiatan
-              <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor"
-                viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-              </svg>
+              Lihat Galeri
             </a>
-            <a href="#galeri-grid"
-              class="group inline-flex items-center justify-center px-8 py-4 bg-white border-2 border-gray-200 text-gray-700 font-semibold rounded-xl hover:border-[#00A0D6] hover:text-[#00A0D6] transition-all duration-300 hover:scale-105 shadow-sm hover:shadow-md">
+            <a href="#"
+              class="group inline-flex items-center justify-center px-8 py-4 bg-white/10 text-white font-semibold rounded-xl hover:bg-white/20 transition-all duration-300 hover:scale-105 border border-white/20">
               <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2-1.343-2-3-2zM9 10l12-3"></path>
               </svg>
               Dokumentasi Acara
-              <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor"
-                viewBox="0 0 24 24">
+              <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
               </svg>
             </a>
@@ -92,66 +127,62 @@ $active_page = 'galeri';
         <div class="backdrop-blur-xl bg-white/60 border border-white/40 shadow-xl rounded-2xl p-8 mb-16">
           <div class="text-center mb-8">
             <h2 id="gallery-heading" class="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
-              Kategori 
-              <span class="bg-gradient-to-r from-[#00A0D6] to-[#6AC259] bg-clip-text text-transparent">Foto</span>
+              Kategori <span class="bg-gradient-to-r from-[#00A0D6] to-[#6AC259] bg-clip-text text-transparent">Foto & Video</span>
             </h2>
-            <p class="text-lg text-gray-600 font-light">Jelajahi koleksi berdasarkan kategori</p>
-          </div>
-
-          <div role="group" aria-label="Filter Galeri" class="flex flex-wrap justify-center gap-3">
-            <button class="px-6 py-2 rounded-full text-sm font-medium transition-colors bg-[#00A0D6] text-white shadow-md">
-              🔍 Semua Foto
-            </button>
-            <button class="px-6 py-2 rounded-full text-sm font-medium transition-colors bg-white text-gray-700 border border-gray-200 hover:bg-gray-50">
-              🎆 Kegiatan
-            </button>
-            <button class="px-6 py-2 rounded-full text-sm font-medium transition-colors bg-white text-gray-700 border border-gray-200 hover:bg-gray-50">
-              📷 Dokumentasi
-            </button>
-          </div>
-        </div>
-
-        <div id="galeri-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 min-h-[50vh]">
-          <div class="col-span-full text-center py-20">
-            <div class="bg-white border border-gray-100 shadow-2xl shadow-blue-500/10 rounded-3xl p-16 max-w-2xl mx-auto">
-              <div class="relative mb-8">
-                <div class="w-32 h-32 bg-gradient-to-br from-[#00A0D6]/10 to-[#6AC259]/10 rounded-3xl flex items-center justify-center mx-auto shadow-lg ring-4 ring-white">
-                  <svg class="w-16 h-16 text-[#00A0D6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                  </svg>
-                </div>
-              </div>
-
-              <h3 class="text-3xl font-bold text-gray-900 mb-4">Galeri Sedang Dipersiapkan 🚧</h3>
-              <p class="text-lg text-gray-600 mb-8 leading-relaxed max-w-lg mx-auto">
-                Tim dokumentasi sedang mengorganisir koleksi foto dan video terbaru.
-                <span class="font-bold text-[#00A0D6]">Segera hadir</span> dengan tampilan yang menakjubkan.
-              </p>
-
-              <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <button type="button" onclick="window.location.reload()" class="inline-flex items-center gap-3 bg-gradient-to-r from-[#00A0D6] to-blue-600 text-white px-8 py-4 rounded-2xl font-semibold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                  </svg>
-                  <span>Refresh Halaman</span>
-                </button>
-                <a href="../index.html" class="inline-flex items-center gap-3 bg-white border border-gray-300 text-gray-700 px-8 py-4 rounded-2xl font-semibold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-                  </svg>
-                  <span>Kembali ke Beranda</span>
-                </a>
-              </div>
+            <p class="text-gray-500 mb-6">Jelajahi berbagai momen yang kami dokumentasikan.</p>
+            <div class="flex flex-wrap justify-center gap-2">
+              <button class="px-4 py-2 text-sm font-semibold rounded-full bg-[#00A0D6] text-white shadow-md">Semua</button>
+              <button class="px-4 py-2 text-sm font-semibold rounded-full bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 transition-colors">Seminar</button>
+              <button class="px-4 py-2 text-sm font-semibold rounded-full bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 transition-colors">Pelatihan</button>
+              <button class="px-4 py-2 text-sm font-semibold rounded-full bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 transition-colors">Kunjungan</button>
             </div>
           </div>
         </div>
+
+        <div id="galeri-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          
+          <?php if (!empty($galeri_data)): ?>
+            <?php foreach ($galeri_data as $galeri): ?>
+              <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group">
+                <a href="<?php echo htmlspecialchars($galeri['file_foto']); ?>" target="_blank" class="block">
+                  <img src="<?php echo htmlspecialchars($galeri['file_foto']); ?>" alt="<?php echo htmlspecialchars($galeri['nama_foto']); ?>"
+                    class="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-110">
+                </a>
+                <div class="p-4">
+                  <h3 class="text-lg font-semibold text-gray-900 mb-1"><?php echo htmlspecialchars($galeri['nama_foto']); ?></h3>
+                  <p class="text-sm text-gray-500 line-clamp-2"><?php echo htmlspecialchars($galeri['deskripsi']); ?></p>
+                  <?php if (isset($galeri['anggota_name']) && !empty($galeri['anggota_name'])): ?>
+                      <p class="text-xs text-gray-400 mt-2">Diunggah oleh: <?php echo htmlspecialchars($galeri['anggota_name']); ?></p>
+                  <?php endif; ?>
+                </div>
+              </div>
+            <?php endforeach; ?>
+          <?php else: ?>
+            <div class="col-span-full text-center py-10">
+              <p class="text-lg font-semibold text-gray-500">Tidak ada foto di galeri saat ini.</p>
+              <?php if (!empty($message)): ?>
+                 <p class="text-sm text-red-500 mt-2"><?php echo $message; ?></p>
+              <?php endif; ?>
+            </div>
+          <?php endif; ?>
+
+        </div>
+
+        <div class="text-center mt-16">
+          <?php if (empty($galeri_data)): ?>
+            <button onclick="window.location.reload()" class="inline-flex items-center gap-3 bg-gradient-to-r from-[#00A0D6] to-blue-600 text-white px-8 py-4 rounded-2xl font-semibold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+              </svg>
+              <span>Refresh Halaman</span>
+            </button>
+          <?php endif; ?>
+        </div>
       </div>
     </section>
-  </main>
 
-  <?php
-  require_once '../includes/footer.php';
-  ?>
+  </main>
+  <?php require_once '../includes/footer.php'; ?>
 </body>
 
 </html>
