@@ -289,6 +289,107 @@ $active_page = 'kontak';
   <?php
   require_once '../includes/footer.php';
   ?>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get all pill switch buttons
+      const pillButtons = document.querySelectorAll('.pill-switch-btn');
+      const formAsk = document.getElementById('form-ask');
+      const formCoop = document.getElementById('form-coop');
+      const contactForm = document.getElementById('contact-form');
+      const submitButton = document.getElementById('contact-submit');
+      const fileInput = document.getElementById('coop-proposal');
+      const fileName = document.getElementById('file-name');
+
+      // Handle pill switch button clicks
+      pillButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          // Remove active class from all buttons
+          pillButtons.forEach(btn => {
+            btn.classList.remove('active');
+            btn.setAttribute('aria-selected', 'false');
+          });
+
+          // Add active class to clicked button
+          this.classList.add('active');
+          this.setAttribute('aria-selected', 'true');
+
+          // Show/hide forms based on selection
+          const formType = this.getAttribute('data-form-type');
+          if (formType === 'ask') {
+            formAsk.classList.remove('hidden');
+            formCoop.classList.add('hidden');
+            submitButton.textContent = 'Kirim Pesan';
+          } else if (formType === 'coop') {
+            formAsk.classList.add('hidden');
+            formCoop.classList.remove('hidden');
+            submitButton.textContent = 'Kirim Proposal Kerja Sama';
+          }
+        });
+      });
+
+      // Handle file input change
+      if (fileInput) {
+        fileInput.addEventListener('change', function() {
+          if (this.files && this.files[0]) {
+            fileName.textContent = this.files[0].name;
+          } else {
+            fileName.textContent = 'Klik untuk memilih file';
+          }
+        });
+      }
+
+      // Handle form submission
+      contactForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const activeForm = document.querySelector('.pill-switch-btn.active').getAttribute('data-form-type');
+        
+        if (activeForm === 'ask') {
+          // Handle question form submission
+          const name = document.getElementById('ask-name').value;
+          const email = document.getElementById('ask-email').value;
+          const message = document.getElementById('ask-message').value;
+          
+          if (name && email && message) {
+            alert('Terima kasih! Pesan Anda telah terkirim.\n\nNama: ' + name + '\nEmail: ' + email + '\nPesan: ' + message);
+            contactForm.reset();
+          } else {
+            alert('Mohon lengkapi semua field yang diperlukan.');
+          }
+        } else if (activeForm === 'coop') {
+          // Handle cooperation form submission
+          const name = document.getElementById('coop-name').value;
+          const email = document.getElementById('coop-email').value;
+          const phone = document.getElementById('coop-phone').value;
+          const company = document.getElementById('coop-company').value;
+          const purpose = document.getElementById('coop-purpose').value;
+          const contact = document.getElementById('coop-contact').value;
+          const proposal = document.getElementById('coop-proposal').files[0];
+          
+          if (name && email && phone && company && purpose && contact) {
+            let formData = 'Terima kasih! Proposal kerja sama telah terkirim.\n\n';
+            formData += 'Nama: ' + name + '\n';
+            formData += 'Email: ' + email + '\n';
+            formData += 'Telepon: ' + phone + '\n';
+            formData += 'Perusahaan: ' + company + '\n';
+            formData += 'Tujuan: ' + purpose + '\n';
+            formData += 'Kontak: ' + contact;
+            
+            if (proposal) {
+              formData += '\nFile Proposal: ' + proposal.name;
+            }
+            
+            alert(formData);
+            contactForm.reset();
+            fileName.textContent = 'Klik untuk memilih file';
+          } else {
+            alert('Mohon lengkapi semua field yang diperlukan.');
+          }
+        }
+      });
+    });
+  </script>
 </body>
 
 </html>
