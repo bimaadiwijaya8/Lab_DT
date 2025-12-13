@@ -102,8 +102,8 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'berita') 
         // 3. Simpan ke database jika upload berhasil
         if ($upload_ok) {
             try {
-                $sql = "INSERT INTO berita (judul, gambar, informasi, tanggal, author, status, aksi) 
-                        VALUES (:judul, :gambar, :informasi, :tanggal, :author, 'pending', 'publish')";
+                $sql = "INSERT INTO berita (judul, gambar, informasi, tanggal, author, status) 
+                        VALUES (:judul, :gambar, :informasi, :tanggal, :author, 'pending')";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([
                     ':judul' => $judul,
@@ -236,7 +236,7 @@ $galeri_data = [];
 if ($active_page === 'berita' && $pdo) {
     try {
         // READ: Mengambil semua data berita dari database
-        $sql = "SELECT id_berita, judul, tanggal, informasi, gambar, author, status, aksi 
+        $sql = "SELECT id_berita, judul, tanggal, informasi, gambar, author, status 
                 FROM berita 
                 ORDER BY tanggal DESC";
         $stmt = $pdo->query($sql);
