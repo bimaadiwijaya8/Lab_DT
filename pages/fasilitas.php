@@ -4,6 +4,41 @@ $page_title = "Fasilitas – Lab Data Technologies";
 $current_page = "fasilitas"; // Untuk menandai navigasi yang aktif
 
 $active_page = 'fasilitas';
+
+// --- Bagian PHP: Koneksi Database dan Ambil Data ---
+$pdo = null;
+$db_error = false;
+$db_connect_path = '../assets/php/db_connect.php'; 
+$fasilitas_data = [];
+
+// Cek apakah file koneksi ada
+if (file_exists($db_connect_path)) {
+    require_once $db_connect_path;
+    
+    try {
+        // Panggil metode static untuk mendapatkan koneksi PDO
+        // ASUMSI: Class Database dan metode getConnection() sudah ada di db_connect.php
+        $pdo = Database::getConnection(); 
+        
+        // Query untuk mengambil semua data fasilitas
+        // Menggunakan SELECT * karena ini halaman display
+        $sql = "SELECT id_fasilitas, nama_fasilitas, deskripsi, foto FROM fasilitas ORDER BY id_fasilitas DESC";
+        $stmt = $pdo->query($sql);
+        $fasilitas_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+    } catch (PDOException $e) {
+        $db_error = true;
+        // Penanganan error koneksi database
+    } catch (Exception $e) {
+        $db_error = true;
+        // Penanganan error umum
+    }
+} else {
+    $db_error = true;
+    // Penanganan jika file db_connect.php tidak ditemukan
+}
+// --- Akhir Bagian PHP ---
+
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -102,33 +137,57 @@ $active_page = 'fasilitas';
                 </div>
 
                 <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="facilities-container">
-                    <div class="col-span-full">
-                        <div class="empty-state text-center py-16 bg-white/60 backdrop-blur-xl border border-white/40 rounded-3xl shadow-lg">
-                            <div class="w-20 h-20 bg-gradient-to-br from-[#00A0D6]/10 to-[#6AC259]/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                                <svg class="w-10 h-10 text-[#00A0D6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                                </svg>
-                            </div>
-                            <h3 class="text-xl font-semibold text-gray-900 mb-2">Belum Ada Data Fasilitas</h3>
-                            <p class="text-gray-600 mb-6">Data fasilitas akan ditampilkan setelah tersedia dari sistem</p>
-                            <div class="inline-flex items-center gap-2 text-sm text-[#00A0D6] font-medium">
-                                <div class="w-2 h-2 bg-[#00A0D6] rounded-full animate-pulse"></div>
-                                Menunggu data dari API
+                    
+                    <?php if ($db_error): ?>
+                        <div class="col-span-full">
+                            <div class="empty-state text-center py-16 bg-red-50/60 backdrop-blur-xl border border-red-200/40 rounded-3xl shadow-lg">
+                                <div class="w-20 h-20 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                                    <svg class="w-10 h-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-.767-2.03-.767-2.8 0L3.068 18c-.77.833.192 3 1.732 3z"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold text-gray-900 mb-2">Kesalahan Koneksi Database</h3>
+                                <p class="text-gray-600">Gagal memuat data fasilitas. Harap cek konfigurasi file `db_connect.php`.</p>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    <?php elseif (empty($fasilitas_data)): ?>
+                        <div class="col-span-full">
+                            <div class="empty-state text-center py-16 bg-white/60 backdrop-blur-xl border border-white/40 rounded-3xl shadow-lg">
+                                <div class="w-20 h-20 bg-gradient-to-br from-[#00A0D6]/10 to-[#6AC259]/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                                    <svg class="w-10 h-10 text-[#00A0D6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold text-gray-900 mb-2">Belum Ada Data Fasilitas</h3>
+                                <p class="text-gray-600 mb-6">Data fasilitas akan ditampilkan setelah ditambahkan melalui admin panel.</p>
+                                <div class="inline-flex items-center gap-2 text-sm text-gray-500 font-medium">
+                                    <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
+                                    Tunggu pembaruan konten
+                                </div>
+                            </div>
+                        </div>
+                    <?php else: ?>
+                        <?php foreach ($fasilitas_data as $fasilitas): ?>
+                            <div class="card-fasilitas group bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg hover:scale-105 transition-all duration-300">
+                                <img src="<?php echo htmlspecialchars($fasilitas['foto']); ?>" 
+                                     class="w-full h-48 object-cover" 
+                                     alt="Foto Fasilitas <?php echo htmlspecialchars($fasilitas['nama_fasilitas']); ?>" 
+                                     loading="lazy">
+                                <div class="p-6">
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-2">
+                                        <?php echo htmlspecialchars($fasilitas['nama_fasilitas']); ?>
+                                    </h3>
+                                    <p class="text-gray-600 text-sm leading-relaxed">
+                                        <?php echo nl2br(htmlspecialchars($fasilitas['deskripsi'])); ?>
+                                    </p>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
 
-                <template id="facility-card-template">
-                    <div class="card-fasilitas group bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg hover:scale-105 transition-all duration-300">
-                        <img data-foto class="w-full h-48 object-cover" alt="Foto Fasilitas" loading="lazy">
-                        <div class="p-6">
-                            <h3 data-nama class="text-lg font-semibold text-gray-900 mb-2"></h3>
-                            <p data-deskripsi class="text-gray-600 text-sm leading-relaxed"></p>
-                        </div>
-                    </div>
-                </template>
-            </div>
+                </div>
+                
+                </div>
         </section>
     </main>
 
