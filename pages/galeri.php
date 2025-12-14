@@ -27,11 +27,12 @@ if (file_exists($db_connect_path)) {
 // 2. Data Fetching (READ) - Diambil dari DB jika koneksi berhasil
 if ($pdo) {
     try {
-        // READ: Mengambil semua data galeri dari database
+        // READ: Mengambil data galeri yang sudah disetujui dari database
         // Join ke tabel anggota/user untuk mendapatkan nama uploader (id_anggota)
         $sql = "SELECT g.id_foto, g.nama_foto, g.deskripsi, g.file_foto, g.id_anggota, a.nama_gelar AS anggota_name 
                 FROM galeri g 
                 LEFT JOIN anggota a ON g.id_anggota = a.id_anggota 
+                WHERE g.status = 'approved'
                 ORDER BY g.id_foto DESC";
         $stmt = $pdo->query($sql);
         $galeri_data = $stmt->fetchAll(PDO::FETCH_ASSOC);

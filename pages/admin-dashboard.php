@@ -1312,6 +1312,17 @@ if ($active_page === 'pengumuman' && $pdo) {
         .sidebar-open .toggle-btn {
             left: 268px;
         }
+        
+        /* Modal backdrop styles to prevent interaction */
+        .modal-open .toggle-btn {
+            pointer-events: none;
+            opacity: 0.5;
+        }
+        
+        /* Increase modal z-index to be higher than toggle button */
+        .modal {
+            z-index: 1001;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-slate-100 via-slate-50 to-slate-200 min-h-screen text-gray-900 antialiased sidebar-open">
@@ -1934,7 +1945,7 @@ if ($active_page === 'pengumuman' && $pdo) {
     </div>
 
 
-    <div id="addNewsModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[100] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div id="addNewsModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[1001] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
                 <form action="admin-dashboard.php?page=berita" method="POST" enctype="multipart/form-data">
@@ -1984,7 +1995,7 @@ if ($active_page === 'pengumuman' && $pdo) {
         </div>
     </div>
 
-    <div id="editNewsModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[100] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div id="editNewsModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[1001] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
                 <form action="admin-dashboard.php?page=berita" method="POST" enctype="multipart/form-data">
@@ -2028,7 +2039,7 @@ if ($active_page === 'pengumuman' && $pdo) {
         </div>
     </div>
 
-    <div id="verifyModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[100] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div id="verifyModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[1001] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-sm sm:w-full">
                 <form action="admin-dashboard.php?page=berita" method="POST">
@@ -2057,7 +2068,7 @@ if ($active_page === 'pengumuman' && $pdo) {
         </div>
     </div>
     
-    <div id="verifyGaleriModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[100] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div id="verifyGaleriModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[1001] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-sm sm:w-full">
                 <form action="admin-dashboard.php?page=galeri" method="POST">
@@ -2086,7 +2097,7 @@ if ($active_page === 'pengumuman' && $pdo) {
         </div>
     </div>
     
-    <div id="addFasilitasModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[100] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div id="addFasilitasModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[1001] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
                 <form action="admin-dashboard.php?page=fasilitas" method="POST" enctype="multipart/form-data">
@@ -2122,7 +2133,7 @@ if ($active_page === 'pengumuman' && $pdo) {
         </div>
     </div>
 
-    <div id="editFasilitasModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[100] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div id="editFasilitasModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[1001] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
                 <form action="admin-dashboard.php?page=fasilitas" method="POST" enctype="multipart/form-data">
@@ -2162,7 +2173,7 @@ if ($active_page === 'pengumuman' && $pdo) {
         </div>
     </div>
 
-    <div id="addGaleriModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[100] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div id="addGaleriModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[1001] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
                 <form action="admin-dashboard.php?page=galeri" method="POST" enctype="multipart/form-data">
@@ -2208,7 +2219,7 @@ if ($active_page === 'pengumuman' && $pdo) {
         </div>
     </div>
 
-    <div id="editGaleriModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[100] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div id="editGaleriModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[1001] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
                 <form action="admin-dashboard.php?page=galeri" method="POST" enctype="multipart/form-data">
@@ -2258,7 +2269,7 @@ if ($active_page === 'pengumuman' && $pdo) {
         </div>
     </div>
 
-    <div id="addPublikasiModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[100] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div id="addPublikasiModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[1001] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
                 <form action="admin-dashboard.php?page=publikasi" method="POST" enctype="multipart/form-data">
@@ -2302,7 +2313,7 @@ if ($active_page === 'pengumuman' && $pdo) {
         </div>
     </div>
 
-    <div id="editPublikasiModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[100] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div id="editPublikasiModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[1001] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
                 <form action="admin-dashboard.php?page=publikasi" method="POST" enctype="multipart/form-data">
@@ -2350,7 +2361,7 @@ if ($active_page === 'pengumuman' && $pdo) {
         </div>
     </div>
 
-    <div id="addAgendaModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[100] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div id="addAgendaModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[1001] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
                 <form action="admin-dashboard.php?page=agenda" method="POST">
@@ -2385,7 +2396,7 @@ if ($active_page === 'pengumuman' && $pdo) {
         </div>
     </div>
 
-    <div id="editAgendaModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[100] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div id="editAgendaModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[1001] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
                 <form action="admin-dashboard.php?page=agenda" method="POST">
@@ -2422,7 +2433,7 @@ if ($active_page === 'pengumuman' && $pdo) {
         </div>
     </div>
     
-    <div id="addAnggotaModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[100] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div id="addAnggotaModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[1001] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
                 <form action="admin-dashboard.php?page=anggota" method="POST" enctype="multipart/form-data">
@@ -2470,7 +2481,7 @@ if ($active_page === 'pengumuman' && $pdo) {
         </div>
     </div>
 
-    <div id="editAnggotaModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[100] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div id="editAnggotaModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[1001] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
                 <form action="admin-dashboard.php?page=anggota" method="POST" enctype="multipart/form-data">
@@ -2522,7 +2533,7 @@ if ($active_page === 'pengumuman' && $pdo) {
         </div>
     </div>
 
-    <div id="addPengumumanModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[100] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div id="addPengumumanModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[1001] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
                 <form action="admin-dashboard.php?page=pengumuman" method="POST">
@@ -2557,7 +2568,7 @@ if ($active_page === 'pengumuman' && $pdo) {
         </div>
     </div>
 
-    <div id="editPengumumanModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[100] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div id="editPengumumanModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[1001] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
                 <form action="admin-dashboard.php?page=pengumuman" method="POST">
@@ -2609,10 +2620,12 @@ if ($active_page === 'pengumuman' && $pdo) {
         // --- Berita Modals ---
         function openAddNewsModal() {
             document.getElementById('addNewsModal').classList.remove('hidden');
+            document.body.classList.add('modal-open');
         }
 
         function closeAddNewsModal() {
             document.getElementById('addNewsModal').classList.add('hidden');
+            document.body.classList.remove('modal-open');
         }
         
         function openEditNewsModal(button) {
@@ -2634,39 +2647,48 @@ if ($active_page === 'pengumuman' && $pdo) {
             document.getElementById('edit_gambar').value = '';
 
             document.getElementById('editNewsModal').classList.remove('hidden');
+            document.body.classList.add('modal-open');
         }
 
         function closeEditNewsModal() {
             document.getElementById('editNewsModal').classList.add('hidden');
+            document.body.classList.remove('modal-open');
         }
 
         function openVerifyGaleriModal(id, status) {
             document.getElementById('verify_id_foto').value = id;
             document.getElementById('verify_galeri_current_status').innerHTML = `Status saat ini: <b>${status.toUpperCase()}</b>`;
             document.getElementById('verifyGaleriModal').classList.remove('hidden');
+            document.body.classList.add('modal-open');
+            document.body.classList.add('modal-open'); // Add modal-open class
         }
 
         function closeVerifyGaleriModal() {
             document.getElementById('verifyGaleriModal').classList.add('hidden');
+            document.body.classList.remove('modal-open');
         }
         
         function openVerifyModal(id, status) {
             document.getElementById('verify_id_berita').value = id;
             document.getElementById('verify_current_status').innerHTML = `Status saat ini: <b>${status.toUpperCase()}</b>`;
             document.getElementById('verifyModal').classList.remove('hidden');
+            document.body.classList.add('modal-open');
         }
 
         function closeVerifyModal() {
             document.getElementById('verifyModal').classList.add('hidden');
+            document.body.classList.remove('modal-open');
         }
         
         // --- Fasilitas Modals ---
         function openAddFasilitasModal() {
             document.getElementById('addFasilitasModal').classList.remove('hidden');
+            document.body.classList.add('modal-open');
         }
 
         function closeAddFasilitasModal() {
             document.getElementById('addFasilitasModal').classList.add('hidden');
+            document.body.classList.remove('modal-open');
         }
 
         function openEditFasilitasModal(button) {
@@ -2686,19 +2708,23 @@ if ($active_page === 'pengumuman' && $pdo) {
             document.getElementById('edit_foto').value = '';
 
             document.getElementById('editFasilitasModal').classList.remove('hidden');
+            document.body.classList.add('modal-open');
         }
 
         function closeEditFasilitasModal() {
             document.getElementById('editFasilitasModal').classList.add('hidden');
+            document.body.classList.remove('modal-open');
         }
 
         // --- Galeri Modals ---
         function openAddGaleriModal() {
             document.getElementById('addGaleriModal').classList.remove('hidden');
+            document.body.classList.add('modal-open');
         }
 
         function closeAddGaleriModal() {
             document.getElementById('addGaleriModal').classList.add('hidden');
+            document.body.classList.remove('modal-open');
         }
 
         function openEditGaleriModal(button) {
@@ -2722,19 +2748,23 @@ if ($active_page === 'pengumuman' && $pdo) {
             document.getElementById('edit_file_foto').value = '';
 
             document.getElementById('editGaleriModal').classList.remove('hidden');
+            document.body.classList.add('modal-open');
         }
 
         function closeEditGaleriModal() {
             document.getElementById('editGaleriModal').classList.add('hidden');
+            document.body.classList.remove('modal-open');
         }
         
         // --- Publikasi Modals ---
         function openAddPublikasiModal() {
             document.getElementById('addPublikasiModal').classList.remove('hidden');
+            document.body.classList.add('modal-open');
         }
 
         function closeAddPublikasiModal() {
             document.getElementById('addPublikasiModal').classList.add('hidden');
+            document.body.classList.remove('modal-open');
         }
         
         function openEditPublikasiModal(button) {
@@ -2761,19 +2791,23 @@ if ($active_page === 'pengumuman' && $pdo) {
             document.getElementById('edit_file_publikasi').value = '';
 
             document.getElementById('editPublikasiModal').classList.remove('hidden');
+            document.body.classList.add('modal-open');
         }
 
         function closeEditPublikasiModal() {
             document.getElementById('editPublikasiModal').classList.add('hidden');
+            document.body.classList.remove('modal-open');
         }
 
         // --- Agenda Modals ---
         function openAddAgendaModal() {
             document.getElementById('addAgendaModal').classList.remove('hidden');
+            document.body.classList.add('modal-open');
         }
 
         function closeAddAgendaModal() {
             document.getElementById('addAgendaModal').classList.add('hidden');
+            document.body.classList.remove('modal-open');
         }
 
         function openEditAgendaModal(button) {
@@ -2789,19 +2823,23 @@ if ($active_page === 'pengumuman' && $pdo) {
             document.getElementById('edit_link_agenda').value = link_agenda;
 
             document.getElementById('editAgendaModal').classList.remove('hidden');
+            document.body.classList.add('modal-open');
         }
 
         function closeEditAgendaModal() {
             document.getElementById('editAgendaModal').classList.add('hidden');
+            document.body.classList.remove('modal-open');
         }
 
         // --- Anggota Modals ---
         function openAddAnggotaModal() {
             document.getElementById('addAnggotaModal').classList.remove('hidden');
+            document.body.classList.add('modal-open');
         }
 
         function closeAddAnggotaModal() {
             document.getElementById('addAnggotaModal').classList.add('hidden');
+            document.body.classList.remove('modal-open');
         }
 
         function openEditAnggotaModal(button) {
@@ -2827,19 +2865,23 @@ if ($active_page === 'pengumuman' && $pdo) {
             document.getElementById('edit_foto').value = '';
 
             document.getElementById('editAnggotaModal').classList.remove('hidden');
+            document.body.classList.add('modal-open');
         }
 
         function closeEditAnggotaModal() {
             document.getElementById('editAnggotaModal').classList.add('hidden');
+            document.body.classList.remove('modal-open');
         }
 
         // --- Pengumuman Modals ---
         function openAddPengumumanModal() {
             document.getElementById('addPengumumanModal').classList.remove('hidden');
+            document.body.classList.add('modal-open');
         }
 
         function closeAddPengumumanModal() {
             document.getElementById('addPengumumanModal').classList.add('hidden');
+            document.body.classList.remove('modal-open');
         }
 
         function openEditPengumumanModal(button) {
@@ -2855,10 +2897,12 @@ if ($active_page === 'pengumuman' && $pdo) {
             document.getElementById('edit_tanggal_posting').value = tanggal;
 
             document.getElementById('editPengumumanModal').classList.remove('hidden');
+            document.body.classList.add('modal-open');
         }
 
         function closeEditPengumumanModal() {
             document.getElementById('editPengumumanModal').classList.add('hidden');
+            document.body.classList.remove('modal-open');
         }
 
         // --- Sidebar Toggle Function ---
