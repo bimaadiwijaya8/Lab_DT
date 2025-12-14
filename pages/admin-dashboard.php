@@ -1538,10 +1538,7 @@ if ($active_page === 'pengumuman' && $pdo) {
                                             <i class="fas fa-trash"></i>
                                         </a>
                                         <button onclick="openVerifyModal(<?php echo $news['id_berita']; ?>, '<?php echo $news['status']; ?>')" class="text-gray-500 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100" title="Verifikasi Berita">
-                                            <i class="fas fa-check"></i>
-                                        </button>
-                                        <button onclick="quickReject(<?php echo $news['id_berita']; ?>)" class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100" title="Tolak Berita">
-                                            <i class="fas fa-times"></i>
+                                            <i class="fas fa-check-double"></i>
                                         </button>
                                     </td>
                                 </tr>
@@ -1664,10 +1661,7 @@ if ($active_page === 'pengumuman' && $pdo) {
                                             <i class="fas fa-trash"></i>
                                         </a>
                                         <button onclick="openVerifyGaleriModal(<?php echo $galeri['id_foto']; ?>, '<?php echo $galeri['status']; ?>')" class="text-gray-500 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100" title="Verifikasi Galeri">
-                                            <i class="fas fa-check"></i>
-                                        </button>
-                                        <button onclick="quickRejectGaleri(<?php echo $galeri['id_foto']; ?>)" class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100" title="Tolak Galeri">
-                                            <i class="fas fa-times"></i>
+                                            <i class="fas fa-check-double"></i>
                                         </button>
                                     </td>
                                 </tr>
@@ -2656,38 +2650,6 @@ if ($active_page === 'pengumuman' && $pdo) {
             document.getElementById('verifyGaleriModal').classList.add('hidden');
         }
         
-        function quickRejectGaleri(id) {
-            if (confirm('Apakah Anda yakin ingin menolak galeri ini?')) {
-                // Create form for quick reject
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = 'admin-dashboard.php?page=galeri';
-                
-                // Add hidden inputs
-                const actionInput = document.createElement('input');
-                actionInput.type = 'hidden';
-                actionInput.name = 'action';
-                actionInput.value = 'verify_galeri';
-                
-                const idInput = document.createElement('input');
-                idInput.type = 'hidden';
-                idInput.name = 'id_foto';
-                idInput.value = id;
-                
-                const statusInput = document.createElement('input');
-                statusInput.type = 'hidden';
-                statusInput.name = 'status';
-                statusInput.value = 'rejected';
-                
-                form.appendChild(actionInput);
-                form.appendChild(idInput);
-                form.appendChild(statusInput);
-                
-                document.body.appendChild(form);
-                form.submit();
-            }
-        }
-
         function openVerifyModal(id, status) {
             document.getElementById('verify_id_berita').value = id;
             document.getElementById('verify_current_status').innerHTML = `Status saat ini: <b>${status.toUpperCase()}</b>`;
@@ -2696,39 +2658,6 @@ if ($active_page === 'pengumuman' && $pdo) {
 
         function closeVerifyModal() {
             document.getElementById('verifyModal').classList.add('hidden');
-        }
-        
-        function quickReject(id) {
-            if (confirm('Apakah Anda yakin ingin menolak berita ini?')) {
-                // Create form for quick reject
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = 'admin-dashboard.php?page=berita';
-                
-                // Add hidden inputs
-                const actionInput = document.createElement('input');
-                actionInput.type = 'hidden';
-                actionInput.name = 'action';
-                actionInput.value = 'verify_news';
-                
-                const idInput = document.createElement('input');
-                idInput.type = 'hidden';
-                idInput.name = 'id_berita';
-                idInput.value = id;
-                
-                const statusInput = document.createElement('input');
-                statusInput.type = 'hidden';
-                statusInput.name = 'status';
-                statusInput.value = 'rejected';
-                
-                form.appendChild(actionInput);
-                form.appendChild(idInput);
-                form.appendChild(statusInput);
-                
-                // Submit form
-                document.body.appendChild(form);
-                form.submit();
-            }
         }
         
         // --- Fasilitas Modals ---
