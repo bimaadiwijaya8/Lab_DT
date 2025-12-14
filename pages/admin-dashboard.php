@@ -431,6 +431,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'galeri') 
     if ($action === 'add_galeri' && $pdo) {
         $nama_foto = trim($_POST['nama_foto']);
         $deskripsi = trim($_POST['deskripsi']);
+        $id_anggota = (int)$_POST['id_anggota']; // Get selected author from dropdown
 
         $upload_ok = true;
         $file_foto_path_for_db = '';
@@ -468,7 +469,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'galeri') 
                     ':nama_foto' => $nama_foto,
                     ':deskripsi' => $deskripsi,
                     ':file_foto' => $file_foto_path_for_db,
-                    ':id_anggota' => $admin_user_id, // Gunakan admin_user_id sebagai id_anggota (sesuai template)
+                    ':id_anggota' => $id_anggota, // Use selected author from dropdown
                     ':updated_by' => $admin_user_id
                 ]);
                 $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Foto Galeri baru berhasil ditambahkan!</div>";
@@ -489,6 +490,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'galeri') 
         $id_foto = (int)$_POST['id_foto'];
         $nama_foto = trim($_POST['nama_foto']);
         $deskripsi = trim($_POST['deskripsi']);
+        $id_anggota = (int)$_POST['id_anggota']; // Get selected author from dropdown
 
         $new_file_name = $_FILES['file_foto']['name'] ?? '';
         $current_file_path = $_POST['current_file_foto']; // Path file lama
@@ -524,6 +526,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'galeri') 
                             nama_foto = :nama_foto, 
                             deskripsi = :deskripsi, 
                             file_foto = :file_foto,
+                            id_anggota = :id_anggota,
                             updated_by = :updated_by 
                         WHERE id_foto = :id";
                 $stmt = $pdo->prepare($sql);
@@ -531,6 +534,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'galeri') 
                     ':nama_foto' => $nama_foto,
                     ':deskripsi' => $deskripsi,
                     ':file_foto' => $file_foto_path_for_db, // Path baru atau lama
+                    ':id_anggota' => $id_anggota, // Use selected author from dropdown
                     ':updated_by' => $admin_user_id,
                     ':id' => $id_foto
                 ]);
@@ -1159,7 +1163,7 @@ $galeri_data = [];
 if ($active_page === 'galeri' && $pdo) {
     try {
         // READ: Mengambil semua data galeri
-        $sql = "SELECT g.*, a.nama_gelar AS author_name FROM galeri g LEFT JOIN anggota a ON g.id_anggota = a.id_anggota ORDER BY g.id_foto DESC";
+        $sql = "SELECT g.*, u.username AS uploader_name, a.nama_gelar AS author_name FROM galeri g LEFT JOIN users u ON g.updated_by = u.id LEFT JOIN anggota a ON g.id_anggota = a.id_anggota ORDER BY g.id_foto DESC";
         $stmt = $pdo->query($sql);
         $galeri_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
@@ -1471,7 +1475,9 @@ if ($active_page === 'pengumuman' && $pdo) {
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Author</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                            <th scope="col" class="relative px-6 py-3">
+                                <span class="sr-only">Aksi</span>
+                            </th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
@@ -1596,10 +1602,9 @@ if ($active_page === 'pengumuman' && $pdo) {
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Foto</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Foto</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deskripsi (Snippet)</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Author</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Diupload Oleh</th>
-                            <th scope="col" class="relative px-6 py-3">
-                                <span class="sr-only">Aksi</span>
-                            </th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
@@ -1608,13 +1613,15 @@ if ($active_page === 'pengumuman' && $pdo) {
                                 <tr data-id="<?php echo $galeri['id_foto']; ?>" 
                                     data-nama_foto="<?php echo htmlspecialchars($galeri['nama_foto']); ?>" 
                                     data-deskripsi="<?php echo htmlspecialchars($galeri['deskripsi']); ?>" 
-                                    data-file_foto="<?php echo htmlspecialchars($galeri['file_foto']); ?>">
+                                    data-file_foto="<?php echo htmlspecialchars($galeri['file_foto']); ?>"
+                                    data-author="<?php echo htmlspecialchars($galeri['id_anggota']); ?>">
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         <img src="<?php echo htmlspecialchars($galeri['file_foto']); ?>" alt="Foto Galeri" class="h-10 w-10 rounded object-cover">
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo htmlspecialchars($galeri['nama_foto']); ?></td>
                                     <td class="px-6 py-4 text-sm text-gray-500 max-w-xs truncate" style="max-width: 400px;"><?php echo htmlspecialchars(substr($galeri['deskripsi'], 0, 100)) . (strlen($galeri['deskripsi']) > 100 ? '...' : ''); ?></td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($galeri['author_name'] ?? 'Admin'); ?></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($galeri['author_name'] ?? '-'); ?></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($galeri['uploader_name'] ?? 'Admin'); ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end space-x-2">
                                         <button onclick="openEditGaleriModal(this)" class="text-indigo-600 hover:text-indigo-900 p-2 rounded-md hover:bg-gray-100">
                                             <i class="fas fa-edit"></i>
@@ -1628,7 +1635,7 @@ if ($active_page === 'pengumuman' && $pdo) {
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
-                            <tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Belum ada data galeri.</td></tr>
+                            <tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Belum ada data galeri.</td></tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
@@ -2115,6 +2122,16 @@ if ($active_page === 'pengumuman' && $pdo) {
                                 <label for="deskripsi_galeri" class="block text-sm font-medium text-gray-700">Deskripsi/Keterangan</label>
                                 <textarea name="deskripsi" id="deskripsi_galeri" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2"></textarea>
                             </div>
+                            <div>
+                                <label for="author_galeri" class="block text-sm font-medium text-gray-700">Author</label>
+                                <select name="id_anggota" id="author_galeri" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2">
+                                    <?php foreach ($anggota_list as $anggota): ?>
+                                        <option value="<?php echo $anggota['id_anggota']; ?>" <?php echo $anggota['id_anggota'] == $admin_user_id ? 'selected' : ''; ?>>
+                                            <?php echo htmlspecialchars($anggota['nama_gelar']); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
                         </div>
                     </div>
                     <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
@@ -2154,6 +2171,16 @@ if ($active_page === 'pengumuman' && $pdo) {
                             <div>
                                 <label for="edit_deskripsi_galeri" class="block text-sm font-medium text-gray-700">Deskripsi/Keterangan</label>
                                 <textarea name="deskripsi" id="edit_deskripsi_galeri" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2"></textarea>
+                            </div>
+                            <div>
+                                <label for="edit_author_galeri" class="block text-sm font-medium text-gray-700">Author</label>
+                                <select name="id_anggota" id="edit_author_galeri" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2">
+                                    <?php foreach ($anggota_list as $anggota): ?>
+                                        <option value="<?php echo $anggota['id_anggota']; ?>">
+                                            <?php echo htmlspecialchars($anggota['nama_gelar']); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -2642,12 +2669,16 @@ if ($active_page === 'pengumuman' && $pdo) {
             const nama_foto = row.dataset.nama_foto;
             const deskripsi = row.dataset.deskripsi;
             const file_foto = row.dataset.file_foto;
+            const author = row.dataset.author;
 
             document.getElementById('edit_id_foto').value = id;
             document.getElementById('edit_nama_foto').value = nama_foto;
             document.getElementById('edit_deskripsi_galeri').value = deskripsi;
             document.getElementById('edit_current_file_foto').value = file_foto; // Path file lama
             document.getElementById('edit_current_file_foto_preview').src = file_foto; // Preview file lama
+            
+            // Set author dropdown value
+            document.getElementById('edit_author_galeri').value = author;
 
             // Reset input file
             document.getElementById('edit_file_foto').value = '';
