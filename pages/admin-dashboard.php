@@ -3,6 +3,7 @@
 
 // --- Bagian Logika PHP Awal ---
 session_start();
+date_default_timezone_set('Asia/Jakarta');
 $is_authenticated = true; // Ganti dengan logika otentikasi sesungguhnya (misal: isset($_SESSION['user_id']))
 
 if (!$is_authenticated) {
@@ -1311,7 +1312,7 @@ if ($active_page === 'pengumuman' && $pdo) {
             <div class="flex items-center gap-4">
                 <div class="text-right">
                     <p class="text-xs uppercase tracking-wide text-gray-400">Tanggal</p>
-                    <p class="text-sm font-medium text-gray-700"><?php echo date('d F Y'); ?></p>
+                    <p class="text-sm font-medium text-gray-700"><?php echo date('d F Y H:i'); ?></p>
                 </div>
                 <div class="flex items-center gap-3 rounded-full bg-white/80 backdrop-blur px-3 py-2 shadow-sm border border-gray-100">
                     <div class="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
