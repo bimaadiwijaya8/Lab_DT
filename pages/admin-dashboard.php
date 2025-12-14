@@ -458,19 +458,20 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'galeri') 
             $upload_ok = false;
             $upload_message = "Terjadi error saat upload file. Kode error: " . $_FILES['file_foto']['error'];
         }
-
+        
         // 3. Simpan ke database jika upload berhasil
         if ($upload_ok) {
             try {
-                $sql = "INSERT INTO galeri (nama_foto, deskripsi, file_foto, id_anggota, updated_by) 
-                        VALUES (:nama_foto, :deskripsi, :file_foto, :id_anggota, :updated_by)";
+                $sql = "INSERT INTO galeri (nama_foto, deskripsi, file_foto, id_anggota, updated_by, status) 
+                        VALUES (:nama_foto, :deskripsi, :file_foto, :id_anggota, :updated_by, :status)";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([
                     ':nama_foto' => $nama_foto,
                     ':deskripsi' => $deskripsi,
                     ':file_foto' => $file_foto_path_for_db,
                     ':id_anggota' => $id_anggota, // Use selected author from dropdown
-                    ':updated_by' => $admin_user_id
+                    ':updated_by' => $admin_user_id,
+                    ':status' => 'pending'
                 ]);
                 $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Foto Galeri baru berhasil ditambahkan!</div>";
             } catch (Exception $e) {
@@ -537,16 +538,38 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'galeri') 
                     ':id_anggota' => $id_anggota, // Use selected author from dropdown
                     ':updated_by' => $admin_user_id,
                     ':id' => $id_foto
-                ]);
+                ]); // Added closing bracket here
                 $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Foto Galeri ID {$id_foto} berhasil diupdate!</div>";
             } catch (Exception $e) {
                 $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Gagal mengupdate foto galeri: " . htmlspecialchars($e->getMessage()) . "</div>";
             }
         }
     }
+
+    // --- VERIFICATION (Approve/Reject Galeri) ---
+    if ($action === 'verify_galeri') {
+        $id_foto = (int)$_POST['id_foto'];
+        $status = $_POST['status']; // 'approved' or 'rejected'
+
+        if (in_array($status, ['approved', 'rejected'])) {
+            try {
+                $sql = "UPDATE galeri SET status = :status WHERE id_foto = :id";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute([
+                    ':status' => $status,
+                    ':id' => $id_foto
+                ]);
+                $status_text = $status === 'approved' ? 'disetujui' : 'ditolak';
+                $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Foto Galeri ID {$id_foto} berhasil {$status_text}!</div>";
+            } catch (Exception $e) {
+                $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Gagal memperbarui status galeri: " . htmlspecialchars($e->getMessage()) . "</div>";
+            }
+        }
+    }
+    // --- END: VERIFICATION Galeri ---
 }
 
-// --- DELETE (Hapus Foto Galeri - Menggunakan GET request) ---
+    // --- DELETE (Hapus Foto Galeri - Menggunakan GET request) ---
 if ($pdo && $active_page === 'galeri' && isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
     $id_foto = (int)$_GET['id'];
 
@@ -1305,7 +1328,7 @@ if ($active_page === 'pengumuman' && $pdo) {
             </div>
             <div>
                 <h2 class="text-lg font-semibold text-white leading-snug">Admin Panel</h2>
-                <p class="text-xs text-slate-400">LDT • <?php echo $current_year; ?></p>
+                <p class="text-xs text-slate-400">Lab Data Technologies • <?php echo $current_year; ?></p>
             </div>
         </div>
         
@@ -1475,7 +1498,7 @@ if ($active_page === 'pengumuman' && $pdo) {
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Author</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
@@ -1561,9 +1584,7 @@ if ($active_page === 'pengumuman' && $pdo) {
                                         <img src="<?php echo htmlspecialchars($fasilitas['foto']); ?>" alt="Foto Fasilitas" class="h-10 w-10 rounded object-cover">
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo htmlspecialchars($fasilitas['nama_fasilitas']); ?></td>
-                                    <td class="px-6 py-4 text-sm text-gray-500 max-w-xs truncate" style="max-width: 400px;">
-                                        <?php echo htmlspecialchars(substr($fasilitas['deskripsi'], 0, 100)) . (strlen($fasilitas['deskripsi']) > 100 ? '...' : ''); ?>
-                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-500 max-w-xs truncate" style="max-width: 400px;"><?php echo htmlspecialchars(substr($fasilitas['deskripsi'], 0, 100)) . (strlen($fasilitas['deskripsi']) > 100 ? '...' : ''); ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end space-x-2">
                                         <button onclick="openEditFasilitasModal(this)" class="text-indigo-600 hover:text-indigo-900 p-2 rounded-md hover:bg-gray-100">
                                             <i class="fas fa-edit"></i>
@@ -1602,6 +1623,7 @@ if ($active_page === 'pengumuman' && $pdo) {
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deskripsi (Snippet)</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Author</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Diupload Oleh</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                             <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                         </tr>
                     </thead>
@@ -1620,6 +1642,18 @@ if ($active_page === 'pengumuman' && $pdo) {
                                     <td class="px-6 py-4 text-sm text-gray-500 max-w-xs truncate" style="max-width: 400px;"><?php echo htmlspecialchars(substr($galeri['deskripsi'], 0, 100)) . (strlen($galeri['deskripsi']) > 100 ? '...' : ''); ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($galeri['author_name'] ?? '-'); ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($galeri['uploader_name'] ?? 'Admin'); ?></td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <?php 
+                                            $status_class = [
+                                                'approved' => 'bg-green-100 text-green-800', 
+                                                'pending' => 'bg-yellow-100 text-yellow-800', 
+                                                'rejected' => 'bg-red-100 text-red-800'
+                                            ][$galeri['status']] ?? 'bg-gray-100 text-gray-800';
+                                        ?>
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <?php echo $status_class; ?>">
+                                            <?php echo ucfirst($galeri['status'] ?? 'pending'); ?>
+                                        </span>
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end space-x-2">
                                         <button onclick="openEditGaleriModal(this)" class="text-indigo-600 hover:text-indigo-900 p-2 rounded-md hover:bg-gray-100">
                                             <i class="fas fa-edit"></i>
@@ -1629,11 +1663,17 @@ if ($active_page === 'pengumuman' && $pdo) {
                                            class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
                                             <i class="fas fa-trash"></i>
                                         </a>
+                                        <button onclick="openVerifyGaleriModal(<?php echo $galeri['id_foto']; ?>, '<?php echo $galeri['status']; ?>')" class="text-gray-500 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100" title="Verifikasi Galeri">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                        <button onclick="quickRejectGaleri(<?php echo $galeri['id_foto']; ?>)" class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100" title="Tolak Galeri">
+                                            <i class="fas fa-times"></i>
+                                        </button>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
-                            <tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Belum ada data galeri.</td></tr>
+                            <tr><td colspan="7" class="px-6 py-4 text-center text-gray-500">Belum ada data galeri.</td></tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
@@ -2015,6 +2055,35 @@ if ($active_page === 'pengumuman' && $pdo) {
                             <i class="fas fa-times-circle mr-1"></i> Tolak (Reject)
                         </button>
                         <button type="button" onclick="closeVerifyModal()" class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm">
+                            Batal
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div id="verifyGaleriModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[100] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-sm sm:w-full">
+                <form action="admin-dashboard.php?page=galeri" method="POST">
+                    <input type="hidden" name="action" value="verify_galeri">
+                    <input type="hidden" name="id_foto" id="verify_id_foto">
+                    <input type="hidden" name="status" id="verify_galeri_status_input">
+
+                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Verifikasi Galeri</h3>
+                        <p class="text-sm text-gray-500" id="verify_galeri_current_status">Status saat ini: </p>
+                        <p class="mt-2 text-sm text-gray-700">Pilih aksi untuk foto galeri ini:</p>
+                    </div>
+                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse space-y-2 sm:space-y-0 sm:space-x-2">
+                        <button type="submit" onclick="document.getElementById('verify_galeri_status_input').value='approved'" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
+                            <i class="fas fa-check-circle mr-1"></i> Setujui (Approve)
+                        </button>
+                        <button type="submit" onclick="document.getElementById('verify_galeri_status_input').value='rejected'" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                            <i class="fas fa-times-circle mr-1"></i> Tolak (Reject)
+                        </button>
+                        <button type="button" onclick="closeVerifyGaleriModal()" class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm">
                             Batal
                         </button>
                     </div>
@@ -2575,6 +2644,48 @@ if ($active_page === 'pengumuman' && $pdo) {
 
         function closeEditNewsModal() {
             document.getElementById('editNewsModal').classList.add('hidden');
+        }
+
+        function openVerifyGaleriModal(id, status) {
+            document.getElementById('verify_id_foto').value = id;
+            document.getElementById('verify_galeri_current_status').innerHTML = `Status saat ini: <b>${status.toUpperCase()}</b>`;
+            document.getElementById('verifyGaleriModal').classList.remove('hidden');
+        }
+
+        function closeVerifyGaleriModal() {
+            document.getElementById('verifyGaleriModal').classList.add('hidden');
+        }
+        
+        function quickRejectGaleri(id) {
+            if (confirm('Apakah Anda yakin ingin menolak galeri ini?')) {
+                // Create form for quick reject
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = 'admin-dashboard.php?page=galeri';
+                
+                // Add hidden inputs
+                const actionInput = document.createElement('input');
+                actionInput.type = 'hidden';
+                actionInput.name = 'action';
+                actionInput.value = 'verify_galeri';
+                
+                const idInput = document.createElement('input');
+                idInput.type = 'hidden';
+                idInput.name = 'id_foto';
+                idInput.value = id;
+                
+                const statusInput = document.createElement('input');
+                statusInput.type = 'hidden';
+                statusInput.name = 'status';
+                statusInput.value = 'rejected';
+                
+                form.appendChild(actionInput);
+                form.appendChild(idInput);
+                form.appendChild(statusInput);
+                
+                document.body.appendChild(form);
+                form.submit();
+            }
         }
 
         function openVerifyModal(id, status) {
