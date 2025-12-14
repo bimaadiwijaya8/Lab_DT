@@ -1254,11 +1254,47 @@ if ($active_page === 'pengumuman' && $pdo) {
             overflow: hidden;
         }
         .z-\[100\] { z-index: 100; }
+        
+        /* Sidebar toggle styles */
+        .sidebar-closed {
+            transform: translateX(-100%);
+        }
+        .main-content-shifted {
+            margin-left: 0 !important;
+        }
+        .toggle-btn {
+            position: fixed;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            z-index: 1000;
+            background: white;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .toggle-btn:hover {
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        .sidebar-open .toggle-btn {
+            left: 268px;
+        }
     </style>
 </head>
-<body class="bg-gradient-to-br from-slate-100 via-slate-50 to-slate-200 min-h-screen text-gray-900 antialiased">
+<body class="bg-gradient-to-br from-slate-100 via-slate-50 to-slate-200 min-h-screen text-gray-900 antialiased sidebar-open">
     
-    <div class="fixed top-0 left-0 h-full w-64 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-100 shadow-xl border-r border-slate-800/60 px-5 py-6 flex flex-col transition-transform duration-300 ease-in-out">
+    <!-- Toggle Button -->
+    <button class="toggle-btn" onclick="toggleSidebar()" aria-label="Toggle Sidebar">
+        <i class="fas fa-chevron-left text-gray-700"></i>
+    </button>
+    
+    <div id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-100 shadow-xl border-r border-slate-800/60 px-5 py-6 flex flex-col transition-transform duration-300 ease-in-out">
         <div class="mb-8 flex items-center gap-3">
             <div class="h-10 w-10 rounded-2xl bg-primary/20 flex items-center justify-center text-primary">
                 <i class="fas fa-flask text-lg"></i>
@@ -1292,7 +1328,7 @@ if ($active_page === 'pengumuman' && $pdo) {
         </div>
     </div>
 
-    <div class="ml-64 p-6 md:p-10">
+    <div id="mainContent" class="ml-64 p-6 md:p-10 transition-all duration-300 ease-in-out">
         <header class="flex flex-wrap items-center justify-between gap-4 mb-8">
             <div>
                 <p class="flex items-center gap-2 text-sm text-gray-500">
@@ -2754,6 +2790,30 @@ if ($active_page === 'pengumuman' && $pdo) {
 
         function closeEditPengumumanModal() {
             document.getElementById('editPengumumanModal').classList.add('hidden');
+        }
+
+        // --- Sidebar Toggle Function ---
+        function toggleSidebar() {
+            const body = document.body;
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            const toggleBtn = document.querySelector('.toggle-btn i');
+            
+            if (body.classList.contains('sidebar-open')) {
+                // Close sidebar
+                body.classList.remove('sidebar-open');
+                sidebar.classList.add('sidebar-closed');
+                mainContent.classList.add('main-content-shifted');
+                toggleBtn.classList.remove('fa-chevron-left');
+                toggleBtn.classList.add('fa-chevron-right');
+            } else {
+                // Open sidebar
+                body.classList.add('sidebar-open');
+                sidebar.classList.remove('sidebar-closed');
+                mainContent.classList.remove('main-content-shifted');
+                toggleBtn.classList.remove('fa-chevron-right');
+                toggleBtn.classList.add('fa-chevron-left');
+            }
         }
     </script>
 </body>
