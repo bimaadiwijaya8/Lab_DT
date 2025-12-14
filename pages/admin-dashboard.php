@@ -301,7 +301,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'fasilitas
                     ':nama' => $nama_fasilitas,
                     ':deskripsi' => $deskripsi,
                     ':foto' => $foto_path_for_db,
-                    ':created_by' => $admin_user_id
+                    ':created_by' => 1 // Hardcoded user_id since we don't have login session yet
                 ]);
                 $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Fasilitas baru berhasil ditambahkan!</div>";
             } catch (Exception $e) {
@@ -1144,7 +1144,7 @@ $fasilitas_data = [];
 if ($active_page === 'fasilitas' && $pdo) {
     try {
         // READ: Mengambil semua data fasilitas
-        $sql = "SELECT f.*, a.nama_gelar AS created_by_name FROM fasilitas f LEFT JOIN anggota a ON f.created_by = a.id_anggota ORDER BY f.id_fasilitas DESC";
+        $sql = "SELECT * FROM fasilitas ORDER BY id_fasilitas DESC";
         $stmt = $pdo->query($sql);
         $fasilitas_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
@@ -1473,11 +1473,11 @@ if ($active_page === 'pengumuman' && $pdo) {
                                            class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
                                             <i class="fas fa-trash"></i>
                                         </a>
-                                        <button onclick="quickReject(<?php echo $news['id_berita']; ?>)" class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100" title="Tolak Berita">
-                                            <i class="fas fa-times"></i>
-                                        </button>
                                         <button onclick="openVerifyModal(<?php echo $news['id_berita']; ?>, '<?php echo $news['status']; ?>')" class="text-gray-500 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100" title="Verifikasi Berita">
                                             <i class="fas fa-check-double"></i>
+                                        </button>
+                                        <button onclick="quickReject(<?php echo $news['id_berita']; ?>)" class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100" title="Tolak Berita">
+                                            <i class="fas fa-times"></i>
                                         </button>
                                     </td>
                                 </tr>
@@ -1503,14 +1503,10 @@ if ($active_page === 'pengumuman' && $pdo) {
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Foto</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Fasilitas</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deskripsi (Snippet)</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dibuat Oleh</th>
-                            <th scope="col" class="relative px-6 py-3">
-                                <span class="sr-only">Aksi</span>
-                            </th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
@@ -1520,7 +1516,6 @@ if ($active_page === 'pengumuman' && $pdo) {
                                     data-nama_fasilitas="<?php echo htmlspecialchars($fasilitas['nama_fasilitas']); ?>" 
                                     data-deskripsi="<?php echo htmlspecialchars($fasilitas['deskripsi']); ?>" 
                                     data-foto="<?php echo htmlspecialchars($fasilitas['foto']); ?>">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo $fasilitas['id_fasilitas']; ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         <img src="<?php echo htmlspecialchars($fasilitas['foto']); ?>" alt="Foto Fasilitas" class="h-10 w-10 rounded object-cover">
                                     </td>
@@ -1528,7 +1523,6 @@ if ($active_page === 'pengumuman' && $pdo) {
                                     <td class="px-6 py-4 text-sm text-gray-500 max-w-xs truncate" style="max-width: 400px;">
                                         <?php echo htmlspecialchars(substr($fasilitas['deskripsi'], 0, 100)) . (strlen($fasilitas['deskripsi']) > 100 ? '...' : ''); ?>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($fasilitas['created_by_name'] ?? 'Admin'); ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end space-x-2">
                                         <button onclick="openEditFasilitasModal(this)" class="text-indigo-600 hover:text-indigo-900 p-2 rounded-md hover:bg-gray-100">
                                             <i class="fas fa-edit"></i>
@@ -1542,7 +1536,7 @@ if ($active_page === 'pengumuman' && $pdo) {
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
-                            <tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Belum ada data fasilitas.</td></tr>
+                            <tr><td colspan="4" class="px-6 py-4 text-center text-gray-500">Belum ada data fasilitas.</td></tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
