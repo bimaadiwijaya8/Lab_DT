@@ -32,15 +32,15 @@ if (file_exists($db_connect_path)) {
     } catch (PDOException $e) {
         $db_error = true;
         // Tampilkan pesan error detail dari database
-        $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>
-                        Kesalahan Koneksi Database: <b>PDOException</b>. Pastikan host, port, dbname, user, dan password di <b>db_connect.php</b> sudah benar. 
-                        Detail Error: " . htmlspecialchars($e->getMessage()) . "
+        $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>" .
+                    "Kesalahan Koneksi Database: <b>PDOException</b>. Pastikan host, port, dbname, user, dan password di <b>db_connect.php</b> sudah benar. " .
+                    "Detail Error: " . htmlspecialchars($e->getMessage()) . "
                     </div>";
         $pdo = null;
     } catch (Exception $e) {
         $db_error = true;
-        $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>
-                        Kesalahan Sistem: " . htmlspecialchars($e->getMessage()) . "
+        $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>" .
+                    "Kesalahan Sistem: " . htmlspecialchars($e->getMessage()) . "
                     </div>";
         $pdo = null;
     }
@@ -1557,7 +1557,6 @@ if ($active_page === 'pengumuman' && $pdo) {
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Foto</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Foto</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deskripsi (Snippet)</th>
@@ -1574,7 +1573,6 @@ if ($active_page === 'pengumuman' && $pdo) {
                                     data-nama_foto="<?php echo htmlspecialchars($galeri['nama_foto']); ?>" 
                                     data-deskripsi="<?php echo htmlspecialchars($galeri['deskripsi']); ?>" 
                                     data-file_foto="<?php echo htmlspecialchars($galeri['file_foto']); ?>">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo $galeri['id_foto']; ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         <img src="<?php echo htmlspecialchars($galeri['file_foto']); ?>" alt="Foto Galeri" class="h-10 w-10 rounded object-cover">
                                     </td>
@@ -1594,7 +1592,7 @@ if ($active_page === 'pengumuman' && $pdo) {
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
-                            <tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Belum ada data galeri.</td></tr>
+                            <tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Belum ada data galeri.</td></tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
