@@ -528,7 +528,8 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'galeri') 
                             deskripsi = :deskripsi, 
                             file_foto = :file_foto,
                             id_anggota = :id_anggota,
-                            updated_by = :updated_by 
+                            updated_by = :updated_by,
+                            status = 'pending'
                         WHERE id_foto = :id";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([
@@ -722,7 +723,8 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'publikasi
                             penulis = :penulis, 
                             tanggal_terbit = :tanggal_terbit, 
                             deskripsi = :deskripsi,
-                            file_publikasi = :file_publikasi 
+                            file_publikasi = :file_publikasi,
+                            status = 'pending'
                         WHERE id_publikasi = :id";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([
@@ -740,6 +742,8 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'publikasi
         }
     }
 }
+
+    
 
 // --- DELETE (Hapus Publikasi - Menggunakan GET request) ---
 if ($pdo && $active_page === 'publikasi' && isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
@@ -1747,6 +1751,9 @@ if ($active_page === 'pengumuman' && $pdo) {
                                            class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
                                             <i class="fas fa-trash"></i>
                                         </a>
+                                        <button onclick="openVerifyPublikasiModal(<?php echo $publikasi['id_publikasi']; ?>, '<?php echo $publikasi['status']; ?>')" class="text-gray-500 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100" title="Verifikasi Publikasi">
+                                            <i class="fas fa-check-double"></i>
+                                        </button>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -2681,6 +2688,18 @@ if ($active_page === 'pengumuman' && $pdo) {
 
         function closeVerifyModal() {
             document.getElementById('verifyModal').classList.add('hidden');
+            document.body.classList.remove('modal-open');
+        }
+
+        function openVerifyPublikasiModal(id, status) {
+            document.getElementById('verify_id_publikasi').value = id;
+            document.getElementById('verify_publikasi_current_status').innerHTML = `Status saat ini: <b>${status.toUpperCase()}</b>`;
+            document.getElementById('verifyPublikasiModal').classList.remove('hidden');
+            document.body.classList.add('modal-open');
+        }
+
+        function closeVerifyPublikasiModal() {
+            document.getElementById('verifyPublikasiModal').classList.add('hidden');
             document.body.classList.remove('modal-open');
         }
         
