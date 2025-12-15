@@ -1890,7 +1890,7 @@ if ($active_page === 'pengumuman' && $pdo) {
                                     data-tanggal="<?php echo htmlspecialchars($pengumuman['tanggal']); ?>"
                                     data-author="<?php echo htmlspecialchars($pengumuman['id_anggota']); ?>">
                                     <td class="px-6 py-4 text-sm font-medium text-gray-900 line-clamp-2" style="max-width: 250px;"><?php echo htmlspecialchars($pengumuman['judul']); ?></td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($pengumuman['informasi']); ?></td>
+                                    <td class="px-6 py-4 text-sm text-gray-500 max-w-xs truncate" style="max-width: 400px;"><?php echo htmlspecialchars(substr($pengumuman['informasi'], 0, 100)) . (strlen($pengumuman['informasi']) > 100 ? '...' : ''); ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo date('d F Y', strtotime($pengumuman['tanggal'])); ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($pengumuman['id_anggota'] ?? 'Admin'); ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end space-x-2">
