@@ -1874,7 +1874,6 @@ if ($active_page === 'pengumuman' && $pdo) {
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Isi (Snippet)</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Posting</th>
@@ -1890,7 +1889,6 @@ if ($active_page === 'pengumuman' && $pdo) {
                                     data-informasi="<?php echo htmlspecialchars($pengumuman['informasi']); ?>" 
                                     data-tanggal="<?php echo htmlspecialchars($pengumuman['tanggal']); ?>"
                                     data-author="<?php echo htmlspecialchars($pengumuman['id_anggota']); ?>">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo $pengumuman['id_pengumuman']; ?></td>
                                     <td class="px-6 py-4 text-sm font-medium text-gray-900 line-clamp-2" style="max-width: 250px;"><?php echo htmlspecialchars($pengumuman['judul']); ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($pengumuman['informasi']); ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($pengumuman['tanggal']); ?></td>
@@ -1908,7 +1906,7 @@ if ($active_page === 'pengumuman' && $pdo) {
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
-                            <tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Belum ada data pengumuman.</td></tr>
+                            <tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Belum ada data pengumuman.</td></tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
