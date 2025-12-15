@@ -1920,7 +1920,6 @@ if ($active_page === 'pengumuman' && $pdo) {
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Foto</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama & Gelar</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jabatan</th>
@@ -1939,7 +1938,6 @@ if ($active_page === 'pengumuman' && $pdo) {
                                     data-no_telp="<?php echo htmlspecialchars($anggota['no_telp']); ?>"
                                     data-bidang_keahlian="<?php echo htmlspecialchars($anggota['bidang_keahlian']); ?>"
                                     data-foto="<?php echo htmlspecialchars($anggota['foto']); ?>">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo $anggota['id_anggota']; ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         <img src="<?php echo htmlspecialchars($anggota['foto']); ?>" alt="Foto Anggota" class="h-10 w-10 rounded-full object-cover">
                                     </td>
@@ -1963,7 +1961,7 @@ if ($active_page === 'pengumuman' && $pdo) {
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
-                            <tr><td colspan="7" class="px-6 py-4 text-center text-gray-500">Belum ada data anggota.</td></tr>
+                            <tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Belum ada data anggota.</td></tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
