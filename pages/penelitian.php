@@ -38,7 +38,7 @@ $publikasi_data_full = []; // Variabel baru untuk menampung SEMUA data sebelum p
 $publikasi_error = '';
 if ($pdo) {
   try {
-    // Mengambil SEMUA data publikasi yang terbitkan, diurutkan dari terbaru
+    // Mengambil data publikasi yang sudah disetujui, diurutkan dari terbaru
     $sql = "SELECT 
                     p.id_publikasi, 
                     p.judul, 
@@ -48,6 +48,8 @@ if ($pdo) {
                     p.file_publikasi
                 FROM 
                     publikasi p
+                WHERE 
+                    p.status = 'approved'
                 ORDER BY 
                     p.tanggal_terbit DESC";
     $stmt = $pdo->prepare($sql);
