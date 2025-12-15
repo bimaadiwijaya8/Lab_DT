@@ -2,12 +2,12 @@
 -- PostgreSQL database dump
 --
 
-\restrict xwfJrS83ZRKl8fvZZqiYq5FacrpwidwCaGUvKXpEVYhYmXnb4Lq4KMIF49gttgP
+\restrict 2vxaC3YWqkywy7Nuxyw4qbgkuZdhtwF5hLk7sEfSya18TXFPZOFvLLbHCwIGomg
 
 -- Dumped from database version 15.14
 -- Dumped by pg_dump version 15.14
 
--- Started on 2025-12-14 23:33:26
+-- Started on 2025-12-15 16:38:30
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -591,7 +591,8 @@ CREATE TABLE public.publikasi (
     deskripsi text,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    id_anggota integer
+    id_anggota integer,
+    status character varying(20)
 );
 
 
@@ -916,10 +917,10 @@ COPY public.anggota (id_anggota, nama_gelar, foto, jabatan, email, no_telp, bida
 
 COPY public.berita (id_berita, judul, gambar, informasi, tanggal, author, created_at, status) FROM stdin;
 45	IEJR3442	../assets/img/berita/be56a5f3e05bf1069ca08df2165b5e07.jpg	daee	2025-12-17	2	2025-12-14 02:45:48.511126	approved
+47	UHRER	../assets/img/berita/1765666755_135224471_p0.png	ijerji-2	2025-12-13	2	2025-12-14 05:59:15.527441	rejected
 48	RevisiID40	../assets/img/berita/f2c75990a45f197d9f18c2c099f8751e.jpg	iipij	2025-12-01	3	2025-12-14 06:41:37.761816	approved
 32	few	../assets/img/berita/Screenshot_2025-11-21_084843.png	ferwe	2025-12-04	1	2025-12-13 14:17:16.756804	pending
 33	TRY5N	../assets/img/berita/Screenshot_2025-11-22_140415.png	ETERERTERIEREIR	2025-11-18	1	2025-12-13 17:37:24.832957	rejected
-47	UHRER	../assets/img/berita/1765666755_135224471_p0.png	ijerji-2	2025-12-13	2	2025-12-14 05:59:15.527441	approved
 \.
 
 
@@ -945,9 +946,10 @@ COPY public.fasilitas (id_fasilitas, nama_fasilitas, deskripsi, foto, created_by
 
 COPY public.galeri (id_foto, nama_foto, deskripsi, file_foto, id_anggota, updated_by, status) FROM stdin;
 5	IGaleri5	IGaleri5	../assets/img/galeri/galeri_1765723851_Screenshot_2025-11-22_183937.png	4	1	pending
-7	IGaleri6	RW	../assets/img/galeri/galeri_1765729721_135224471_p0.png	4	1	pending
 3	iGaleri3	ietto	../assets/img/galeri/galeri_1765673943_Screenshot_2025-11-20_170828.png	2	2	approved
 2	iGaleri2	iGaleri2	../assets/img/galeri/galeri_1765673924_Screenshot_2025-11-21_011745.png	1	1	rejected
+7	IGaleri6	RW	../assets/img/galeri/galeri_1765729721_135224471_p0.png	4	1	approved
+8	HJRUJH$#	423	../assets/img/galeri/galeri_1765730619_f2c75990a45f197d9f18c2c099f8751e.jpg	4	1	approved
 \.
 
 
@@ -1015,11 +1017,14 @@ COPY public.pengumuman (id_pengumuman, judul, informasi, id_anggota, tanggal) FR
 -- Data for Name: publikasi; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.publikasi (id_publikasi, judul, penulis, tanggal_terbit, file_publikasi, deskripsi, created_at, updated_at, id_anggota) FROM stdin;
-1	Implementasi Deep Learning untuk Deteksi Objek	Rani Permata, Taufik Hidayat	2025-10-01	file_publikasi_10.pdf	Jurnal mengenai model CNN untuk deteksi objek secara real-time.	2025-12-04 00:41:54.5758	2025-12-04 00:41:54.5758	1
-2	Analisis Performa Sistem Kontrol PID	Doni Saputra, Budi Santoso	2024-05-15	file_publikasi_11.pdf	Skripsi alumni tentang optimasi kontrol PID pada lengan robot.	2025-12-04 00:41:54.5758	2025-12-04 00:41:54.5758	2
-3	Review Metode Sensor Fusion	Sinta Amelia, Citra Dewi	2025-11-20	file_publikasi_12.pdf	Makalah review tentang berbagai teknik fusi data sensor.	2025-12-04 00:41:54.5758	2025-12-04 00:41:54.5758	3
-4	JUDUL4	IEJRIER	2025-12-09	../assets/files/publikasi/publikasi_1765655624_English_Assignment_EX10.pdf	EIJRIER	2025-12-14 02:53:44.249846	2025-12-14 02:53:44.249846	1
+COPY public.publikasi (id_publikasi, judul, penulis, tanggal_terbit, file_publikasi, deskripsi, created_at, updated_at, id_anggota, status) FROM stdin;
+1	Implementasi Deep Learning untuk Deteksi Objek	Rani Permata, Taufik Hidayat	2025-10-01	file_publikasi_10.pdf	Jurnal mengenai model CNN untuk deteksi objek secara real-time.	2025-12-04 00:41:54.5758	2025-12-04 00:41:54.5758	1	pending
+4	JUDUL4	IEJRIER	2025-12-09	../assets/files/publikasi/publikasi_1765733081_ENGLISH_U6.pdf	EIJRIER	2025-12-14 02:53:44.249846	2025-12-14 02:53:44.249846	1	pending
+2	Analisis Performa Sistem Kontrol PID	Doni Saputra, Budi Santoso	2024-05-15	file_publikasi_11.pdf	Skripsi alumni tentang optimasi kontrol PID pada lengan robot.	2025-12-04 00:41:54.5758	2025-12-04 00:41:54.5758	2	approved
+3	Review Metode Sensor Fusion	Sinta Amelia, Citra Dewi	2025-11-20	file_publikasi_12.pdf	Makalah review tentang berbagai teknik fusi data sensor.	2025-12-04 00:41:54.5758	2025-12-04 00:41:54.5758	3	rejected
+5	TRY5N	IEJRIER5	2025-12-10	../assets/files/publikasi/publikasi_1765785106_ENGLISH_U6.pdf	e42	2025-12-15 14:45:18.954999	2025-12-15 14:45:18.954999	1	pending
+7	3434	453	2025-12-15	../assets/files/publikasi/publikasi_1765785412_JOBSHEET_13_PRESTASI_1_.pdf	3434	2025-12-15 14:56:52.40817	2025-12-15 14:56:52.40817	1	pending
+8	ewe	rwe2	2025-12-15	../assets/files/publikasi/publikasi_1765790689_cUTS_25-10.pdf	2323	2025-12-15 16:24:49.756878	2025-12-15 16:24:49.756878	1	pending
 \.
 
 
@@ -1089,7 +1094,7 @@ SELECT pg_catalog.setval('public.fasilitas_id_fasilitas_seq', 4, true);
 -- Name: galeri_id_foto_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.galeri_id_foto_seq', 7, true);
+SELECT pg_catalog.setval('public.galeri_id_foto_seq', 9, true);
 
 
 --
@@ -1143,7 +1148,7 @@ SELECT pg_catalog.setval('public.pengumuman_id_pengumuman_seq', 3, true);
 -- Name: publikasi_id_publikasi_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.publikasi_id_publikasi_seq', 4, true);
+SELECT pg_catalog.setval('public.publikasi_id_publikasi_seq', 8, true);
 
 
 --
@@ -1452,11 +1457,11 @@ ALTER TABLE ONLY public.publikasi
     ADD CONSTRAINT publikasi_id_anggota_fkey FOREIGN KEY (id_anggota) REFERENCES public.anggota(id_anggota) ON DELETE SET NULL;
 
 
--- Completed on 2025-12-14 23:33:26
+-- Completed on 2025-12-15 16:38:30
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict xwfJrS83ZRKl8fvZZqiYq5FacrpwidwCaGUvKXpEVYhYmXnb4Lq4KMIF49gttgP
+\unrestrict 2vxaC3YWqkywy7Nuxyw4qbgkuZdhtwF5hLk7sEfSya18TXFPZOFvLLbHCwIGomg
 
