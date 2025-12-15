@@ -654,8 +654,8 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'publikasi
         if ($upload_ok) {
             try {
                 // Menggunakan INSERT eksplisit
-                $sql = "INSERT INTO publikasi (judul, penulis, tanggal_terbit, file_publikasi, deskripsi, id_anggota) 
-                        VALUES (:judul, :penulis, :tanggal_terbit, :file, :deskripsi, :id_anggota)";
+                $sql = "INSERT INTO publikasi (judul, penulis, tanggal_terbit, file_publikasi, deskripsi, id_anggota, status) 
+                        VALUES (:judul, :penulis, :tanggal_terbit, :file, :deskripsi, :id_anggota, :status)";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([
                     ':id_anggota' => $admin_user_id, // ID Anggota/User yang login
@@ -663,7 +663,8 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'publikasi
                     ':penulis' => $penulis,
                     ':tanggal_terbit' => $tanggal_terbit,
                     ':file' => $file_path_for_db,
-                    ':deskripsi' => $deskripsi
+                    ':deskripsi' => $deskripsi,
+                    ':status' => 'pending' // Default status for new publications
                 ]);
                 $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Publikasi baru berhasil ditambahkan!</div>";
             } catch (Exception $e) {
@@ -1698,12 +1699,12 @@ if ($active_page === 'pengumuman' && $pdo) {
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Penulis</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Terbit</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">File</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deskripsi (Snippet)</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                             <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                         </tr>
                     </thead>
@@ -1716,16 +1717,27 @@ if ($active_page === 'pengumuman' && $pdo) {
                                     data-tanggal_terbit="<?php echo htmlspecialchars($publikasi['tanggal_terbit']); ?>"
                                     data-deskripsi="<?php echo htmlspecialchars($publikasi['deskripsi']); ?>" 
                                     data-file_publikasi="<?php echo htmlspecialchars($publikasi['file_publikasi']); ?>">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo $publikasi['id_publikasi']; ?></td>
                                     <td class="px-6 py-4 text-sm font-medium text-gray-900 line-clamp-2" style="max-width: 200px;"><?php echo htmlspecialchars($publikasi['judul']); ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($publikasi['penulis']); ?></td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($publikasi['tanggal_terbit']); ?></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo date('d F Y', strtotime($publikasi['tanggal_terbit'])); ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         <a href="<?php echo htmlspecialchars($publikasi['file_publikasi']); ?>" target="_blank" class="text-primary hover:text-primary-dark">
                                             <i class="fas fa-file-pdf mr-1"></i> Lihat File
                                         </a>
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-500 max-w-xs truncate" style="max-width: 300px;"><?php echo htmlspecialchars(substr($publikasi['deskripsi'], 0, 100)) . (strlen($publikasi['deskripsi']) > 100 ? '...' : ''); ?></td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <?php 
+                                            $status_class = [
+                                                'approved' => 'bg-green-100 text-green-800', 
+                                                'pending' => 'bg-yellow-100 text-yellow-800', 
+                                                'rejected' => 'bg-red-100 text-red-800'
+                                            ][$publikasi['status']] ?? 'bg-gray-100 text-gray-800';
+                                        ?>
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <?php echo $status_class; ?>">
+                                            <?php echo ucfirst($publikasi['status'] ?? 'pending'); ?>
+                                        </span>
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end space-x-2">
                                         <button onclick="openEditPublikasiModal(this)" class="text-indigo-600 hover:text-indigo-900 p-2 rounded-md hover:bg-gray-100">
                                             <i class="fas fa-edit"></i>
