@@ -2,12 +2,12 @@
 -- PostgreSQL database dump
 --
 
-\restrict 2vxaC3YWqkywy7Nuxyw4qbgkuZdhtwF5hLk7sEfSya18TXFPZOFvLLbHCwIGomg
+\restrict dkWetjZhveL8ZNUTKzqyahcdQpiGqXz1SKrIolfbgOVFEzYn9fzltka5pDprV1S
 
 -- Dumped from database version 15.14
 -- Dumped by pg_dump version 15.14
 
--- Started on 2025-12-15 16:38:30
+-- Started on 2025-12-16 00:18:04
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -546,7 +546,8 @@ CREATE TABLE public.pengumuman (
     judul character varying(200),
     informasi text,
     id_anggota integer,
-    tanggal date
+    tanggal date,
+    status character varying(20)
 );
 
 
@@ -887,11 +888,19 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 --
 
 COPY public.agenda (id_agenda, nama_agenda, tgl_agenda, link_agenda, id_anggota) FROM stdin;
-1	Seminar Nasional Robotika Cerdas	2026-01-15	https://bit.ly/seminar-robotika-jan	1
 2	Rapat Koordinasi Mingguan Staf Lab	2025-12-10	https://meet.google.com/rapat-lab-des	2
 3	Pelatihan Penggunaan Software CAD	2026-01-22	https://forms.gle/pelatihan-cad-2026	3
 4	agenda1	2026-01-17	youtube.com	2
+6	agenda3	2025-11-13	https://www.youtube.com/	4
 5	agenda2	2025-11-12	https://bit.ly/seminar-robotika-jan	3
+11	AGENDABRU	2025-11-12	https://bit.ly/seminar-robotika-jan	2
+1	Seminar Nasional Robotika Cerdas	2026-01-15	https://bit.ly/seminar-robotika-jan	\N
+7	rer34	2025-12-04	https://chatgpt.com/	\N
+9	533553	2025-12-05	https://chatgpt.com/	\N
+10	23245	2025-12-23	https://chatgpt.com/	\N
+12	A2323	2025-12-05	https://bit.ly/seminar-robotika-jan	\N
+13	AA	2025-12-05	https://bit.ly/seminar-robotika-jan	\N
+8	rer34	2025-12-04	https://chatgpt.com/	4
 \.
 
 
@@ -902,10 +911,10 @@ COPY public.agenda (id_agenda, nama_agenda, tgl_agenda, link_agenda, id_anggota)
 --
 
 COPY public.anggota (id_anggota, nama_gelar, foto, jabatan, email, no_telp, bidang_keahlian) FROM stdin;
-1	Dr. Ir. Taufik Hidayat, M.T.	foto_taufik.jpg	Kepala Laboratorium	taufik.h@univ.ac.id	081122334455	Robotika, AI
-2	Budi Santoso, S.Kom., M.Cs.	foto_budi.jpg	Staf Peneliti	budi.s@lab.id	081234567890	Pemrosesan Citra
-3	Citra Dewi, S.T., M.Eng.	foto_citra.jpg	Asisten Laboratorium	citra.d@lab.id	085098765432	Machine Learning
-4	UXHD	../assets/img/anggota/anggota_1765669963_Screenshot_2025-11-25_231356.png	ITER	TJEIR34@GMAIL.COM	T83U9423	TE8RJO34
+4	UXHDEWR		ITER432	TJEIR34@GMAIL.COM	T83U9423	TE8RJO34
+3	Citra Dewi, S.T., M.Eng.	../assets/img/anggota/anggota_1765812755_fasilitas_1765669641_a02898ed40d7711990aef44916e905f8.jpg	Asisten Laboratorium	citra.d@lab.id	085098765432	Machine Learning
+2	Ms. Eve	../assets/img/anggota/anggota_1765813246_be56a5f3e05bf1069ca08df2165b5e07.jpg	Staf Penelitr	budi.s@lab.id	081234567890	Pemrosesan Citra
+5	EDIT	../assets/img/anggota/anggota_1765815033_135224471_p0.png	EDIT	EDIT@GMAIL.COM	EDIT	EDIT
 \.
 
 
@@ -917,10 +926,10 @@ COPY public.anggota (id_anggota, nama_gelar, foto, jabatan, email, no_telp, bida
 
 COPY public.berita (id_berita, judul, gambar, informasi, tanggal, author, created_at, status) FROM stdin;
 45	IEJR3442	../assets/img/berita/be56a5f3e05bf1069ca08df2165b5e07.jpg	daee	2025-12-17	2	2025-12-14 02:45:48.511126	approved
-47	UHRER	../assets/img/berita/1765666755_135224471_p0.png	ijerji-2	2025-12-13	2	2025-12-14 05:59:15.527441	rejected
+47	UHRER	../assets/img/berita/1765666755_135224471_p0.png	ijerji-2	2025-12-13	2	2025-12-14 05:59:15.527441	approved
 48	RevisiID40	../assets/img/berita/f2c75990a45f197d9f18c2c099f8751e.jpg	iipij	2025-12-01	3	2025-12-14 06:41:37.761816	approved
-32	few	../assets/img/berita/Screenshot_2025-11-21_084843.png	ferwe	2025-12-04	1	2025-12-13 14:17:16.756804	pending
-33	TRY5N	../assets/img/berita/Screenshot_2025-11-22_140415.png	ETERERTERIEREIR	2025-11-18	1	2025-12-13 17:37:24.832957	rejected
+32	few	../assets/img/berita/Screenshot_2025-11-21_084843.png	ferwe	2025-12-04	\N	2025-12-13 14:17:16.756804	pending
+33	TRY5N	../assets/img/berita/Screenshot_2025-11-22_140415.png	ETERERTERIEREIR	2025-11-18	\N	2025-12-13 17:37:24.832957	rejected
 \.
 
 
@@ -947,9 +956,9 @@ COPY public.fasilitas (id_fasilitas, nama_fasilitas, deskripsi, foto, created_by
 COPY public.galeri (id_foto, nama_foto, deskripsi, file_foto, id_anggota, updated_by, status) FROM stdin;
 5	IGaleri5	IGaleri5	../assets/img/galeri/galeri_1765723851_Screenshot_2025-11-22_183937.png	4	1	pending
 3	iGaleri3	ietto	../assets/img/galeri/galeri_1765673943_Screenshot_2025-11-20_170828.png	2	2	approved
-2	iGaleri2	iGaleri2	../assets/img/galeri/galeri_1765673924_Screenshot_2025-11-21_011745.png	1	1	rejected
+8	HJRUJH$#	423rr3wr	../assets/img/galeri/galeri_1765730619_f2c75990a45f197d9f18c2c099f8751e.jpg	4	1	approved
 7	IGaleri6	RW	../assets/img/galeri/galeri_1765729721_135224471_p0.png	4	1	approved
-8	HJRUJH$#	423	../assets/img/galeri/galeri_1765730619_f2c75990a45f197d9f18c2c099f8751e.jpg	4	1	approved
+10	HJRUJH$#	4545	../assets/img/galeri/galeri_1765794301_a02898ed40d7711990aef44916e905f8.jpg	3	1	pending
 \.
 
 
@@ -1002,12 +1011,13 @@ COPY public.member (id_member, email, nama, foto, nim, jurusan, prodi, kelas, ta
 -- Data for Name: pengumuman; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.pengumuman (id_pengumuman, judul, informasi, id_anggota, tanggal) FROM stdin;
-1	Pendaftaran Asisten Lab Semester Genap 2026	Pendaftaran dibuka mulai 10 hingga 20 Desember 2025. Silakan kirim CV dan transkrip nilai ke email lab.	1	2025-01-02
-2	Jadwal Review Proyek Akhir	Review proyek akhir untuk batch 2023 akan dilaksanakan pada minggu ketiga Januari 2026. Detail jadwal akan diumumkan melalui email.	2	2025-01-03
-3	Penggunaan Ruangan Komputasi	Ruangan komputasi akan ditutup sementara pada tanggal 5 Desember 2025 untuk pemeliharaan sistem. Harap simpan pekerjaan Anda sebelum tanggal tersebut.	3	2025-01-05
-4	judul4	info judul4	2	2025-01-08
-5	judul5	info judul5	1	2025-01-01
+COPY public.pengumuman (id_pengumuman, judul, informasi, id_anggota, tanggal, status) FROM stdin;
+1	Pendaftaran Asisten Lab Semester Genap 2026	Pendaftaran dibuka mulai 10 hingga 20 Desember 2025. Silakan kirim CV dan transkrip nilai ke email lab.	\N	2025-01-02	pending
+2	Jadwal Review Proyek Akhir	Review proyek akhir untuk batch 2023 akan dilaksanakan pada minggu ketiga Januari 2026. Detail jadwal akan diumumkan melalui email.	2	2025-01-03	pending
+5	judul5	info judul5	\N	2025-01-01	pending
+9	EDIT	EDIT	5	2025-12-12	pending
+3	Penggunaan Ruangan Komputasi	Ruangan komputasi akan ditutup sementara pada tanggal 5 Desember 2025 untuk pemeliharaan sistem. Harap simpan pekerjaan Anda sebelum tanggal tersebut.	3	2025-01-05	approved
+4	judul4	info judul4	2	2025-01-08	rejected
 \.
 
 
@@ -1018,13 +1028,12 @@ COPY public.pengumuman (id_pengumuman, judul, informasi, id_anggota, tanggal) FR
 --
 
 COPY public.publikasi (id_publikasi, judul, penulis, tanggal_terbit, file_publikasi, deskripsi, created_at, updated_at, id_anggota, status) FROM stdin;
-1	Implementasi Deep Learning untuk Deteksi Objek	Rani Permata, Taufik Hidayat	2025-10-01	file_publikasi_10.pdf	Jurnal mengenai model CNN untuk deteksi objek secara real-time.	2025-12-04 00:41:54.5758	2025-12-04 00:41:54.5758	1	pending
-4	JUDUL4	IEJRIER	2025-12-09	../assets/files/publikasi/publikasi_1765733081_ENGLISH_U6.pdf	EIJRIER	2025-12-14 02:53:44.249846	2025-12-14 02:53:44.249846	1	pending
-2	Analisis Performa Sistem Kontrol PID	Doni Saputra, Budi Santoso	2024-05-15	file_publikasi_11.pdf	Skripsi alumni tentang optimasi kontrol PID pada lengan robot.	2025-12-04 00:41:54.5758	2025-12-04 00:41:54.5758	2	approved
-3	Review Metode Sensor Fusion	Sinta Amelia, Citra Dewi	2025-11-20	file_publikasi_12.pdf	Makalah review tentang berbagai teknik fusi data sensor.	2025-12-04 00:41:54.5758	2025-12-04 00:41:54.5758	3	rejected
-5	TRY5N	IEJRIER5	2025-12-10	../assets/files/publikasi/publikasi_1765785106_ENGLISH_U6.pdf	e42	2025-12-15 14:45:18.954999	2025-12-15 14:45:18.954999	1	pending
-7	3434	453	2025-12-15	../assets/files/publikasi/publikasi_1765785412_JOBSHEET_13_PRESTASI_1_.pdf	3434	2025-12-15 14:56:52.40817	2025-12-15 14:56:52.40817	1	pending
-8	ewe	rwe2	2025-12-15	../assets/files/publikasi/publikasi_1765790689_cUTS_25-10.pdf	2323	2025-12-15 16:24:49.756878	2025-12-15 16:24:49.756878	1	pending
+3	Review Metode Sensor Fusion3	Sinta Amelia, Citra Dewi	2025-11-20	file_publikasi_12.pdf	Makalah review tentang berbagai teknik fusi data sensor.	2025-12-04 00:41:54.5758	2025-12-04 00:41:54.5758	3	rejected
+2	Analisis Performa Sistem Kontrol PIDe	Doni Saputra, Budi Santoso	2024-05-01	file_publikasi_11.pdf	Skripsi alumni tentang optimasi kontrol PID pada lengan robot.	2025-12-04 00:41:54.5758	2025-12-04 00:41:54.5758	2	pending
+4	5JUDUL4	IEJRIER5	2025-12-02	../assets/files/publikasi/publikasi_1765793435_English_Assignment_EX10.pdf	EIJRIERrwr	2025-12-14 02:53:44.249846	2025-12-14 02:53:44.249846	\N	pending
+9	rwwewe	ewewewee	2025-12-05	../assets/files/publikasi/publikasi_1765793546_ENGLISH_U6.pdf	ewew4wewe	2025-12-15 17:12:07.920172	2025-12-15 17:12:07.920172	\N	approved
+5	TRY5N	IEJRIER5	2025-12-10	../assets/files/publikasi/publikasi_1765785106_ENGLISH_U6.pdf	e42	2025-12-15 14:45:18.954999	2025-12-15 14:45:18.954999	\N	approved
+10	434345	656563	2026-01-01	../assets/files/publikasi/publikasi_1765795084_Jobsheet_10.2_-__PHP_-_CRUD.pdf	353352	2025-12-15 17:38:04.998861	2025-12-15 17:38:04.998861	\N	approved
 \.
 
 
@@ -1058,7 +1067,7 @@ COPY public.users (id, username, password, nama, email, no_telp, role, created_a
 -- Name: agenda_id_agenda_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.agenda_id_agenda_seq', 3, true);
+SELECT pg_catalog.setval('public.agenda_id_agenda_seq', 13, true);
 
 
 --
@@ -1067,7 +1076,7 @@ SELECT pg_catalog.setval('public.agenda_id_agenda_seq', 3, true);
 -- Name: anggota_id_anggota_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.anggota_id_anggota_seq', 4, true);
+SELECT pg_catalog.setval('public.anggota_id_anggota_seq', 6, true);
 
 
 --
@@ -1094,7 +1103,7 @@ SELECT pg_catalog.setval('public.fasilitas_id_fasilitas_seq', 4, true);
 -- Name: galeri_id_foto_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.galeri_id_foto_seq', 9, true);
+SELECT pg_catalog.setval('public.galeri_id_foto_seq', 10, true);
 
 
 --
@@ -1139,7 +1148,7 @@ SELECT pg_catalog.setval('public.member_id_member_seq', 3, true);
 -- Name: pengumuman_id_pengumuman_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.pengumuman_id_pengumuman_seq', 3, true);
+SELECT pg_catalog.setval('public.pengumuman_id_pengumuman_seq', 9, true);
 
 
 --
@@ -1148,7 +1157,7 @@ SELECT pg_catalog.setval('public.pengumuman_id_pengumuman_seq', 3, true);
 -- Name: publikasi_id_publikasi_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.publikasi_id_publikasi_seq', 8, true);
+SELECT pg_catalog.setval('public.publikasi_id_publikasi_seq', 10, true);
 
 
 --
@@ -1457,11 +1466,11 @@ ALTER TABLE ONLY public.publikasi
     ADD CONSTRAINT publikasi_id_anggota_fkey FOREIGN KEY (id_anggota) REFERENCES public.anggota(id_anggota) ON DELETE SET NULL;
 
 
--- Completed on 2025-12-15 16:38:30
+-- Completed on 2025-12-16 00:18:05
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict 2vxaC3YWqkywy7Nuxyw4qbgkuZdhtwF5hLk7sEfSya18TXFPZOFvLLbHCwIGomg
+\unrestrict dkWetjZhveL8ZNUTKzqyahcdQpiGqXz1SKrIolfbgOVFEzYn9fzltka5pDprV1S
 
