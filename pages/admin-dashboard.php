@@ -132,6 +132,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'berita') 
         $judul = trim($_POST['judul']);
         $informasi = trim($_POST['informasi']);
         $tanggal = trim($_POST['tanggal']);
+        $author = (int)$_POST['author']; // Get selected author from dropdown
 
         $new_gambar_name = $_FILES['gambar']['name'] ?? '';
         $current_gambar_path = $_POST['current_gambar']; // Path gambar lama
@@ -178,6 +179,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'berita') 
                             informasi = :informasi, 
                             tanggal = :tanggal, 
                             gambar = :gambar,
+                            author = :author,
                             status = 'pending' 
                         WHERE id_berita = :id";
                 $stmt = $pdo->prepare($sql);
@@ -186,6 +188,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'berita') 
                     ':informasi' => $informasi,
                     ':tanggal' => $tanggal,
                     ':gambar' => $gambar_path_for_db, // Path baru atau lama
+                    ':author' => $author,
                     ':id' => $id_berita
                 ]);
                 $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Berita ID {$id_berita} berhasil diupdate!</div>";
@@ -2053,6 +2056,16 @@ if ($active_page === 'pengumuman' && $pdo) {
                                 <input type="date" name="tanggal" id="edit_tanggal" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2">
                             </div>
                             <div>
+                                <label for="edit_author" class="block text-sm font-medium text-gray-700">Author</label>
+                                <select name="author" id="edit_author" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2">
+                                    <?php foreach ($anggota_list as $anggota): ?>
+                                        <option value="<?php echo $anggota['id_anggota']; ?>">
+                                            <?php echo htmlspecialchars($anggota['nama_gelar']); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div>
                                 <label for="edit_informasi" class="block text-sm font-medium text-gray-700">Isi Berita</label>
                                 <textarea name="informasi" id="edit_informasi" rows="5" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2"></textarea>
                             </div>
@@ -2698,6 +2711,7 @@ if ($active_page === 'pengumuman' && $pdo) {
             const informasi = row.dataset.informasi;
             const tanggal = row.dataset.tanggal;
             const gambar = row.dataset.gambar; // Path gambar
+            const author = row.dataset.author; // Author ID
 
             document.getElementById('edit_id_berita').value = id;
             document.getElementById('edit_judul').value = judul;
@@ -2705,6 +2719,11 @@ if ($active_page === 'pengumuman' && $pdo) {
             document.getElementById('edit_tanggal').value = tanggal;
             document.getElementById('edit_current_gambar').value = gambar; // Path gambar lama
             document.getElementById('edit_current_gambar_preview').src = gambar; // Preview gambar lama
+            
+            // Set author dropdown value
+            if (author) {
+                document.getElementById('edit_author').value = author;
+            }
 
             // Reset input file agar tidak terisi otomatis
             document.getElementById('edit_gambar').value = '';
