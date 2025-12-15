@@ -998,24 +998,33 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'anggota')
         // Lakukan update DB hanya jika tidak ada error upload fatal
         if ($upload_ok) {
             try {
+                // Build dynamic update query - only update foto if new file was uploaded
                 $sql = "UPDATE anggota SET 
                             nama_gelar = :nama_gelar, 
-                            foto = :foto, 
                             jabatan = :jabatan, 
                             email = :email, 
                             no_telp = :no_telp, 
-                            bidang_keahlian = :bidang_keahlian
-                        WHERE id_anggota = :id";
-                $stmt = $pdo->prepare($sql);
-                $stmt->execute([
+                            bidang_keahlian = :bidang_keahlian";
+                
+                $params = [
                     ':nama_gelar' => $nama_gelar,
-                    ':foto' => $foto_path_for_db, // Path baru atau lama
                     ':jabatan' => $jabatan,
                     ':email' => $email,
                     ':no_telp' => $no_telp,
                     ':bidang_keahlian' => $bidang_keahlian,
                     ':id' => $id_anggota
-                ]);
+                ];
+                
+                // Only update foto if a new file was uploaded
+                if (isset($_FILES['foto']) && $_FILES['foto']['error'] == UPLOAD_ERR_OK && !empty($new_file_name)) {
+                    $sql .= ", foto = :foto";
+                    $params[':foto'] = $foto_path_for_db;
+                }
+                
+                $sql .= " WHERE id_anggota = :id";
+                
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute($params);
                 $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Anggota ID {$id_anggota} berhasil diupdate!</div>";
             } catch (Exception $e) {
                 $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Gagal mengupdate anggota: " . htmlspecialchars($e->getMessage()) . "</div>";
