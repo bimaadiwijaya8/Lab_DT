@@ -2618,7 +2618,7 @@ if ($active_page === 'pengumuman' && $pdo) {
                             </div>
                             <div>
                                 <label for="edit_foto" class="block text-sm font-medium text-gray-700">Ganti Foto (Opsional)</label>
-                                <img id="edit_current_foto_preview" src="" alt="Foto Lama" class="h-16 w-16 object-cover rounded-full mb-2">
+                                <img id="edit_current_foto_preview_anggota" src="" alt="Foto Lama" class="h-16 w-16 object-cover rounded-full mb-2">
                                 <input type="file" name="foto" id="edit_foto" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-500 file:text-white hover:file:bg-gray-600">
                                 <p class="mt-1 text-xs text-gray-500">Kosongkan jika tidak ingin mengganti foto.</p>
                             </div>
@@ -2987,7 +2987,7 @@ if ($active_page === 'pengumuman' && $pdo) {
             document.getElementById('edit_no_telp').value = no_telp;
             document.getElementById('edit_bidang_keahlian').value = bidang_keahlian;
             document.getElementById('edit_current_foto').value = foto; // Path foto lama
-            document.getElementById('edit_current_foto_preview').src = foto; // Preview foto lama
+            document.getElementById('edit_current_foto_preview_anggota').src = foto; // Preview foto lama
 
             // Reset input file agar tidak terisi otomatis
             document.getElementById('edit_foto').value = '';
