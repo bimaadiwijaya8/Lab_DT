@@ -1104,6 +1104,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'pengumuma
         $judul = trim($_POST['judul']);
         $informasi = trim($_POST['informasi']);
         $tanggal = trim($_POST['tanggal']);
+        $author = (int)$_POST['author']; // ID anggota/user yang posting
 
         if (empty($judul) || empty($informasi) || empty($tanggal)) {
              $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Judul, Isi Pengumuman, dan Tanggal Posting wajib diisi.</div>";
@@ -1112,13 +1113,15 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'pengumuma
                 $sql = "UPDATE pengumuman SET 
                             judul = :judul, 
                             informasi = :isi, 
-                            tanggal = :tanggal 
+                            tanggal = :tanggal,
+                            id_anggota = :author
                         WHERE id_pengumuman = :id";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([
                     ':judul' => $judul,
                     ':isi' => $informasi,
                     ':tanggal' => $tanggal,
+                    ':author' => $author,
                     ':id' => $id_pengumuman
                 ]);
                 $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Pengumuman ID {$id_pengumuman} berhasil diupdate!</div>";
@@ -2638,7 +2641,8 @@ if ($active_page === 'pengumuman' && $pdo) {
             <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
                 <form action="admin-dashboard.php?page=pengumuman" method="POST">
                     <input type="hidden" name="action" value="add_pengumuman">
-                    <input type="hidden" name="author" value="<?php echo $admin_user_id; ?>"> <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    
+                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4" id="modal-title">Tambah Pengumuman Baru</h3>
                         <div class="space-y-4">
                             <div>
@@ -2648,6 +2652,16 @@ if ($active_page === 'pengumuman' && $pdo) {
                             <div>
                                 <label for="tanggal" class="block text-sm font-medium text-gray-700">Tanggal Posting</label>
                                 <input type="date" name="tanggal" id="tanggal" value="<?php echo date('Y-m-d'); ?>" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2">
+                            </div>
+                            <div>
+                                <label for="author_pengumuman" class="block text-sm font-medium text-gray-700">Author</label>
+                                <select name="author" id="author_pengumuman" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2">
+                                    <?php foreach ($anggota_list as $anggota): ?>
+                                        <option value="<?php echo $anggota['id_anggota']; ?>" <?php echo $anggota['id_anggota'] == $admin_user_id ? 'selected' : ''; ?>>
+                                            <?php echo htmlspecialchars($anggota['nama_gelar']); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
                             </div>
                             <div>
                                 <label for="informasi" class="block text-sm font-medium text-gray-700">Isi Pengumuman</label>
@@ -2685,6 +2699,16 @@ if ($active_page === 'pengumuman' && $pdo) {
                             <div>
                                 <label for="edit_tanggal_posting" class="block text-sm font-medium text-gray-700">Tanggal Posting</label>
                                 <input type="date" name="tanggal" id="edit_tanggal_posting" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2">
+                            </div>
+                            <div>
+                                <label for="edit_author_pengumuman" class="block text-sm font-medium text-gray-700">Author</label>
+                                <select name="author" id="edit_author_pengumuman" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2">
+                                    <?php foreach ($anggota_list as $anggota): ?>
+                                        <option value="<?php echo $anggota['id_anggota']; ?>">
+                                            <?php echo htmlspecialchars($anggota['nama_gelar']); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
                             </div>
                             <div>
                                 <label for="edit_isi_pengumuman" class="block text-sm font-medium text-gray-700">Isi Pengumuman</label>
@@ -3014,11 +3038,17 @@ if ($active_page === 'pengumuman' && $pdo) {
             const judul = row.dataset.judul;
             const informasi = row.dataset.informasi;
             const tanggal = row.dataset.tanggal;
+            const author = row.dataset.author; // Author ID
 
             document.getElementById('edit_id_pengumuman').value = id;
             document.getElementById('edit_judul_pengumuman').value = judul;
             document.getElementById('edit_isi_pengumuman').value = informasi;
             document.getElementById('edit_tanggal_posting').value = tanggal;
+            
+            // Set author dropdown value
+            if (author) {
+                document.getElementById('edit_author_pengumuman').value = author;
+            }
 
             document.getElementById('editPengumumanModal').classList.remove('hidden');
             document.body.classList.add('modal-open');
