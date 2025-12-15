@@ -76,6 +76,7 @@ if (file_exists($db_connect_path)) {
                             LEFT(informasi, 150) as summary, 
                             tanggal 
                         FROM pengumuman 
+                        WHERE status = 'approved'
                         ORDER BY tanggal DESC";
 
     $stmt_pengumuman = $pdo->query($sql_pengumuman);
