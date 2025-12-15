@@ -2108,6 +2108,35 @@ if ($active_page === 'pengumuman' && $pdo) {
         </div>
     </div>
     
+    <div id="verifyPublikasiModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[1001] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-sm sm:w-full">
+                <form action="admin-dashboard.php?page=publikasi" method="POST">
+                    <input type="hidden" name="action" value="verify_publikasi">
+                    <input type="hidden" name="id_publikasi" id="verify_id_publikasi">
+                    <input type="hidden" name="status" id="verify_publikasi_status_input">
+
+                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Verifikasi Publikasi</h3>
+                        <p class="text-sm text-gray-500" id="verify_publikasi_current_status">Status saat ini: </p>
+                        <p class="mt-2 text-sm text-gray-700">Pilih aksi untuk publikasi ini:</p>
+                    </div>
+                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse space-y-2 sm:space-y-0 sm:space-x-2">
+                        <button type="submit" onclick="document.getElementById('verify_publikasi_status_input').value='approved'" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
+                            <i class="fas fa-check-circle mr-1"></i> Setujui (Approve)
+                        </button>
+                        <button type="submit" onclick="document.getElementById('verify_publikasi_status_input').value='rejected'" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                            <i class="fas fa-times-circle mr-1"></i> Tolak (Reject)
+                        </button>
+                        <button type="button" onclick="closeVerifyPublikasiModal()" class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm">
+                            Batal
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
     <div id="addFasilitasModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[1001] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
