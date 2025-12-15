@@ -840,6 +840,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'agenda') 
         $nama_agenda = trim($_POST['nama_agenda']);
         $tgl_agenda = trim($_POST['tgl_agenda']);
         $link_agenda = trim($_POST['link_agenda']);
+        $id_anggota = (int)$_POST['id_anggota']; // Get selected author from dropdown
 
         if (empty($nama_agenda) || empty($tgl_agenda)) {
             $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Nama agenda dan Tanggal agenda wajib diisi.</div>";
@@ -848,13 +849,15 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'agenda') 
                 $sql = "UPDATE agenda SET 
                             nama_agenda = :nama_agenda, 
                             tgl_agenda = :tgl_agenda, 
-                            link_agenda = :link_agenda 
+                            link_agenda = :link_agenda,
+                            id_anggota = :id_anggota
                         WHERE id_agenda = :id";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([
                     ':nama_agenda' => $nama_agenda,
                     ':tgl_agenda' => $tgl_agenda,
                     ':link_agenda' => $link_agenda,
+                    ':id_anggota' => $id_anggota,
                     ':id' => $id_agenda
                 ]);
                 $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Agenda ID {$id_agenda} berhasil diupdate!</div>";
@@ -1380,8 +1383,8 @@ if ($active_page === 'pengumuman' && $pdo) {
                     <li><a href="admin-dashboard.php?page=berita" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 <?php echo $active_page === 'berita' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'; ?>"><i class="fas fa-newspaper w-5 h-5 mr-3 flex items-center justify-center"></i> Kelola Berita</a></li>
                     <li><a href="admin-dashboard.php?page=fasilitas" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 <?php echo $active_page === 'fasilitas' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'; ?>"><i class="fas fa-building w-5 h-5 mr-3 flex items-center justify-center"></i> Kelola Fasilitas</a></li>
                     <li><a href="admin-dashboard.php?page=galeri" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 <?php echo $active_page === 'galeri' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'; ?>"><i class="fas fa-image w-5 h-5 mr-3 flex items-center justify-center"></i> Kelola Galeri</a></li>
-                    <li><a href="admin-dashboard.php?page=publikasi" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 <?php echo $active_page === 'publikasi' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'; ?>"><i class="fas fa-book-open w-5 h-5 mr-3 flex items-center justify-center"></i> Kelola Publikasi</a></li>
                     <li><a href="admin-dashboard.php?page=agenda" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 <?php echo $active_page === 'agenda' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'; ?>"><i class="fas fa-calendar-alt w-5 h-5 mr-3 flex items-center justify-center"></i> Kelola Agenda</a></li>
+                    <li><a href="admin-dashboard.php?page=publikasi" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 <?php echo $active_page === 'publikasi' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'; ?>"><i class="fas fa-book-open w-5 h-5 mr-3 flex items-center justify-center"></i> Kelola Publikasi</a></li>
                     <li><a href="admin-dashboard.php?page=pengumuman" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 <?php echo $active_page === 'pengumuman' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'; ?>"><i class="fas fa-bullhorn w-5 h-5 mr-3 flex items-center justify-center"></i> Kelola Pengumuman</a></li>
                     <li><a href="admin-dashboard.php?page=anggota" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 <?php echo $active_page === 'anggota' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'; ?>"><i class="fas fa-users w-5 h-5 mr-3 flex items-center justify-center"></i> Kelola Anggota</a></li>
                 </ul>
@@ -1802,7 +1805,6 @@ if ($active_page === 'pengumuman' && $pdo) {
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Agenda</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Link</th>
@@ -1816,8 +1818,8 @@ if ($active_page === 'pengumuman' && $pdo) {
                                 <tr data-id="<?php echo $agenda['id_agenda']; ?>" 
                                     data-nama_agenda="<?php echo htmlspecialchars($agenda['nama_agenda']); ?>" 
                                     data-tgl_agenda="<?php echo htmlspecialchars($agenda['tgl_agenda']); ?>" 
-                                    data-link_agenda="<?php echo htmlspecialchars($agenda['link_agenda']); ?>">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo $agenda['id_agenda']; ?></td>
+                                    data-link_agenda="<?php echo htmlspecialchars($agenda['link_agenda']); ?>"
+                                    data-author-id="<?php echo htmlspecialchars($agenda['id_anggota'] ?? ''); ?>">
                                     <td class="px-6 py-4 text-sm font-medium text-gray-900 line-clamp-2" style="max-width: 300px;"><?php echo htmlspecialchars($agenda['nama_agenda']); ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($agenda['tgl_agenda']); ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -1843,7 +1845,7 @@ if ($active_page === 'pengumuman' && $pdo) {
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
-                            <tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Belum ada data agenda.</td></tr>
+                            <tr><td colspan="4" class="px-6 py-4 text-center text-gray-500">Belum ada data agenda.</td></tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
@@ -2440,7 +2442,6 @@ if ($active_page === 'pengumuman' && $pdo) {
             <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
                 <form action="admin-dashboard.php?page=agenda" method="POST">
                     <input type="hidden" name="action" value="add_agenda">
-                    <input type="hidden" name="id_anggota" value="<?php echo $admin_user_id; ?>">
                     
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Tambah Agenda Baru</h3>
@@ -2456,6 +2457,16 @@ if ($active_page === 'pengumuman' && $pdo) {
                             <div>
                                 <label for="link_agenda" class="block text-sm font-medium text-gray-700">Link Zoom/Google Meet/Website (Opsional)</label>
                                 <input type="url" name="link_agenda" id="link_agenda" placeholder="https://..." class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2">
+                            </div>
+                            <div>
+                                <label for="author_agenda" class="block text-sm font-medium text-gray-700">Author</label>
+                                <select name="id_anggota" id="author_agenda" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2">
+                                    <?php foreach ($anggota_list as $anggota): ?>
+                                        <option value="<?php echo $anggota['id_anggota']; ?>" <?php echo $anggota['id_anggota'] == $admin_user_id ? 'selected' : ''; ?>>
+                                            <?php echo htmlspecialchars($anggota['nama_gelar']); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -2493,6 +2504,16 @@ if ($active_page === 'pengumuman' && $pdo) {
                             <div>
                                 <label for="edit_link_agenda" class="block text-sm font-medium text-gray-700">Link Zoom/Google Meet/Website (Opsional)</label>
                                 <input type="url" name="link_agenda" id="edit_link_agenda" placeholder="https://..." class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2">
+                            </div>
+                            <div>
+                                <label for="edit_author_agenda" class="block text-sm font-medium text-gray-700">Author</label>
+                                <select name="id_anggota" id="edit_author_agenda" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2">
+                                    <?php foreach ($anggota_list as $anggota): ?>
+                                        <option value="<?php echo $anggota['id_anggota']; ?>">
+                                            <?php echo htmlspecialchars($anggota['nama_gelar']); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -2910,11 +2931,17 @@ if ($active_page === 'pengumuman' && $pdo) {
             const nama_agenda = row.dataset.nama_agenda;
             const tgl_agenda = row.dataset.tgl_agenda;
             const link_agenda = row.dataset.link_agenda;
+            const author_id = row.dataset.authorId;
 
             document.getElementById('edit_id_agenda').value = id;
             document.getElementById('edit_nama_agenda').value = nama_agenda;
             document.getElementById('edit_tgl_agenda').value = tgl_agenda;
             document.getElementById('edit_link_agenda').value = link_agenda;
+            
+            // Set author dropdown value
+            if (author_id) {
+                document.getElementById('edit_author_agenda').value = author_id;
+            }
 
             document.getElementById('editAgendaModal').classList.remove('hidden');
             document.body.classList.add('modal-open');
