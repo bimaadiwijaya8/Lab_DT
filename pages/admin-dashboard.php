@@ -1082,14 +1082,15 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'pengumuma
              $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Judul, Isi Pengumuman, dan Tanggal Posting wajib diisi.</div>";
         } else {
             try {
-                $sql = "INSERT INTO pengumuman (judul, informasi, tanggal, id_anggota) 
-                        VALUES (:judul, :isi, :tanggal, :author)";
+                $sql = "INSERT INTO pengumuman (judul, informasi, tanggal, id_anggota, status) 
+                        VALUES (:judul, :isi, :tanggal, :author, :status)";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([
                     ':judul' => $judul,
                     ':isi' => $informasi,
                     ':tanggal' => $tanggal,
-                    ':author' => $author
+                    ':author' => $author,
+                    ':status' => 'pending'
                 ]);
                 $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Pengumuman baru berhasil ditambahkan!</div>";
             } catch (Exception $e) {
@@ -1114,7 +1115,8 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'pengumuma
                             judul = :judul, 
                             informasi = :isi, 
                             tanggal = :tanggal,
-                            id_anggota = :author
+                            id_anggota = :author,
+                            status = 'pending'
                         WHERE id_pengumuman = :id";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([
@@ -1127,6 +1129,28 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'pengumuma
                 $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Pengumuman ID {$id_pengumuman} berhasil diupdate!</div>";
             } catch (Exception $e) {
                 $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Gagal mengupdate pengumuman: " . htmlspecialchars($e->getMessage()) . "</div>";
+            }
+        }
+    }
+
+    // --- VERIFICATION (Approve/Reject Pengumuman) ---
+    if ($action === 'verify_pengumuman') {
+        $id_pengumuman = (int)$_POST['id_pengumuman'];
+        $status = $_POST['status']; // 'approved' or 'rejected'
+
+        if (in_array($status, ['approved', 'rejected'])) {
+            try {
+                $sql = "UPDATE pengumuman SET status = :status WHERE id_pengumuman = :id";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute([
+                    ':status' => $status,
+                    ':id' => $id_pengumuman
+                ]);
+
+                $status_text = $status === 'approved' ? 'disetujui' : 'ditolak';
+                $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Pengumuman ID {$id_pengumuman} berhasil {$status_text}!</div>";
+            } catch (Exception $e) {
+                $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Gagal memperbarui status pengumuman: " . htmlspecialchars($e->getMessage()) . "</div>";
             }
         }
     }
@@ -1148,7 +1172,6 @@ if ($pdo && $active_page === 'pengumuman' && isset($_GET['action']) && $_GET['ac
     exit;
 }
 // --- END: Penanganan Operasi CRUD Pengumuman ---
-
 
 // --- START: Data Dashboard & Data List ---
 $total_news = 0;
@@ -1881,6 +1904,7 @@ if ($active_page === 'pengumuman' && $pdo) {
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Isi (Snippet)</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Posting</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Author</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                             <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                         </tr>
                     </thead>
@@ -1893,9 +1917,21 @@ if ($active_page === 'pengumuman' && $pdo) {
                                     data-tanggal="<?php echo htmlspecialchars($pengumuman['tanggal']); ?>"
                                     data-author="<?php echo htmlspecialchars($pengumuman['id_anggota']); ?>">
                                     <td class="px-6 py-4 text-sm font-medium text-gray-900 line-clamp-2" style="max-width: 250px;"><?php echo htmlspecialchars($pengumuman['judul']); ?></td>
-                                    <td class="px-6 py-4 text-sm text-gray-500 max-w-xs truncate" style="max-width: 400px;"><?php echo htmlspecialchars(substr($pengumuman['informasi'], 0, 100)) . (strlen($pengumuman['informasi']) > 100 ? '...' : ''); ?></td>
+                                    <td class="px-6 py-4 text-sm text-gray-500 max-w-xs truncate" style="max-width: 200px;"><?php echo htmlspecialchars(substr($pengumuman['informasi'], 0, 100)) . (strlen($pengumuman['informasi']) > 100 ? '...' : ''); ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo date('d F Y', strtotime($pengumuman['tanggal'])); ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($pengumuman['author_name'] ?? 'Admin'); ?></td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <?php 
+                                            $status_class = [
+                                                'approved' => 'bg-green-100 text-green-800', 
+                                                'pending' => 'bg-yellow-100 text-yellow-800', 
+                                                'rejected' => 'bg-red-100 text-red-800'
+                                            ][$pengumuman['status']] ?? 'bg-gray-100 text-gray-800';
+                                        ?>
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <?php echo $status_class; ?>">
+                                            <?php echo ucfirst($pengumuman['status'] ?? 'pending'); ?>
+                                        </span>
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end space-x-2">
                                         <button onclick="openEditPengumumanModal(this)" class="text-indigo-600 hover:text-indigo-900 p-2 rounded-md hover:bg-gray-100">
                                             <i class="fas fa-edit"></i>
@@ -1905,11 +1941,14 @@ if ($active_page === 'pengumuman' && $pdo) {
                                            class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
                                             <i class="fas fa-trash"></i>
                                         </a>
+                                        <button onclick="openVerifyPengumumanModal(<?php echo $pengumuman['id_pengumuman']; ?>, '<?php echo $pengumuman['status']; ?>')" class="text-gray-500 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100" title="Verifikasi Pengumuman">
+                                            <i class="fas fa-check-double"></i>
+                                        </button>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
-                            <tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Belum ada data pengumuman.</td></tr>
+                            <tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Belum ada data pengumuman.</td></tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
@@ -2171,6 +2210,35 @@ if ($active_page === 'pengumuman' && $pdo) {
                             <i class="fas fa-times-circle mr-1"></i> Tolak (Reject)
                         </button>
                         <button type="button" onclick="closeVerifyPublikasiModal()" class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm">
+                            Batal
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div id="verifyPengumumanModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[1001] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-sm sm:w-full">
+                <form action="admin-dashboard.php?page=pengumuman" method="POST">
+                    <input type="hidden" name="action" value="verify_pengumuman">
+                    <input type="hidden" name="id_pengumuman" id="verify_id_pengumuman">
+                    <input type="hidden" name="status" id="verify_pengumuman_status_input">
+
+                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Verifikasi Pengumuman</h3>
+                        <p class="text-sm text-gray-500" id="verify_pengumuman_current_status">Status saat ini: </p>
+                        <p class="mt-2 text-sm text-gray-700">Pilih aksi untuk pengumuman ini:</p>
+                    </div>
+                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse space-y-2 sm:space-y-0 sm:space-x-2">
+                        <button type="submit" onclick="document.getElementById('verify_pengumuman_status_input').value='approved'" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
+                            <i class="fas fa-check-circle mr-1"></i> Setujui (Approve)
+                        </button>
+                        <button type="submit" onclick="document.getElementById('verify_pengumuman_status_input').value='rejected'" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                            <i class="fas fa-times-circle mr-1"></i> Tolak (Reject)
+                        </button>
+                        <button type="button" onclick="closeVerifyPengumumanModal()" class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm">
                             Batal
                         </button>
                     </div>
@@ -2819,6 +2887,18 @@ if ($active_page === 'pengumuman' && $pdo) {
 
         function closeVerifyPublikasiModal() {
             document.getElementById('verifyPublikasiModal').classList.add('hidden');
+            document.body.classList.remove('modal-open');
+        }
+        
+        function openVerifyPengumumanModal(id, status) {
+            document.getElementById('verify_id_pengumuman').value = id;
+            document.getElementById('verify_pengumuman_current_status').innerHTML = `Status saat ini: <b>${status.toUpperCase()}</b>`;
+            document.getElementById('verifyPengumumanModal').classList.remove('hidden');
+            document.body.classList.add('modal-open');
+        }
+
+        function closeVerifyPengumumanModal() {
+            document.getElementById('verifyPengumumanModal').classList.add('hidden');
             document.body.classList.remove('modal-open');
         }
         
