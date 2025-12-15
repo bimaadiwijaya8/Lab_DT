@@ -2427,7 +2427,9 @@ if ($active_page === 'pengumuman' && $pdo) {
             <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
                 <form action="admin-dashboard.php?page=agenda" method="POST">
                     <input type="hidden" name="action" value="add_agenda">
-                    <input type="hidden" name="id_anggota" value="<?php echo $admin_user_id; ?>"> <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <input type="hidden" name="id_anggota" value="<?php echo $admin_user_id; ?>">
+                    
+                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Tambah Agenda Baru</h3>
                         <div class="space-y-4">
                             <div>
