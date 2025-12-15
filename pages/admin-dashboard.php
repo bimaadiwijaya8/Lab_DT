@@ -608,6 +608,27 @@ if ($pdo && $active_page === 'galeri' && isset($_GET['action']) && $_GET['action
 // --- START: Penanganan Operasi CRUD Publikasi (Hanya jika koneksi berhasil) ---
 if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'publikasi') {
     $action = $_POST['action'] ?? '';
+    // --- VERIFICATION (Approve/Reject Publikasi) ---
+    if ($action === 'verify_publikasi') {
+        $id_publikasi = (int)$_POST['id_publikasi'];
+        $status = $_POST['status']; // 'approved' or 'rejected'
+
+        if (in_array($status, ['approved', 'rejected'])) {
+            try {
+                $sql = "UPDATE publikasi SET status = :status WHERE id_publikasi = :id";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute([
+                    ':status' => $status,
+                    ':id' => $id_publikasi
+                ]);
+
+                $status_text = $status === 'approved' ? 'disetujui' : 'ditolak';
+                $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Publikasi ID {$id_publikasi} berhasil {$status_text}!</div>";
+            } catch (Exception $e) {
+                $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Gagal memperbarui status publikasi: " . htmlspecialchars($e->getMessage()) . "</div>";
+            }
+        }
+    }
     $target_dir = '../assets/files/publikasi/'; // Direktori Publikasi (PDF/File)
 
     // Pastikan direktori ada
