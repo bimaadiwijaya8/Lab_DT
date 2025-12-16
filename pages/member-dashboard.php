@@ -654,10 +654,12 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'settings'
                             <i class="fas fa-history text-2xl text-yellow-500/70"></i>
                         </div>
                         <div class="mt-4 space-y-2">
-                            <?php if (!empty($publikasi_data)): ?>
+                            <?php if (!empty($publikasi_data)): 
+                                $latest_status = $publikasi_data[0]['status'] ?? 'pending';
+                            ?>
                                 <p class="text-sm text-gray-700 truncate">Publikasi terbaru: **<?php echo htmlspecialchars($publikasi_data[0]['judul']); ?>**</p>
-                                <p class="text-xs text-gray-500">Status: <span class="font-medium text-<?php echo $publikasi_data[0]['status'] === 'approved' ? 'green-500' : ($publikasi_data[0]['status'] === 'rejected' ? 'red-500' : 'yellow-500'); ?>"><?php echo ucfirst($publikasi_data[0]['status']); ?></span></p>
-                                <p class="text-xs text-gray-500">Tanggal: <?php echo date('d M Y', strtotime($publikasi_data[0]['created_at'])); ?></p>
+                                <p class="text-xs text-gray-500">Status: <span class="font-medium text-<?php echo $latest_status === 'approved' ? 'green-500' : ($latest_status === 'rejected' ? 'red-500' : 'yellow-500'); ?>"><?php echo ucfirst($latest_status); ?></span></p>
+                                <p class="text-xs text-gray-500">Tanggal: <?php echo isset($publikasi_data[0]['created_at']) ? date('d M Y', strtotime($publikasi_data[0]['created_at'])) : (isset($publikasi_data[0]['tanggal_terbit']) ? date('d M Y', strtotime($publikasi_data[0]['tanggal_terbit'])) : '-'); ?></p>
                             <?php else: ?>
                                 <p class="text-sm text-gray-500">Belum ada aktivitas publikasi.</p>
                             <?php endif; ?>
@@ -694,11 +696,12 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'settings'
                         <tbody class="bg-white divide-y divide-gray-200">
                             <?php if (!empty($publikasi_data)): ?>
                                 <?php foreach ($publikasi_data as $publikasi):
+                                    $status = $publikasi['status'] ?? 'pending';
                                     $status_class = [
                                         'pending' => 'bg-yellow-100 text-yellow-800',
                                         'approved' => 'bg-green-100 text-green-800',
                                         'rejected' => 'bg-red-100 text-red-800'
-                                    ][$publikasi['status']] ?? 'bg-gray-100 text-gray-800';
+                                    ][$status] ?? 'bg-gray-100 text-gray-800';
                                 ?>
                                     <tr data-id="<?php echo $publikasi['id_publikasi']; ?>"
                                         data-judul="<?php echo htmlspecialchars($publikasi['judul']); ?>"
@@ -718,7 +721,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'settings'
                                         <td class="px-6 py-4 text-sm text-gray-500 line-clamp-2 max-w-sm" style="max-width: 300px;"><?php echo htmlspecialchars($publikasi['deskripsi']); ?></td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <?php echo $status_class; ?>">
-                                                <?php echo ucfirst($publikasi['status']); ?>
+                                                <?php echo ucfirst($status); ?>
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end space-x-2">
@@ -728,7 +731,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'settings'
                                             <a href="member-dashboard.php?page=publikasi&action=delete&id=<?php echo $publikasi['id_publikasi']; ?>" onclick="return confirm('Apakah Anda yakin ingin menghapus publikasi ini? File juga akan terhapus dari server.')" class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
                                                 <i class="fas fa-trash"></i>
                                             </a>
-                                            <button onclick="openVerifyPublikasiModal(<?php echo $publikasi['id_publikasi']; ?>, '<?php echo $publikasi['status']; ?>')" class="text-gray-500 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100" title="Verifikasi Publikasi">
+                                            <button onclick="openVerifyPublikasiModal(<?php echo $publikasi['id_publikasi']; ?>, '<?php echo htmlspecialchars($status); ?>')" class="text-gray-500 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100" title="Verifikasi Publikasi">
                                                 <i class="fas fa-check-double"></i>
                                             </button>
                                         </td>
