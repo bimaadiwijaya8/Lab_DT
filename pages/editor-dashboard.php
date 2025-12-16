@@ -603,7 +603,13 @@ if ($active_page === 'galeri' && $pdo) {
 $publikasi_data = [];
 if ($active_page === 'publikasi' && $pdo) {
     try {
-        $sql = "SELECT p.*, a.nama_gelar AS nama_member FROM publikasi p LEFT JOIN anggota a ON p.id_anggota = a.id_anggota ORDER BY p.id_publikasi DESC";
+        $sql = "SELECT p.*, 
+                       m.nama AS member_nama, 
+                       a.nama_gelar AS anggota_nama_gelar
+                FROM publikasi p 
+                LEFT JOIN member m ON p.id_member = m.id_member 
+                LEFT JOIN anggota a ON p.id_anggota = a.id_anggota 
+                ORDER BY p.id_publikasi DESC";
         $stmt = $pdo->query($sql);
         $publikasi_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
@@ -949,6 +955,7 @@ if ($active_page === 'pengumuman' && $pdo) {
                         <tr>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Penulis</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Author</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Terbit</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">File</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
@@ -966,6 +973,17 @@ if ($active_page === 'pengumuman' && $pdo) {
                                     data-file_publikasi="<?php echo htmlspecialchars($publikasi['file_publikasi']); ?>">
                                     <td class="px-6 py-4 text-sm font-medium text-gray-900 line-clamp-2" style="max-width: 200px;"><?php echo htmlspecialchars($publikasi['judul']); ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($publikasi['penulis']); ?></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <?php 
+                                        if (!empty($publikasi['member_nama'])) {
+                                            echo htmlspecialchars($publikasi['member_nama']) . ' (Member)';
+                                        } elseif (!empty($publikasi['anggota_nama_gelar'])) {
+                                            echo htmlspecialchars($publikasi['anggota_nama_gelar']) . ' (Anggota)';
+                                        } else {
+                                            echo '-';
+                                        }
+                                        ?>
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo date('d F Y', strtotime($publikasi['tanggal_terbit'])); ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         <a href="<?php echo htmlspecialchars($publikasi['file_publikasi']); ?>" target="_blank" class="text-primary hover:text-primary-dark">
@@ -998,7 +1016,7 @@ if ($active_page === 'pengumuman' && $pdo) {
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
-                            <tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Belum ada data publikasi.</td></tr>
+                            <tr><td colspan="7" class="px-6 py-4 text-center text-gray-500">Belum ada data publikasi.</td></tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
