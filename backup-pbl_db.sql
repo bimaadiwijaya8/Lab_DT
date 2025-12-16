@@ -2,12 +2,12 @@
 -- PostgreSQL database dump
 --
 
-\restrict dkWetjZhveL8ZNUTKzqyahcdQpiGqXz1SKrIolfbgOVFEzYn9fzltka5pDprV1S
+\restrict pJSaGErz46WsJ4C5abUcO9EhqBGKpEpAx6qUR7sIFo3ExVdydrncqA2u6qiCAJl
 
 -- Dumped from database version 15.14
 -- Dumped by pg_dump version 15.14
 
--- Started on 2025-12-16 00:18:04
+-- Started on 2025-12-16 21:49:54
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -183,7 +183,7 @@ CREATE SEQUENCE public.agenda_id_agenda_seq
 ALTER TABLE public.agenda_id_agenda_seq OWNER TO postgres;
 
 --
--- TOC entry 3497 (class 0 OID 0)
+-- TOC entry 3496 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: agenda_id_agenda_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -226,7 +226,7 @@ CREATE SEQUENCE public.anggota_id_anggota_seq
 ALTER TABLE public.anggota_id_anggota_seq OWNER TO postgres;
 
 --
--- TOC entry 3498 (class 0 OID 0)
+-- TOC entry 3497 (class 0 OID 0)
 -- Dependencies: 217
 -- Name: anggota_id_anggota_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -270,7 +270,7 @@ CREATE SEQUENCE public.berita_id_berita_seq
 ALTER TABLE public.berita_id_berita_seq OWNER TO postgres;
 
 --
--- TOC entry 3499 (class 0 OID 0)
+-- TOC entry 3498 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: berita_id_berita_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -311,7 +311,7 @@ CREATE SEQUENCE public.fasilitas_id_fasilitas_seq
 ALTER TABLE public.fasilitas_id_fasilitas_seq OWNER TO postgres;
 
 --
--- TOC entry 3500 (class 0 OID 0)
+-- TOC entry 3499 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: fasilitas_id_fasilitas_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -354,7 +354,7 @@ CREATE SEQUENCE public.galeri_id_foto_seq
 ALTER TABLE public.galeri_id_foto_seq OWNER TO postgres;
 
 --
--- TOC entry 3501 (class 0 OID 0)
+-- TOC entry 3500 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: galeri_id_foto_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -395,7 +395,7 @@ CREATE SEQUENCE public.jurnal_id_jurnal_seq
 ALTER TABLE public.jurnal_id_jurnal_seq OWNER TO postgres;
 
 --
--- TOC entry 3502 (class 0 OID 0)
+-- TOC entry 3501 (class 0 OID 0)
 -- Dependencies: 225
 -- Name: jurnal_id_jurnal_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -436,7 +436,7 @@ CREATE SEQUENCE public.kerjasama_id_kerjasama_seq
 ALTER TABLE public.kerjasama_id_kerjasama_seq OWNER TO postgres;
 
 --
--- TOC entry 3503 (class 0 OID 0)
+-- TOC entry 3502 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: kerjasama_id_kerjasama_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -479,7 +479,7 @@ CREATE SEQUENCE public.kontak_id_kontak_seq
 ALTER TABLE public.kontak_id_kontak_seq OWNER TO postgres;
 
 --
--- TOC entry 3504 (class 0 OID 0)
+-- TOC entry 3503 (class 0 OID 0)
 -- Dependencies: 229
 -- Name: kontak_id_kontak_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -528,7 +528,7 @@ CREATE SEQUENCE public.member_id_member_seq
 ALTER TABLE public.member_id_member_seq OWNER TO postgres;
 
 --
--- TOC entry 3505 (class 0 OID 0)
+-- TOC entry 3504 (class 0 OID 0)
 -- Dependencies: 231
 -- Name: member_id_member_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -570,7 +570,7 @@ CREATE SEQUENCE public.pengumuman_id_pengumuman_seq
 ALTER TABLE public.pengumuman_id_pengumuman_seq OWNER TO postgres;
 
 --
--- TOC entry 3506 (class 0 OID 0)
+-- TOC entry 3505 (class 0 OID 0)
 -- Dependencies: 233
 -- Name: pengumuman_id_pengumuman_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -593,7 +593,8 @@ CREATE TABLE public.publikasi (
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     id_anggota integer,
-    status character varying(20)
+    status character varying(20),
+    id_member integer
 );
 
 
@@ -616,7 +617,7 @@ CREATE SEQUENCE public.publikasi_id_publikasi_seq
 ALTER TABLE public.publikasi_id_publikasi_seq OWNER TO postgres;
 
 --
--- TOC entry 3507 (class 0 OID 0)
+-- TOC entry 3506 (class 0 OID 0)
 -- Dependencies: 235
 -- Name: publikasi_id_publikasi_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -657,7 +658,7 @@ CREATE SEQUENCE public.settings_id_seq
 ALTER TABLE public.settings_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3508 (class 0 OID 0)
+-- TOC entry 3507 (class 0 OID 0)
 -- Dependencies: 237
 -- Name: settings_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -703,7 +704,7 @@ CREATE SEQUENCE public.users_id_seq
 ALTER TABLE public.users_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3509 (class 0 OID 0)
+-- TOC entry 3508 (class 0 OID 0)
 -- Dependencies: 239
 -- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -882,7 +883,7 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 
 --
--- TOC entry 3466 (class 0 OID 59714)
+-- TOC entry 3465 (class 0 OID 59714)
 -- Dependencies: 214
 -- Data for Name: agenda; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -905,7 +906,7 @@ COPY public.agenda (id_agenda, nama_agenda, tgl_agenda, link_agenda, id_anggota)
 
 
 --
--- TOC entry 3468 (class 0 OID 59720)
+-- TOC entry 3467 (class 0 OID 59720)
 -- Dependencies: 216
 -- Data for Name: anggota; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -919,7 +920,7 @@ COPY public.anggota (id_anggota, nama_gelar, foto, jabatan, email, no_telp, bida
 
 
 --
--- TOC entry 3470 (class 0 OID 59726)
+-- TOC entry 3469 (class 0 OID 59726)
 -- Dependencies: 218
 -- Data for Name: berita; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -927,14 +928,13 @@ COPY public.anggota (id_anggota, nama_gelar, foto, jabatan, email, no_telp, bida
 COPY public.berita (id_berita, judul, gambar, informasi, tanggal, author, created_at, status) FROM stdin;
 45	IEJR3442	../assets/img/berita/be56a5f3e05bf1069ca08df2165b5e07.jpg	daee	2025-12-17	2	2025-12-14 02:45:48.511126	approved
 47	UHRER	../assets/img/berita/1765666755_135224471_p0.png	ijerji-2	2025-12-13	2	2025-12-14 05:59:15.527441	approved
-48	RevisiID40	../assets/img/berita/f2c75990a45f197d9f18c2c099f8751e.jpg	iipij	2025-12-01	3	2025-12-14 06:41:37.761816	approved
-32	few	../assets/img/berita/Screenshot_2025-11-21_084843.png	ferwe	2025-12-04	\N	2025-12-13 14:17:16.756804	pending
 33	TRY5N	../assets/img/berita/Screenshot_2025-11-22_140415.png	ETERERTERIEREIR	2025-11-18	\N	2025-12-13 17:37:24.832957	rejected
+49	MTY	../assets/img/berita/a02898ed40d7711990aef44916e905f8.jpg	MTY	2025-12-11	2	2025-12-16 18:01:16.64169	pending
 \.
 
 
 --
--- TOC entry 3472 (class 0 OID 59735)
+-- TOC entry 3471 (class 0 OID 59735)
 -- Dependencies: 220
 -- Data for Name: fasilitas; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -948,22 +948,22 @@ COPY public.fasilitas (id_fasilitas, nama_fasilitas, deskripsi, foto, created_by
 
 
 --
--- TOC entry 3474 (class 0 OID 59741)
+-- TOC entry 3473 (class 0 OID 59741)
 -- Dependencies: 222
 -- Data for Name: galeri; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.galeri (id_foto, nama_foto, deskripsi, file_foto, id_anggota, updated_by, status) FROM stdin;
+10	HJRU	4545	../assets/img/galeri/galeri_1765794301_a02898ed40d7711990aef44916e905f8.jpg	3	1	approved
 5	IGaleri5	IGaleri5	../assets/img/galeri/galeri_1765723851_Screenshot_2025-11-22_183937.png	4	1	pending
 3	iGaleri3	ietto	../assets/img/galeri/galeri_1765673943_Screenshot_2025-11-20_170828.png	2	2	approved
 8	HJRUJH$#	423rr3wr	../assets/img/galeri/galeri_1765730619_f2c75990a45f197d9f18c2c099f8751e.jpg	4	1	approved
 7	IGaleri6	RW	../assets/img/galeri/galeri_1765729721_135224471_p0.png	4	1	approved
-10	HJRUJH$#	4545	../assets/img/galeri/galeri_1765794301_a02898ed40d7711990aef44916e905f8.jpg	3	1	pending
 \.
 
 
 --
--- TOC entry 3476 (class 0 OID 59747)
+-- TOC entry 3475 (class 0 OID 59747)
 -- Dependencies: 224
 -- Data for Name: jurnal; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -973,7 +973,7 @@ COPY public.jurnal (id_jurnal, judul, tanggal_upload, penyusun, link_jurnal) FRO
 
 
 --
--- TOC entry 3478 (class 0 OID 59753)
+-- TOC entry 3477 (class 0 OID 59753)
 -- Dependencies: 226
 -- Data for Name: kerjasama; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -983,7 +983,7 @@ COPY public.kerjasama (id_kerjasama, nama_perusahaan, proposal, contact_perusaha
 
 
 --
--- TOC entry 3480 (class 0 OID 59759)
+-- TOC entry 3479 (class 0 OID 59759)
 -- Dependencies: 228
 -- Data for Name: kontak; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -993,20 +993,20 @@ COPY public.kontak (id_kontak, nama, email, no_telp, deskripsi_tujuan, opsi_kerj
 
 
 --
--- TOC entry 3482 (class 0 OID 59765)
+-- TOC entry 3481 (class 0 OID 59765)
 -- Dependencies: 230
 -- Data for Name: member; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.member (id_member, email, nama, foto, nim, jurusan, prodi, kelas, tahun_angkatan, no_telp, status, password) FROM stdin;
-1	rani.p@mhs.id	Rani Permata	foto_rani.jpg	123001	Teknik Elektro	Informatika	TI-A	2022	089887766554	aktif	pass_hash_rani
 2	doni.s@mhs.id	Doni Saputra	foto_doni.jpg	123002	Teknik Elektro	Informatika	TI-B	2021	081998877665	alumni	pass_hash_doni
 3	sinta.a@mhs.id	Sinta Amelia	foto_sinta.jpg	456003	Teknik Mesin	Mekatronika	TM-C	2023	082887766554	luar_lab	pass_hash_sinta
+1	rani.p@mhs.id	Phrolova	../assets/img/profile/profile_1_1765883634.jpg	22222	Teknik Elektro	Informatika	TI-2G	2022	22222222	aktif	f4de7d978f41a366fd54b973b264457d
 \.
 
 
 --
--- TOC entry 3484 (class 0 OID 59772)
+-- TOC entry 3483 (class 0 OID 59772)
 -- Dependencies: 232
 -- Data for Name: pengumuman; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1015,30 +1015,33 @@ COPY public.pengumuman (id_pengumuman, judul, informasi, id_anggota, tanggal, st
 1	Pendaftaran Asisten Lab Semester Genap 2026	Pendaftaran dibuka mulai 10 hingga 20 Desember 2025. Silakan kirim CV dan transkrip nilai ke email lab.	\N	2025-01-02	pending
 2	Jadwal Review Proyek Akhir	Review proyek akhir untuk batch 2023 akan dilaksanakan pada minggu ketiga Januari 2026. Detail jadwal akan diumumkan melalui email.	2	2025-01-03	pending
 5	judul5	info judul5	\N	2025-01-01	pending
-9	EDIT	EDIT	5	2025-12-12	pending
 3	Penggunaan Ruangan Komputasi	Ruangan komputasi akan ditutup sementara pada tanggal 5 Desember 2025 untuk pemeliharaan sistem. Harap simpan pekerjaan Anda sebelum tanggal tersebut.	3	2025-01-05	approved
-4	judul4	info judul4	2	2025-01-08	rejected
+4	judul4	info judul4	2	2025-01-08	approved
+9	EDIT2	EDIT	5	2025-12-12	pending
+10	2323232	34343434	2	2025-12-16	approved
+11	PENDING	PENDING	5	2025-12-12	approved
 \.
 
 
 --
--- TOC entry 3486 (class 0 OID 59778)
+-- TOC entry 3485 (class 0 OID 59778)
 -- Dependencies: 234
 -- Data for Name: publikasi; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.publikasi (id_publikasi, judul, penulis, tanggal_terbit, file_publikasi, deskripsi, created_at, updated_at, id_anggota, status) FROM stdin;
-3	Review Metode Sensor Fusion3	Sinta Amelia, Citra Dewi	2025-11-20	file_publikasi_12.pdf	Makalah review tentang berbagai teknik fusi data sensor.	2025-12-04 00:41:54.5758	2025-12-04 00:41:54.5758	3	rejected
-2	Analisis Performa Sistem Kontrol PIDe	Doni Saputra, Budi Santoso	2024-05-01	file_publikasi_11.pdf	Skripsi alumni tentang optimasi kontrol PID pada lengan robot.	2025-12-04 00:41:54.5758	2025-12-04 00:41:54.5758	2	pending
-4	5JUDUL4	IEJRIER5	2025-12-02	../assets/files/publikasi/publikasi_1765793435_English_Assignment_EX10.pdf	EIJRIERrwr	2025-12-14 02:53:44.249846	2025-12-14 02:53:44.249846	\N	pending
-9	rwwewe	ewewewee	2025-12-05	../assets/files/publikasi/publikasi_1765793546_ENGLISH_U6.pdf	ewew4wewe	2025-12-15 17:12:07.920172	2025-12-15 17:12:07.920172	\N	approved
-5	TRY5N	IEJRIER5	2025-12-10	../assets/files/publikasi/publikasi_1765785106_ENGLISH_U6.pdf	e42	2025-12-15 14:45:18.954999	2025-12-15 14:45:18.954999	\N	approved
-10	434345	656563	2026-01-01	../assets/files/publikasi/publikasi_1765795084_Jobsheet_10.2_-__PHP_-_CRUD.pdf	353352	2025-12-15 17:38:04.998861	2025-12-15 17:38:04.998861	\N	approved
+COPY public.publikasi (id_publikasi, judul, penulis, tanggal_terbit, file_publikasi, deskripsi, created_at, updated_at, id_anggota, status, id_member) FROM stdin;
+12	iu394	33i4j34	2025-12-16	../assets/files/publikasi/publikasi_1765855692_English_Assignment_EX10.pdf	2323	2025-12-16 10:28:12.128965	2025-12-16 10:28:12.128965	2	rejected	\N
+14	CRUD	CRUD	2025-12-12	../assets/files/publikasi/publikasi_1765883484_ENGLISH_U6.pdf	CRUD	2025-12-16 18:11:24.080816	2025-12-16 18:11:24.080816	3	pending	\N
+4	5JUDUL4	IEJRIER5	2025-12-02	../assets/files/publikasi/publikasi_1765793435_English_Assignment_EX10.pdf	EIJRIERrwr	2025-12-14 02:53:44.249846	2025-12-14 02:53:44.249846	\N	pending	1
+9	rwwewe	ewewewee	2025-12-05	../assets/files/publikasi/publikasi_1765793546_ENGLISH_U6.pdf	ewew4wewe	2025-12-15 17:12:07.920172	2025-12-15 17:12:07.920172	\N	approved	2
+3	Review Metode Sensor Fusion3	Sinta Amelia, Citra Dewi	2025-11-20	file_publikasi_12.pdf	Makalah review tentang berbagai teknik fusi data sensor.	2025-12-04 00:41:54.5758	2025-12-04 00:41:54.5758	3	rejected	\N
+5	TRY5N	IEJRIER5	2025-12-10	../assets/files/publikasi/publikasi_1765785106_ENGLISH_U6.pdf	e42	2025-12-15 14:45:18.954999	2025-12-15 14:45:18.954999	\N	approved	3
+2	Analisis Performa Sistem Kontrol PIDe	Doni Saputra, Budi Santoso	2024-05-01	file_publikasi_11.pdf	Skripsi alumni tentang optimasi kontrol PID pada lengan robot.	2025-12-04 00:41:54.5758	2025-12-04 00:41:54.5758	2	pending	\N
 \.
 
 
 --
--- TOC entry 3488 (class 0 OID 59786)
+-- TOC entry 3487 (class 0 OID 59786)
 -- Dependencies: 236
 -- Data for Name: settings; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1049,7 +1052,7 @@ COPY public.settings (id, key, value, updated_at, updated_by) FROM stdin;
 
 
 --
--- TOC entry 3490 (class 0 OID 59793)
+-- TOC entry 3489 (class 0 OID 59793)
 -- Dependencies: 238
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1062,7 +1065,7 @@ COPY public.users (id, username, password, nama, email, no_telp, role, created_a
 
 
 --
--- TOC entry 3510 (class 0 OID 0)
+-- TOC entry 3509 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: agenda_id_agenda_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1071,7 +1074,7 @@ SELECT pg_catalog.setval('public.agenda_id_agenda_seq', 13, true);
 
 
 --
--- TOC entry 3511 (class 0 OID 0)
+-- TOC entry 3510 (class 0 OID 0)
 -- Dependencies: 217
 -- Name: anggota_id_anggota_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1080,16 +1083,16 @@ SELECT pg_catalog.setval('public.anggota_id_anggota_seq', 6, true);
 
 
 --
--- TOC entry 3512 (class 0 OID 0)
+-- TOC entry 3511 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: berita_id_berita_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.berita_id_berita_seq', 48, true);
+SELECT pg_catalog.setval('public.berita_id_berita_seq', 49, true);
 
 
 --
--- TOC entry 3513 (class 0 OID 0)
+-- TOC entry 3512 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: fasilitas_id_fasilitas_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1098,16 +1101,16 @@ SELECT pg_catalog.setval('public.fasilitas_id_fasilitas_seq', 4, true);
 
 
 --
--- TOC entry 3514 (class 0 OID 0)
+-- TOC entry 3513 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: galeri_id_foto_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.galeri_id_foto_seq', 10, true);
+SELECT pg_catalog.setval('public.galeri_id_foto_seq', 11, true);
 
 
 --
--- TOC entry 3515 (class 0 OID 0)
+-- TOC entry 3514 (class 0 OID 0)
 -- Dependencies: 225
 -- Name: jurnal_id_jurnal_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1116,7 +1119,7 @@ SELECT pg_catalog.setval('public.jurnal_id_jurnal_seq', 1, false);
 
 
 --
--- TOC entry 3516 (class 0 OID 0)
+-- TOC entry 3515 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: kerjasama_id_kerjasama_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1125,7 +1128,7 @@ SELECT pg_catalog.setval('public.kerjasama_id_kerjasama_seq', 1, false);
 
 
 --
--- TOC entry 3517 (class 0 OID 0)
+-- TOC entry 3516 (class 0 OID 0)
 -- Dependencies: 229
 -- Name: kontak_id_kontak_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1134,7 +1137,7 @@ SELECT pg_catalog.setval('public.kontak_id_kontak_seq', 1, false);
 
 
 --
--- TOC entry 3518 (class 0 OID 0)
+-- TOC entry 3517 (class 0 OID 0)
 -- Dependencies: 231
 -- Name: member_id_member_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1143,25 +1146,25 @@ SELECT pg_catalog.setval('public.member_id_member_seq', 3, true);
 
 
 --
--- TOC entry 3519 (class 0 OID 0)
+-- TOC entry 3518 (class 0 OID 0)
 -- Dependencies: 233
 -- Name: pengumuman_id_pengumuman_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.pengumuman_id_pengumuman_seq', 9, true);
+SELECT pg_catalog.setval('public.pengumuman_id_pengumuman_seq', 12, true);
 
 
 --
--- TOC entry 3520 (class 0 OID 0)
+-- TOC entry 3519 (class 0 OID 0)
 -- Dependencies: 235
 -- Name: publikasi_id_publikasi_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.publikasi_id_publikasi_seq', 10, true);
+SELECT pg_catalog.setval('public.publikasi_id_publikasi_seq', 14, true);
 
 
 --
--- TOC entry 3521 (class 0 OID 0)
+-- TOC entry 3520 (class 0 OID 0)
 -- Dependencies: 237
 -- Name: settings_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1170,7 +1173,7 @@ SELECT pg_catalog.setval('public.settings_id_seq', 1, true);
 
 
 --
--- TOC entry 3522 (class 0 OID 0)
+-- TOC entry 3521 (class 0 OID 0)
 -- Dependencies: 239
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1422,7 +1425,7 @@ ALTER TABLE ONLY public.pengumuman
 
 
 --
--- TOC entry 3317 (class 2606 OID 59912)
+-- TOC entry 3317 (class 2606 OID 59938)
 -- Name: publikasi fk_publikasi_anggota; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1431,16 +1434,16 @@ ALTER TABLE ONLY public.publikasi
 
 
 --
--- TOC entry 3318 (class 2606 OID 59917)
+-- TOC entry 3318 (class 2606 OID 59943)
 -- Name: publikasi fk_publikasi_member; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.publikasi
-    ADD CONSTRAINT fk_publikasi_member FOREIGN KEY (id_anggota) REFERENCES public.member(id_member) ON DELETE SET NULL;
+    ADD CONSTRAINT fk_publikasi_member FOREIGN KEY (id_member) REFERENCES public.member(id_member) ON DELETE SET NULL;
 
 
 --
--- TOC entry 3320 (class 2606 OID 59922)
+-- TOC entry 3319 (class 2606 OID 59922)
 -- Name: settings fk_settings_user; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1457,20 +1460,11 @@ ALTER TABLE ONLY public.jurnal
     ADD CONSTRAINT jurnal_penyusun_fkey FOREIGN KEY (penyusun) REFERENCES public.anggota(id_anggota) ON DELETE SET NULL;
 
 
---
--- TOC entry 3319 (class 2606 OID 59932)
--- Name: publikasi publikasi_id_anggota_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.publikasi
-    ADD CONSTRAINT publikasi_id_anggota_fkey FOREIGN KEY (id_anggota) REFERENCES public.anggota(id_anggota) ON DELETE SET NULL;
-
-
--- Completed on 2025-12-16 00:18:05
+-- Completed on 2025-12-16 21:49:55
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict dkWetjZhveL8ZNUTKzqyahcdQpiGqXz1SKrIolfbgOVFEzYn9fzltka5pDprV1S
+\unrestrict pJSaGErz46WsJ4C5abUcO9EhqBGKpEpAx6qUR7sIFo3ExVdydrncqA2u6qiCAJl
 
