@@ -1769,7 +1769,6 @@ if ($active_page === 'pengumuman' && $pdo) {
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Penulis</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Terbit</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">File</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deskripsi (Snippet)</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                             <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                         </tr>
@@ -1791,7 +1790,6 @@ if ($active_page === 'pengumuman' && $pdo) {
                                             <i class="fas fa-file-pdf mr-1"></i> Lihat File
                                         </a>
                                     </td>
-                                    <td class="px-6 py-4 text-sm text-gray-500 max-w-xs truncate" style="max-width: 300px;"><?php echo htmlspecialchars(substr($publikasi['deskripsi'], 0, 100)) . (strlen($publikasi['deskripsi']) > 100 ? '...' : ''); ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <?php 
                                             $status_class = [
@@ -1820,7 +1818,7 @@ if ($active_page === 'pengumuman' && $pdo) {
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
-                            <tr><td colspan="7" class="px-6 py-4 text-center text-gray-500">Belum ada data publikasi.</td></tr>
+                            <tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Belum ada data publikasi.</td></tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
