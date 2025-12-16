@@ -1856,7 +1856,11 @@ if ($active_page === 'pengumuman' && $pdo) {
                                     data-link_agenda="<?php echo htmlspecialchars($agenda['link_agenda']); ?>"
                                     data-author-id="<?php echo htmlspecialchars($agenda['id_anggota'] ?? ''); ?>">
                                     <td class="px-6 py-4 text-sm font-medium text-gray-900 line-clamp-2" style="max-width: 300px;"><?php echo htmlspecialchars($agenda['nama_agenda']); ?></td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($agenda['tgl_agenda']); ?></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php 
+                                        $tgl_agenda = new DateTime($agenda['tgl_agenda']);
+                                        $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+                                        echo $tgl_agenda->format('d') . ' ' . $bulan[$tgl_agenda->format('n')-1] . ' ' . $tgl_agenda->format('Y');
+                                    ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         <?php if (!empty($agenda['link_agenda'])): ?>
                                             <a href="<?php echo htmlspecialchars($agenda['link_agenda']); ?>" target="_blank" class="text-primary hover:text-primary-dark">
