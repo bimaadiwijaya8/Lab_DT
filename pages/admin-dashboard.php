@@ -1,22 +1,23 @@
 <?php
-// admin-dashboard.php (All-in-One: Dashboard Ringkasan + Kelola Berita + Kelola Galeri + Kelola Fasilitas + Kelola Publikasi + Kelola Agenda + Kelola Anggota + Kelola Pengumuman)
-
-// --- Bagian Logika PHP Awal ---
+// admin-dashboard.php
 session_start();
 date_default_timezone_set('Asia/Jakarta');
-$is_authenticated = true; // Ganti dengan logika otentikasi sesungguhnya (misal: isset($_SESSION['user_id']))
 
-if (!$is_authenticated) {
+// Logika Proteksi Sesi dan Role
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || $_SESSION['role'] !== 'admin') {
     header('Location: login.php');
     exit;
 }
 
+$is_authenticated = true; 
+
 // 1. Variabel Konfigurasi Dasar
 $current_year = date('Y');
-$username = "AdminLDT"; // Ganti dengan nama user yang login
+// GANTI VARIABEL HARDCODED INI DENGAN DATA SESI
+$username = $_SESSION['username']; 
+$admin_user_id = $_SESSION['user_id']; 
 $active_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
-$admin_user_id = 1; // HARDCODED: Ganti dengan ID user yang login (untuk kolom 'author' pada tabel berita/pengumuman / 'created_by' pada fasilitas / 'id_anggota'/'updated_by' pada galeri / 'id_anggota' pada publikasi / 'id_anggota' pada agenda)
-$message = ''; // Untuk notifikasi sukses/gagal
+$message = '';
 
 // 2. Koneksi Database
 $pdo = null;
@@ -33,14 +34,14 @@ if (file_exists($db_connect_path)) {
         $db_error = true;
         // Tampilkan pesan error detail dari database
         $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>" .
-                    "Kesalahan Koneksi Database: <b>PDOException</b>. Pastikan host, port, dbname, user, dan password di <b>db_connect.php</b> sudah benar. " .
-                    "Detail Error: " . htmlspecialchars($e->getMessage()) . "
+            "Kesalahan Koneksi Database: <b>PDOException</b>. Pastikan host, port, dbname, user, dan password di <b>db_connect.php</b> sudah benar. " .
+            "Detail Error: " . htmlspecialchars($e->getMessage()) . "
                     </div>";
         $pdo = null;
     } catch (Exception $e) {
         $db_error = true;
         $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>" .
-                    "Kesalahan Sistem: " . htmlspecialchars($e->getMessage()) . "
+            "Kesalahan Sistem: " . htmlspecialchars($e->getMessage()) . "
                     </div>";
         $pdo = null;
     }
@@ -461,7 +462,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'galeri') 
             $upload_ok = false;
             $upload_message = "Terjadi error saat upload file. Kode error: " . $_FILES['file_foto']['error'];
         }
-        
+
         // 3. Simpan ke database jika upload berhasil
         if ($upload_ok) {
             try {
@@ -573,7 +574,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'galeri') 
     // --- END: VERIFICATION Galeri ---
 }
 
-    // --- DELETE (Hapus Foto Galeri - Menggunakan GET request) ---
+// --- DELETE (Hapus Foto Galeri - Menggunakan GET request) ---
 if ($pdo && $active_page === 'galeri' && isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
     $id_foto = (int)$_GET['id'];
 
@@ -768,7 +769,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'publikasi
     }
 }
 
-    
+
 
 // --- DELETE (Hapus Publikasi - Menggunakan GET request) ---
 if ($pdo && $active_page === 'publikasi' && isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
@@ -816,7 +817,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'agenda') 
         $id_anggota = (int)$_POST['id_anggota']; // ID anggota/user yang posting
 
         if (empty($nama_agenda) || empty($tgl_agenda)) {
-             $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Nama agenda dan Tanggal agenda wajib diisi.</div>";
+            $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Nama agenda dan Tanggal agenda wajib diisi.</div>";
         } else {
             try {
                 $sql = "INSERT INTO agenda (nama_agenda, tgl_agenda, link_agenda, id_anggota) 
@@ -1006,7 +1007,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'anggota')
                             email = :email, 
                             no_telp = :no_telp, 
                             bidang_keahlian = :bidang_keahlian";
-                
+
                 $params = [
                     ':nama_gelar' => $nama_gelar,
                     ':jabatan' => $jabatan,
@@ -1015,15 +1016,15 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'anggota')
                     ':bidang_keahlian' => $bidang_keahlian,
                     ':id' => $id_anggota
                 ];
-                
+
                 // Only update foto if a new file was uploaded
                 if (isset($_FILES['foto']) && $_FILES['foto']['error'] == UPLOAD_ERR_OK && !empty($new_file_name)) {
                     $sql .= ", foto = :foto";
                     $params[':foto'] = $foto_path_for_db;
                 }
-                
+
                 $sql .= " WHERE id_anggota = :id";
-                
+
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute($params);
                 $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Anggota ID {$id_anggota} berhasil diupdate!</div>";
@@ -1080,7 +1081,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'pengumuma
         $author = (int)$_POST['author']; // ID anggota/user yang posting
 
         if (empty($judul) || empty($informasi) || empty($tanggal)) {
-             $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Judul, Isi Pengumuman, dan Tanggal Posting wajib diisi.</div>";
+            $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Judul, Isi Pengumuman, dan Tanggal Posting wajib diisi.</div>";
         } else {
             try {
                 $sql = "INSERT INTO pengumuman (judul, informasi, tanggal, id_anggota, status) 
@@ -1109,7 +1110,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'pengumuma
         $author = (int)$_POST['author']; // ID anggota/user yang posting
 
         if (empty($judul) || empty($informasi) || empty($tanggal)) {
-             $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Judul, Isi Pengumuman, dan Tanggal Posting wajib diisi.</div>";
+            $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Judul, Isi Pengumuman, dan Tanggal Posting wajib diisi.</div>";
         } else {
             try {
                 $sql = "UPDATE pengumuman SET 
@@ -1332,6 +1333,7 @@ if ($active_page === 'pengumuman' && $pdo) {
 ?>
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1340,29 +1342,57 @@ if ($active_page === 'pengumuman' && $pdo) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         /* Custom colors */
-        .bg-primary { background-color: #3b82f6; /* Blue 500 */ }
-        .hover:bg-primary-dark:hover { background-color: #2563eb; /* Blue 600 */ }
-        .text-primary { color: #3b82f6; }
-        .border-primary { border-color: #3b82f6; }
-        .focus\:ring-primary:focus { --tw-ring-color: #3b82f6; }
-        .bg-secondary { background-color: #10b981; /* Emerald 500 */ }
-        .text-secondary { color: #10b981; }
-        
+        .bg-primary {
+            background-color: #3b82f6;
+            /* Blue 500 */
+        }
+
+        .hover:bg-primary-dark:hover {
+            background-color: #2563eb;
+            /* Blue 600 */
+        }
+
+        .text-primary {
+            color: #3b82f6;
+        }
+
+        .border-primary {
+            border-color: #3b82f6;
+        }
+
+        .focus\:ring-primary:focus {
+            --tw-ring-color: #3b82f6;
+        }
+
+        .bg-secondary {
+            background-color: #10b981;
+            /* Emerald 500 */
+        }
+
+        .text-secondary {
+            color: #10b981;
+        }
+
         .line-clamp-2 {
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
-        .z-\[100\] { z-index: 100; }
-        
+
+        .z-\[100\] {
+            z-index: 100;
+        }
+
         /* Sidebar toggle styles */
         .sidebar-closed {
             transform: translateX(-100%);
         }
+
         .main-content-shifted {
             margin-left: 0 !important;
         }
+
         .toggle-btn {
             position: fixed;
             top: 50%;
@@ -1380,32 +1410,35 @@ if ($active_page === 'pengumuman' && $pdo) {
             cursor: pointer;
             transition: all 0.3s ease;
         }
+
         .toggle-btn:hover {
             box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
         }
+
         .sidebar-open .toggle-btn {
             left: 268px;
         }
-        
+
         /* Modal backdrop styles to prevent interaction */
         .modal-open .toggle-btn {
             pointer-events: none;
             opacity: 0.5;
         }
-        
+
         /* Increase modal z-index to be higher than toggle button */
         .modal {
             z-index: 1001;
         }
     </style>
 </head>
+
 <body class="bg-gradient-to-br from-slate-100 via-slate-50 to-slate-200 min-h-screen text-gray-900 antialiased sidebar-open">
-    
+
     <!-- Toggle Button -->
     <button class="toggle-btn" onclick="toggleSidebar()" aria-label="Toggle Sidebar">
         <i class="fas fa-chevron-left text-gray-700"></i>
     </button>
-    
+
     <div id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-100 shadow-xl border-r border-slate-800/60 px-5 py-6 flex flex-col transition-transform duration-300 ease-in-out">
         <div class="mb-8 flex items-center gap-3">
             <div class="h-10 w-10 rounded-2xl bg-primary/20 flex items-center justify-center text-primary">
@@ -1416,7 +1449,7 @@ if ($active_page === 'pengumuman' && $pdo) {
                 <p class="text-xs text-slate-400">Lab Data Technologies • <?php echo $current_year; ?></p>
             </div>
         </div>
-        
+
         <div class="flex-grow">
             <p class="text-[11px] font-semibold tracking-[0.16em] uppercase text-slate-500 mb-3">Navigasi Utama</p>
             <nav class="space-y-1.5">
@@ -1434,7 +1467,7 @@ if ($active_page === 'pengumuman' && $pdo) {
         </div>
 
         <div class="mt-6 pt-4 border-t border-slate-800/60">
-            <a href="logout.php" class="flex items-center px-3 py-2 rounded-lg text-red-300 hover:bg-red-500/10 hover:text-red-100 text-sm font-medium transition-colors duration-150">
+            <a href="/assets/php/logout.php" class="flex items-center px-3 py-2 rounded-lg text-red-300 hover:bg-red-500/10 hover:text-red-100 text-sm font-medium transition-colors duration-150">
                 <i class="fas fa-sign-out-alt w-5 h-5 mr-3 flex items-center justify-center"></i> Logout (<?php echo htmlspecialchars($username); ?>)
             </a>
         </div>
@@ -1453,7 +1486,7 @@ if ($active_page === 'pengumuman' && $pdo) {
                     Selamat Datang, <?php echo htmlspecialchars($username); ?>
                 </h1>
                 <p class="mt-1 text-sm text-gray-500">
-                    Halaman aktif: 
+                    Halaman aktif:
                     <span class="font-semibold text-gray-700"><?php echo ucfirst($active_page); ?></span>
                 </p>
             </div>
@@ -1480,7 +1513,8 @@ if ($active_page === 'pengumuman' && $pdo) {
             </div>
         <?php elseif ($active_page === 'dashboard'): ?>
             <h1 class="text-3xl font-bold text-gray-800 mb-6">Ringkasan Data</h1>
-            <?php echo $message; // Menampilkan pesan dari operasi CRUD sebelumnya jika ada redirect ?>
+            <?php echo $message; // Menampilkan pesan dari operasi CRUD sebelumnya jika ada redirect 
+            ?>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-primary">
@@ -1522,7 +1556,7 @@ if ($active_page === 'pengumuman' && $pdo) {
                         <i class="fas fa-image text-4xl text-purple-500 opacity-30"></i>
                     </div>
                 </div>
-                
+
                 <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-pink-500">
                     <div class="flex justify-between items-center">
                         <div>
@@ -1542,7 +1576,7 @@ if ($active_page === 'pengumuman' && $pdo) {
                         <i class="fas fa-calendar-alt text-4xl text-teal-500 opacity-30"></i>
                     </div>
                 </div>
-                
+
                 <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-red-500">
                     <div class="flex justify-between items-center">
                         <div>
@@ -1562,9 +1596,9 @@ if ($active_page === 'pengumuman' && $pdo) {
                         <i class="fas fa-bullhorn text-4xl text-orange-500 opacity-30"></i>
                     </div>
                 </div>
-                </div>
+            </div>
 
-            <?php elseif ($active_page === 'berita'): ?>
+        <?php elseif ($active_page === 'berita'): ?>
             <h1 class="text-3xl font-bold text-gray-800 mb-6">Kelola Berita</h1>
             <?php echo $message; ?>
 
@@ -1589,10 +1623,10 @@ if ($active_page === 'pengumuman' && $pdo) {
                     <tbody class="bg-white divide-y divide-gray-200">
                         <?php if (!empty($news_data)): ?>
                             <?php foreach ($news_data as $news): ?>
-                                <tr data-id="<?php echo $news['id_berita']; ?>" 
-                                    data-judul="<?php echo htmlspecialchars($news['judul']); ?>" 
-                                    data-informasi="<?php echo htmlspecialchars($news['informasi']); ?>" 
-                                    data-tanggal="<?php echo htmlspecialchars($news['tanggal']); ?>" 
+                                <tr data-id="<?php echo $news['id_berita']; ?>"
+                                    data-judul="<?php echo htmlspecialchars($news['judul']); ?>"
+                                    data-informasi="<?php echo htmlspecialchars($news['informasi']); ?>"
+                                    data-tanggal="<?php echo htmlspecialchars($news['tanggal']); ?>"
                                     data-author="<?php echo htmlspecialchars($news['author']); ?>"
                                     data-gambar="<?php echo htmlspecialchars($news['gambar']); ?>">
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -1602,12 +1636,12 @@ if ($active_page === 'pengumuman' && $pdo) {
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo date('d F Y', strtotime($news['tanggal'])); ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($news['author_name'] ?? 'Admin'); ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <?php 
-                                            $status_class = [
-                                                'approved' => 'bg-green-100 text-green-800', 
-                                                'pending' => 'bg-yellow-100 text-yellow-800', 
-                                                'rejected' => 'bg-red-100 text-red-800'
-                                            ][$news['status']] ?? 'bg-gray-100 text-gray-800';
+                                        <?php
+                                        $status_class = [
+                                            'approved' => 'bg-green-100 text-green-800',
+                                            'pending' => 'bg-yellow-100 text-yellow-800',
+                                            'rejected' => 'bg-red-100 text-red-800'
+                                        ][$news['status']] ?? 'bg-gray-100 text-gray-800';
                                         ?>
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <?php echo $status_class; ?>">
                                             <?php echo ucfirst($news['status']); ?>
@@ -1617,9 +1651,9 @@ if ($active_page === 'pengumuman' && $pdo) {
                                         <button onclick="openEditNewsModal(this)" class="text-indigo-600 hover:text-indigo-900 p-2 rounded-md hover:bg-gray-100">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <a href="admin-dashboard.php?page=berita&action=delete&id=<?php echo $news['id_berita']; ?>" 
-                                           onclick="return confirm('Apakah Anda yakin ingin menghapus berita ini? Gambar juga akan terhapus dari server.')" 
-                                           class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
+                                        <a href="admin-dashboard.php?page=berita&action=delete&id=<?php echo $news['id_berita']; ?>"
+                                            onclick="return confirm('Apakah Anda yakin ingin menghapus berita ini? Gambar juga akan terhapus dari server.')"
+                                            class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
                                             <i class="fas fa-trash"></i>
                                         </a>
                                         <button onclick="openVerifyBeritaModal(<?php echo $news['id_berita']; ?>, '<?php echo $news['status']; ?>')" class="text-gray-500 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100" title="Verifikasi Berita">
@@ -1629,7 +1663,9 @@ if ($active_page === 'pengumuman' && $pdo) {
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
-                            <tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Belum ada data berita.</td></tr>
+                            <tr>
+                                <td colspan="6" class="px-6 py-4 text-center text-gray-500">Belum ada data berita.</td>
+                            </tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
@@ -1658,9 +1694,9 @@ if ($active_page === 'pengumuman' && $pdo) {
                     <tbody class="bg-white divide-y divide-gray-200">
                         <?php if (!empty($fasilitas_data)): ?>
                             <?php foreach ($fasilitas_data as $fasilitas): ?>
-                                <tr data-id="<?php echo $fasilitas['id_fasilitas']; ?>" 
-                                    data-nama_fasilitas="<?php echo htmlspecialchars($fasilitas['nama_fasilitas']); ?>" 
-                                    data-deskripsi="<?php echo htmlspecialchars($fasilitas['deskripsi']); ?>" 
+                                <tr data-id="<?php echo $fasilitas['id_fasilitas']; ?>"
+                                    data-nama_fasilitas="<?php echo htmlspecialchars($fasilitas['nama_fasilitas']); ?>"
+                                    data-deskripsi="<?php echo htmlspecialchars($fasilitas['deskripsi']); ?>"
                                     data-foto="<?php echo htmlspecialchars($fasilitas['foto']); ?>">
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         <img src="<?php echo htmlspecialchars($fasilitas['foto']); ?>" alt="Foto Fasilitas" class="h-10 w-10 rounded object-cover">
@@ -1671,16 +1707,18 @@ if ($active_page === 'pengumuman' && $pdo) {
                                         <button onclick="openEditFasilitasModal(this)" class="text-indigo-600 hover:text-indigo-900 p-2 rounded-md hover:bg-gray-100">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <a href="admin-dashboard.php?page=fasilitas&action=delete&id=<?php echo $fasilitas['id_fasilitas']; ?>" 
-                                           onclick="return confirm('Apakah Anda yakin ingin menghapus fasilitas ini? Foto juga akan terhapus dari server.')" 
-                                           class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
+                                        <a href="admin-dashboard.php?page=fasilitas&action=delete&id=<?php echo $fasilitas['id_fasilitas']; ?>"
+                                            onclick="return confirm('Apakah Anda yakin ingin menghapus fasilitas ini? Foto juga akan terhapus dari server.')"
+                                            class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
                                             <i class="fas fa-trash"></i>
                                         </a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
-                            <tr><td colspan="4" class="px-6 py-4 text-center text-gray-500">Belum ada data fasilitas.</td></tr>
+                            <tr>
+                                <td colspan="4" class="px-6 py-4 text-center text-gray-500">Belum ada data fasilitas.</td>
+                            </tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
@@ -1712,9 +1750,9 @@ if ($active_page === 'pengumuman' && $pdo) {
                     <tbody class="bg-white divide-y divide-gray-200">
                         <?php if (!empty($galeri_data)): ?>
                             <?php foreach ($galeri_data as $galeri): ?>
-                                <tr data-id="<?php echo $galeri['id_foto']; ?>" 
-                                    data-nama_foto="<?php echo htmlspecialchars($galeri['nama_foto']); ?>" 
-                                    data-deskripsi="<?php echo htmlspecialchars($galeri['deskripsi']); ?>" 
+                                <tr data-id="<?php echo $galeri['id_foto']; ?>"
+                                    data-nama_foto="<?php echo htmlspecialchars($galeri['nama_foto']); ?>"
+                                    data-deskripsi="<?php echo htmlspecialchars($galeri['deskripsi']); ?>"
                                     data-file_foto="<?php echo htmlspecialchars($galeri['file_foto']); ?>"
                                     data-author="<?php echo htmlspecialchars($galeri['id_anggota']); ?>">
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -1725,12 +1763,12 @@ if ($active_page === 'pengumuman' && $pdo) {
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($galeri['author_name'] ?? '-'); ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($galeri['uploader_name'] ?? 'Admin'); ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <?php 
-                                            $status_class = [
-                                                'approved' => 'bg-green-100 text-green-800', 
-                                                'pending' => 'bg-yellow-100 text-yellow-800', 
-                                                'rejected' => 'bg-red-100 text-red-800'
-                                            ][$galeri['status']] ?? 'bg-gray-100 text-gray-800';
+                                        <?php
+                                        $status_class = [
+                                            'approved' => 'bg-green-100 text-green-800',
+                                            'pending' => 'bg-yellow-100 text-yellow-800',
+                                            'rejected' => 'bg-red-100 text-red-800'
+                                        ][$galeri['status']] ?? 'bg-gray-100 text-gray-800';
                                         ?>
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <?php echo $status_class; ?>">
                                             <?php echo ucfirst($galeri['status'] ?? 'pending'); ?>
@@ -1740,9 +1778,9 @@ if ($active_page === 'pengumuman' && $pdo) {
                                         <button onclick="openEditGaleriModal(this)" class="text-indigo-600 hover:text-indigo-900 p-2 rounded-md hover:bg-gray-100">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <a href="admin-dashboard.php?page=galeri&action=delete&id=<?php echo $galeri['id_foto']; ?>" 
-                                           onclick="return confirm('Apakah Anda yakin ingin menghapus foto galeri ini? File juga akan terhapus dari server.')" 
-                                           class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
+                                        <a href="admin-dashboard.php?page=galeri&action=delete&id=<?php echo $galeri['id_foto']; ?>"
+                                            onclick="return confirm('Apakah Anda yakin ingin menghapus foto galeri ini? File juga akan terhapus dari server.')"
+                                            class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
                                             <i class="fas fa-trash"></i>
                                         </a>
                                         <button onclick="openVerifyGaleriModal(<?php echo $galeri['id_foto']; ?>, '<?php echo $galeri['status']; ?>')" class="text-gray-500 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100" title="Verifikasi Galeri">
@@ -1752,12 +1790,14 @@ if ($active_page === 'pengumuman' && $pdo) {
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
-                            <tr><td colspan="7" class="px-6 py-4 text-center text-gray-500">Belum ada data galeri.</td></tr>
+                            <tr>
+                                <td colspan="7" class="px-6 py-4 text-center text-gray-500">Belum ada data galeri.</td>
+                            </tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
             </div>
-        
+
         <?php elseif ($active_page === 'publikasi'): ?>
             <h1 class="text-3xl font-bold text-gray-800 mb-6">Kelola Publikasi</h1>
             <?php echo $message; ?>
@@ -1784,16 +1824,16 @@ if ($active_page === 'pengumuman' && $pdo) {
                     <tbody class="bg-white divide-y divide-gray-200">
                         <?php if (!empty($publikasi_data)): ?>
                             <?php foreach ($publikasi_data as $publikasi): ?>
-                                <tr data-id="<?php echo $publikasi['id_publikasi']; ?>" 
-                                    data-judul="<?php echo htmlspecialchars($publikasi['judul']); ?>" 
-                                    data-penulis="<?php echo htmlspecialchars($publikasi['penulis']); ?>" 
+                                <tr data-id="<?php echo $publikasi['id_publikasi']; ?>"
+                                    data-judul="<?php echo htmlspecialchars($publikasi['judul']); ?>"
+                                    data-penulis="<?php echo htmlspecialchars($publikasi['penulis']); ?>"
                                     data-tanggal_terbit="<?php echo htmlspecialchars($publikasi['tanggal_terbit']); ?>"
-                                    data-deskripsi="<?php echo htmlspecialchars($publikasi['deskripsi']); ?>" 
+                                    data-deskripsi="<?php echo htmlspecialchars($publikasi['deskripsi']); ?>"
                                     data-file_publikasi="<?php echo htmlspecialchars($publikasi['file_publikasi']); ?>">
                                     <td class="px-6 py-4 text-sm font-medium text-gray-900 line-clamp-2" style="max-width: 200px;"><?php echo htmlspecialchars($publikasi['judul']); ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($publikasi['penulis']); ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        <?php 
+                                        <?php
                                         if (!empty($publikasi['member_nama'])) {
                                             echo htmlspecialchars($publikasi['member_nama']) . ' (Member)';
                                         } elseif (!empty($publikasi['anggota_nama_gelar'])) {
@@ -1810,12 +1850,12 @@ if ($active_page === 'pengumuman' && $pdo) {
                                         </a>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <?php 
-                                            $status_class = [
-                                                'approved' => 'bg-green-100 text-green-800', 
-                                                'pending' => 'bg-yellow-100 text-yellow-800', 
-                                                'rejected' => 'bg-red-100 text-red-800'
-                                            ][$publikasi['status']] ?? 'bg-gray-100 text-gray-800';
+                                        <?php
+                                        $status_class = [
+                                            'approved' => 'bg-green-100 text-green-800',
+                                            'pending' => 'bg-yellow-100 text-yellow-800',
+                                            'rejected' => 'bg-red-100 text-red-800'
+                                        ][$publikasi['status']] ?? 'bg-gray-100 text-gray-800';
                                         ?>
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <?php echo $status_class; ?>">
                                             <?php echo ucfirst($publikasi['status'] ?? 'pending'); ?>
@@ -1825,9 +1865,9 @@ if ($active_page === 'pengumuman' && $pdo) {
                                         <button onclick="openEditPublikasiModal(this)" class="text-indigo-600 hover:text-indigo-900 p-2 rounded-md hover:bg-gray-100">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <a href="admin-dashboard.php?page=publikasi&action=delete&id=<?php echo $publikasi['id_publikasi']; ?>" 
-                                           onclick="return confirm('Apakah Anda yakin ingin menghapus publikasi ini? File juga akan terhapus dari server.')" 
-                                           class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
+                                        <a href="admin-dashboard.php?page=publikasi&action=delete&id=<?php echo $publikasi['id_publikasi']; ?>"
+                                            onclick="return confirm('Apakah Anda yakin ingin menghapus publikasi ini? File juga akan terhapus dari server.')"
+                                            class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
                                             <i class="fas fa-trash"></i>
                                         </a>
                                         <button onclick="openVerifyPublikasiModal(<?php echo $publikasi['id_publikasi']; ?>, '<?php echo $publikasi['status']; ?>')" class="text-gray-500 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100" title="Verifikasi Publikasi">
@@ -1837,7 +1877,9 @@ if ($active_page === 'pengumuman' && $pdo) {
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
-                            <tr><td colspan="7" class="px-6 py-4 text-center text-gray-500">Belum ada data publikasi.</td></tr>
+                            <tr>
+                                <td colspan="7" class="px-6 py-4 text-center text-gray-500">Belum ada data publikasi.</td>
+                            </tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
@@ -1867,17 +1909,17 @@ if ($active_page === 'pengumuman' && $pdo) {
                     <tbody class="bg-white divide-y divide-gray-200">
                         <?php if (!empty($agenda_data)): ?>
                             <?php foreach ($agenda_data as $agenda): ?>
-                                <tr data-id="<?php echo $agenda['id_agenda']; ?>" 
-                                    data-nama_agenda="<?php echo htmlspecialchars($agenda['nama_agenda']); ?>" 
-                                    data-tgl_agenda="<?php echo htmlspecialchars($agenda['tgl_agenda']); ?>" 
+                                <tr data-id="<?php echo $agenda['id_agenda']; ?>"
+                                    data-nama_agenda="<?php echo htmlspecialchars($agenda['nama_agenda']); ?>"
+                                    data-tgl_agenda="<?php echo htmlspecialchars($agenda['tgl_agenda']); ?>"
                                     data-link_agenda="<?php echo htmlspecialchars($agenda['link_agenda']); ?>"
                                     data-author-id="<?php echo htmlspecialchars($agenda['id_anggota'] ?? ''); ?>">
                                     <td class="px-6 py-4 text-sm font-medium text-gray-900 line-clamp-2" style="max-width: 300px;"><?php echo htmlspecialchars($agenda['nama_agenda']); ?></td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php 
-                                        $tgl_agenda = new DateTime($agenda['tgl_agenda']);
-                                        $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-                                        echo $tgl_agenda->format('d') . ' ' . $bulan[$tgl_agenda->format('n')-1] . ' ' . $tgl_agenda->format('Y');
-                                    ?></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php
+                                                                                                    $tgl_agenda = new DateTime($agenda['tgl_agenda']);
+                                                                                                    $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+                                                                                                    echo $tgl_agenda->format('d') . ' ' . $bulan[$tgl_agenda->format('n') - 1] . ' ' . $tgl_agenda->format('Y');
+                                                                                                    ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         <?php if (!empty($agenda['link_agenda'])): ?>
                                             <a href="<?php echo htmlspecialchars($agenda['link_agenda']); ?>" target="_blank" class="text-primary hover:text-primary-dark">
@@ -1892,16 +1934,18 @@ if ($active_page === 'pengumuman' && $pdo) {
                                         <button onclick="openEditAgendaModal(this)" class="text-indigo-600 hover:text-indigo-900 p-2 rounded-md hover:bg-gray-100">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <a href="admin-dashboard.php?page=agenda&action=delete&id=<?php echo $agenda['id_agenda']; ?>" 
-                                           onclick="return confirm('Apakah Anda yakin ingin menghapus agenda ini?')" 
-                                           class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
+                                        <a href="admin-dashboard.php?page=agenda&action=delete&id=<?php echo $agenda['id_agenda']; ?>"
+                                            onclick="return confirm('Apakah Anda yakin ingin menghapus agenda ini?')"
+                                            class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
                                             <i class="fas fa-trash"></i>
                                         </a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
-                            <tr><td colspan="4" class="px-6 py-4 text-center text-gray-500">Belum ada data agenda.</td></tr>
+                            <tr>
+                                <td colspan="4" class="px-6 py-4 text-center text-gray-500">Belum ada data agenda.</td>
+                            </tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
@@ -1932,9 +1976,9 @@ if ($active_page === 'pengumuman' && $pdo) {
                     <tbody class="bg-white divide-y divide-gray-200">
                         <?php if (!empty($pengumuman_data)): ?>
                             <?php foreach ($pengumuman_data as $pengumuman): ?>
-                                <tr data-id="<?php echo $pengumuman['id_pengumuman']; ?>" 
-                                    data-judul="<?php echo htmlspecialchars($pengumuman['judul']); ?>" 
-                                    data-informasi="<?php echo htmlspecialchars($pengumuman['informasi']); ?>" 
+                                <tr data-id="<?php echo $pengumuman['id_pengumuman']; ?>"
+                                    data-judul="<?php echo htmlspecialchars($pengumuman['judul']); ?>"
+                                    data-informasi="<?php echo htmlspecialchars($pengumuman['informasi']); ?>"
                                     data-tanggal="<?php echo htmlspecialchars($pengumuman['tanggal']); ?>"
                                     data-author="<?php echo htmlspecialchars($pengumuman['id_anggota']); ?>">
                                     <td class="px-6 py-4 text-sm font-medium text-gray-900 line-clamp-2" style="max-width: 250px;"><?php echo htmlspecialchars($pengumuman['judul']); ?></td>
@@ -1942,12 +1986,12 @@ if ($active_page === 'pengumuman' && $pdo) {
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo date('d F Y', strtotime($pengumuman['tanggal'])); ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($pengumuman['author_name'] ?? 'Admin'); ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <?php 
-                                            $status_class = [
-                                                'approved' => 'bg-green-100 text-green-800', 
-                                                'pending' => 'bg-yellow-100 text-yellow-800', 
-                                                'rejected' => 'bg-red-100 text-red-800'
-                                            ][$pengumuman['status']] ?? 'bg-gray-100 text-gray-800';
+                                        <?php
+                                        $status_class = [
+                                            'approved' => 'bg-green-100 text-green-800',
+                                            'pending' => 'bg-yellow-100 text-yellow-800',
+                                            'rejected' => 'bg-red-100 text-red-800'
+                                        ][$pengumuman['status']] ?? 'bg-gray-100 text-gray-800';
                                         ?>
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <?php echo $status_class; ?>">
                                             <?php echo ucfirst($pengumuman['status'] ?? 'pending'); ?>
@@ -1957,9 +2001,9 @@ if ($active_page === 'pengumuman' && $pdo) {
                                         <button onclick="openEditPengumumanModal(this)" class="text-indigo-600 hover:text-indigo-900 p-2 rounded-md hover:bg-gray-100">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <a href="admin-dashboard.php?page=pengumuman&action=delete&id=<?php echo $pengumuman['id_pengumuman']; ?>" 
-                                           onclick="return confirm('Apakah Anda yakin ingin menghapus pengumuman ini?')" 
-                                           class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
+                                        <a href="admin-dashboard.php?page=pengumuman&action=delete&id=<?php echo $pengumuman['id_pengumuman']; ?>"
+                                            onclick="return confirm('Apakah Anda yakin ingin menghapus pengumuman ini?')"
+                                            class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
                                             <i class="fas fa-trash"></i>
                                         </a>
                                         <button onclick="openVerifyPengumumanModal(<?php echo $pengumuman['id_pengumuman']; ?>, '<?php echo $pengumuman['status']; ?>')" class="text-gray-500 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100" title="Verifikasi Pengumuman">
@@ -1969,12 +2013,14 @@ if ($active_page === 'pengumuman' && $pdo) {
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
-                            <tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Belum ada data pengumuman.</td></tr>
+                            <tr>
+                                <td colspan="6" class="px-6 py-4 text-center text-gray-500">Belum ada data pengumuman.</td>
+                            </tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
             </div>
-            <?php elseif ($active_page === 'anggota'): ?>
+        <?php elseif ($active_page === 'anggota'): ?>
             <h1 class="text-3xl font-bold text-gray-800 mb-6">Kelola Anggota</h1>
             <?php echo $message; ?>
 
@@ -1999,8 +2045,8 @@ if ($active_page === 'pengumuman' && $pdo) {
                     <tbody class="bg-white divide-y divide-gray-200">
                         <?php if (!empty($anggota_data)): ?>
                             <?php foreach ($anggota_data as $anggota): ?>
-                                <tr data-id="<?php echo $anggota['id_anggota']; ?>" 
-                                    data-nama_gelar="<?php echo htmlspecialchars($anggota['nama_gelar']); ?>" 
+                                <tr data-id="<?php echo $anggota['id_anggota']; ?>"
+                                    data-nama_gelar="<?php echo htmlspecialchars($anggota['nama_gelar']); ?>"
                                     data-jabatan="<?php echo htmlspecialchars($anggota['jabatan']); ?>"
                                     data-email="<?php echo htmlspecialchars($anggota['email']); ?>"
                                     data-no_telp="<?php echo htmlspecialchars($anggota['no_telp']); ?>"
@@ -2020,21 +2066,23 @@ if ($active_page === 'pengumuman' && $pdo) {
                                         <button onclick="openEditAnggotaModal(this)" class="text-indigo-600 hover:text-indigo-900 p-2 rounded-md hover:bg-gray-100">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <a href="admin-dashboard.php?page=anggota&action=delete&id=<?php echo $anggota['id_anggota']; ?>" 
-                                           onclick="return confirm('Apakah Anda yakin ingin menghapus anggota ini? Foto juga akan terhapus dari server.')" 
-                                           class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
+                                        <a href="admin-dashboard.php?page=anggota&action=delete&id=<?php echo $anggota['id_anggota']; ?>"
+                                            onclick="return confirm('Apakah Anda yakin ingin menghapus anggota ini? Foto juga akan terhapus dari server.')"
+                                            class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
                                             <i class="fas fa-trash"></i>
                                         </a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
-                            <tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Belum ada data anggota.</td></tr>
+                            <tr>
+                                <td colspan="6" class="px-6 py-4 text-center text-gray-500">Belum ada data anggota.</td>
+                            </tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
             </div>
-            
+
         <?php elseif ($active_page === 'settings'): ?>
             <h1 class="text-3xl font-bold text-gray-800 mb-6">Pengaturan Sistem</h1>
             <?php echo $message; ?>
@@ -2053,7 +2101,7 @@ if ($active_page === 'pengumuman' && $pdo) {
             <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
                 <form action="admin-dashboard.php?page=berita" method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="action" value="add_news">
-                    
+
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4" id="modal-title">Tambah Berita Baru</h3>
                         <div class="space-y-4">
@@ -2105,7 +2153,7 @@ if ($active_page === 'pengumuman' && $pdo) {
                     <input type="hidden" name="action" value="edit_news">
                     <input type="hidden" name="id_berita" id="edit_id_berita">
                     <input type="hidden" name="current_gambar" id="edit_current_gambar">
-                    
+
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Edit Berita</h3>
                         <div class="space-y-4">
@@ -2185,7 +2233,7 @@ if ($active_page === 'pengumuman' && $pdo) {
             </div>
         </div>
     </div>
-    
+
     <div id="verifyGaleriModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[1001] hidden overflow-y-auto">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
@@ -2219,7 +2267,7 @@ if ($active_page === 'pengumuman' && $pdo) {
             </div>
         </div>
     </div>
-    
+
     <div id="verifyPublikasiModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[1001] hidden overflow-y-auto">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
@@ -2253,7 +2301,7 @@ if ($active_page === 'pengumuman' && $pdo) {
             </div>
         </div>
     </div>
-    
+
     <div id="verifyPengumumanModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[1001] hidden overflow-y-auto">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
@@ -2287,13 +2335,13 @@ if ($active_page === 'pengumuman' && $pdo) {
             </div>
         </div>
     </div>
-    
+
     <div id="addFasilitasModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[1001] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
                 <form action="admin-dashboard.php?page=fasilitas" method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="action" value="add_fasilitas">
-                    
+
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Tambah Fasilitas Baru</h3>
                         <div class="space-y-4">
@@ -2331,7 +2379,7 @@ if ($active_page === 'pengumuman' && $pdo) {
                     <input type="hidden" name="action" value="edit_fasilitas">
                     <input type="hidden" name="id_fasilitas" id="edit_id_fasilitas">
                     <input type="hidden" name="current_foto" id="edit_current_foto">
-                    
+
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Edit Fasilitas</h3>
                         <div class="space-y-4">
@@ -2369,7 +2417,7 @@ if ($active_page === 'pengumuman' && $pdo) {
             <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
                 <form action="admin-dashboard.php?page=galeri" method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="action" value="add_galeri">
-                    
+
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Tambah Foto Galeri Baru</h3>
                         <div class="space-y-4">
@@ -2417,7 +2465,7 @@ if ($active_page === 'pengumuman' && $pdo) {
                     <input type="hidden" name="action" value="edit_galeri">
                     <input type="hidden" name="id_foto" id="edit_id_foto">
                     <input type="hidden" name="current_file_foto" id="edit_current_file_foto">
-                    
+
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Edit Foto Galeri</h3>
                         <div class="space-y-4">
@@ -2465,7 +2513,7 @@ if ($active_page === 'pengumuman' && $pdo) {
             <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
                 <form action="admin-dashboard.php?page=publikasi" method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="action" value="add_publikasi">
-                    
+
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Tambah Publikasi Baru</h3>
                         <div class="space-y-4">
@@ -2522,7 +2570,7 @@ if ($active_page === 'pengumuman' && $pdo) {
                     <input type="hidden" name="action" value="edit_publikasi">
                     <input type="hidden" name="id_publikasi" id="edit_id_publikasi">
                     <input type="hidden" name="current_file_publikasi" id="edit_current_file_publikasi">
-                    
+
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Edit Publikasi</h3>
                         <div class="space-y-4">
@@ -2568,7 +2616,7 @@ if ($active_page === 'pengumuman' && $pdo) {
             <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
                 <form action="admin-dashboard.php?page=agenda" method="POST">
                     <input type="hidden" name="action" value="add_agenda">
-                    
+
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Tambah Agenda Baru</h3>
                         <div class="space-y-4">
@@ -2615,7 +2663,7 @@ if ($active_page === 'pengumuman' && $pdo) {
                 <form action="admin-dashboard.php?page=agenda" method="POST">
                     <input type="hidden" name="action" value="edit_agenda">
                     <input type="hidden" name="id_agenda" id="edit_id_agenda">
-                    
+
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Edit Agenda</h3>
                         <div class="space-y-4">
@@ -2655,13 +2703,13 @@ if ($active_page === 'pengumuman' && $pdo) {
             </div>
         </div>
     </div>
-    
+
     <div id="addAnggotaModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[1001] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
                 <form action="admin-dashboard.php?page=anggota" method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="action" value="add_anggota">
-                    
+
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Tambah Anggota Baru</h3>
                         <div class="space-y-4">
@@ -2711,7 +2759,7 @@ if ($active_page === 'pengumuman' && $pdo) {
                     <input type="hidden" name="action" value="edit_anggota">
                     <input type="hidden" name="id_anggota" id="edit_id_anggota">
                     <input type="hidden" name="current_foto" id="edit_current_foto">
-                    
+
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Edit Anggota</h3>
                         <div class="space-y-4">
@@ -2761,7 +2809,7 @@ if ($active_page === 'pengumuman' && $pdo) {
             <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
                 <form action="admin-dashboard.php?page=pengumuman" method="POST">
                     <input type="hidden" name="action" value="add_pengumuman">
-                    
+
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4" id="modal-title">Tambah Pengumuman Baru</h3>
                         <div class="space-y-4">
@@ -2808,7 +2856,7 @@ if ($active_page === 'pengumuman' && $pdo) {
                 <form action="admin-dashboard.php?page=pengumuman" method="POST">
                     <input type="hidden" name="action" value="edit_pengumuman">
                     <input type="hidden" name="id_pengumuman" id="edit_id_pengumuman">
-                    
+
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Edit Pengumuman</h3>
                         <div class="space-y-4">
@@ -2860,7 +2908,7 @@ if ($active_page === 'pengumuman' && $pdo) {
                 }
             }
         }
-        
+
         // --- Berita Modals ---
         function openAddNewsModal() {
             document.getElementById('addNewsModal').classList.remove('hidden');
@@ -2871,7 +2919,7 @@ if ($active_page === 'pengumuman' && $pdo) {
             document.getElementById('addNewsModal').classList.add('hidden');
             document.body.classList.remove('modal-open');
         }
-        
+
         function openEditNewsModal(button) {
             const row = button.closest('tr');
             const id = row.dataset.id;
@@ -2887,7 +2935,7 @@ if ($active_page === 'pengumuman' && $pdo) {
             document.getElementById('edit_tanggal').value = tanggal;
             document.getElementById('edit_current_gambar').value = gambar; // Path gambar lama
             document.getElementById('edit_current_gambar_preview').src = gambar; // Preview gambar lama
-            
+
             // Set author dropdown value
             if (author) {
                 document.getElementById('edit_author').value = author;
@@ -2933,7 +2981,7 @@ if ($active_page === 'pengumuman' && $pdo) {
             document.getElementById('verifyGaleriModal').classList.add('hidden');
             document.body.classList.remove('modal-open');
         }
-        
+
         function openVerifyBeritaModal(id, status) {
             document.getElementById('verify_id_berita').value = id;
             document.getElementById('verify_modal_id').textContent = id;
@@ -2991,7 +3039,7 @@ if ($active_page === 'pengumuman' && $pdo) {
             document.getElementById('verifyPublikasiModal').classList.add('hidden');
             document.body.classList.remove('modal-open');
         }
-        
+
         function openVerifyPengumumanModal(id, status) {
             document.getElementById('verify_id_pengumuman').value = id;
             document.getElementById('verify_pengumuman_modal_id').textContent = id;
@@ -3020,7 +3068,7 @@ if ($active_page === 'pengumuman' && $pdo) {
             document.getElementById('verifyPengumumanModal').classList.add('hidden');
             document.body.classList.remove('modal-open');
         }
-        
+
         // --- Fasilitas Modals ---
         function openAddFasilitasModal() {
             document.getElementById('addFasilitasModal').classList.remove('hidden');
@@ -3081,7 +3129,7 @@ if ($active_page === 'pengumuman' && $pdo) {
             document.getElementById('edit_deskripsi_galeri').value = deskripsi;
             document.getElementById('edit_current_file_foto').value = file_foto; // Path file lama
             document.getElementById('edit_current_file_foto_preview').src = file_foto; // Preview file lama
-            
+
             // Set author dropdown value
             document.getElementById('edit_author_galeri').value = author;
 
@@ -3096,7 +3144,7 @@ if ($active_page === 'pengumuman' && $pdo) {
             document.getElementById('editGaleriModal').classList.add('hidden');
             document.body.classList.remove('modal-open');
         }
-        
+
         // --- Publikasi Modals ---
         function openAddPublikasiModal() {
             document.getElementById('addPublikasiModal').classList.remove('hidden');
@@ -3107,7 +3155,7 @@ if ($active_page === 'pengumuman' && $pdo) {
             document.getElementById('addPublikasiModal').classList.add('hidden');
             document.body.classList.remove('modal-open');
         }
-        
+
         function openEditPublikasiModal(button) {
             const row = button.closest('tr');
             const id = row.dataset.id;
@@ -3123,7 +3171,7 @@ if ($active_page === 'pengumuman' && $pdo) {
             document.getElementById('edit_tanggal_terbit').value = tanggal_terbit;
             document.getElementById('edit_deskripsi_publikasi').value = deskripsi;
             document.getElementById('edit_current_file_publikasi').value = file_publikasi;
-            
+
             // Tampilkan nama file saat ini
             const filename = file_publikasi.substring(file_publikasi.lastIndexOf('/') + 1);
             document.getElementById('edit_current_file_publikasi_info').innerHTML = `File saat ini: <a href="${file_publikasi}" target="_blank" class="text-primary hover:text-primary-dark font-medium">${filename}</a>`;
@@ -3163,7 +3211,7 @@ if ($active_page === 'pengumuman' && $pdo) {
             document.getElementById('edit_nama_agenda').value = nama_agenda;
             document.getElementById('edit_tgl_agenda').value = tgl_agenda;
             document.getElementById('edit_link_agenda').value = link_agenda;
-            
+
             // Set author dropdown value
             if (author_id) {
                 document.getElementById('edit_author_agenda').value = author_id;
@@ -3243,7 +3291,7 @@ if ($active_page === 'pengumuman' && $pdo) {
             document.getElementById('edit_judul_pengumuman').value = judul;
             document.getElementById('edit_isi_pengumuman').value = informasi;
             document.getElementById('edit_tanggal_posting').value = tanggal;
-            
+
             // Set author dropdown value
             if (author) {
                 document.getElementById('edit_author_pengumuman').value = author;
@@ -3264,7 +3312,7 @@ if ($active_page === 'pengumuman' && $pdo) {
             const sidebar = document.getElementById('sidebar');
             const mainContent = document.getElementById('mainContent');
             const toggleBtn = document.querySelector('.toggle-btn i');
-            
+
             if (body.classList.contains('sidebar-open')) {
                 // Close sidebar
                 body.classList.remove('sidebar-open');
@@ -3283,4 +3331,5 @@ if ($active_page === 'pengumuman' && $pdo) {
         }
     </script>
 </body>
+
 </html>

@@ -12,11 +12,16 @@ if (!$is_authenticated) {
 }
 
 // 1. Variabel Konfigurasi Dasar
+// member-dashboard.php (sekitar baris 15-16)
+
+// 1. Variabel Konfigurasi Dasar
 $current_year = date('Y');
-$username = "MemberLDT"; // Ganti dengan nama user yang login
-$hardcoded_member_id = 1; // ID Member yang sedang login (HARDCODED: Ganti dengan ID user sesungguhnya)
-$active_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard'; // Default ke 'dashboard' BARU!
-$message = ''; // Untuk notifikasi sukses/gagal
+// GANTI DENGAN DATA DARI SESI
+$username = $_SESSION['username'] ?? "MemberLDT"; 
+// GANTI DENGAN DATA DARI SESI
+$hardcoded_member_id = $_SESSION['user_id'] ?? 1; // ID Member yang sedang login
+$active_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard'; 
+$message = '';
 
 // 2. Koneksi Database
 $pdo = null;
@@ -581,7 +586,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'settings'
         </div>
 
         <div class="mt-6 pt-4 border-t border-slate-800/60">
-            <a href="logout.php" class="flex items-center px-3 py-2 rounded-lg text-red-300 hover:bg-red-500/10 hover:text-red-100 text-sm font-medium transition-colors duration-150">
+            <a href="/assets/php/logout.php" class="flex items-center px-3 py-2 rounded-lg text-red-300 hover:bg-red-500/10 hover:text-red-100 text-sm font-medium transition-colors duration-150">
                 <i class="fas fa-sign-out-alt w-5 h-5 mr-3 flex items-center justify-center"></i> Logout (<?php echo htmlspecialchars($username); ?>)
             </a>
         </div>
