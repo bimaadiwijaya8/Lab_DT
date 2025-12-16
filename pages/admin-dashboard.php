@@ -2133,25 +2133,30 @@ if ($active_page === 'pengumuman' && $pdo) {
 
     <div id="verifyModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[1001] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-sm sm:w-full">
+            <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
                 <form action="admin-dashboard.php?page=berita" method="POST">
                     <input type="hidden" name="action" value="verify_news">
                     <input type="hidden" name="id_berita" id="verify_id_berita">
-                    <input type="hidden" name="status" id="verify_status_input">
-
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                        <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Verifikasi Berita</h3>
-                        <p class="text-sm text-gray-500" id="verify_current_status">Status saat ini: </p>
-                        <p class="mt-2 text-sm text-gray-700">Pilih aksi untuk berita ini:</p>
+                        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Verifikasi Berita</h3>
+                        <p class="text-sm text-gray-500">Pilih status verifikasi untuk Berita ID: <span id="verify_modal_id"></span>.</p>
+                        <div class="mt-4 space-y-3">
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="status" value="approved" class="form-radio text-green-600 h-4 w-4" required>
+                                <span class="ml-2 text-sm text-gray-700">Setujui (Approved)</span>
+                            </label>
+                            <label class="inline-flex items-center ml-6">
+                                <input type="radio" name="status" value="rejected" class="form-radio text-red-600 h-4 w-4">
+                                <span class="ml-2 text-sm text-gray-700">Tolak (Rejected)</span>
+                            </label>
+                        </div>
+                        <p class="mt-3 text-sm font-medium text-gray-700">Status Saat Ini: <span id="current_status_display_berita" class="font-bold"></span></p>
                     </div>
-                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse space-y-2 sm:space-y-0 sm:space-x-2">
-                        <button type="submit" onclick="document.getElementById('verify_status_input').value='approved'" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
-                            <i class="fas fa-check-circle mr-1"></i> Setujui (Approve)
+                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                        <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
+                            Simpan Status
                         </button>
-                        <button type="submit" onclick="document.getElementById('verify_status_input').value='rejected'" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
-                            <i class="fas fa-times-circle mr-1"></i> Tolak (Reject)
-                        </button>
-                        <button type="button" onclick="closeVerifyModal()" class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm">
+                        <button type="button" onclick="closeVerifyModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                             Batal
                         </button>
                     </div>
@@ -2160,27 +2165,32 @@ if ($active_page === 'pengumuman' && $pdo) {
         </div>
     </div>
     
-    <div id="verifyGaleriModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[1001] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div id="verifyGaleriModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[1001] hidden overflow-y-auto">
         <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-sm sm:w-full">
+            <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
                 <form action="admin-dashboard.php?page=galeri" method="POST">
                     <input type="hidden" name="action" value="verify_galeri">
                     <input type="hidden" name="id_foto" id="verify_id_foto">
-                    <input type="hidden" name="status" id="verify_galeri_status_input">
-
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                        <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Verifikasi Galeri</h3>
-                        <p class="text-sm text-gray-500" id="verify_galeri_current_status">Status saat ini: </p>
-                        <p class="mt-2 text-sm text-gray-700">Pilih aksi untuk foto galeri ini:</p>
+                        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Verifikasi Galeri</h3>
+                        <p class="text-sm text-gray-500">Pilih status verifikasi untuk Galeri ID: <span id="verify_galeri_modal_id"></span>.</p>
+                        <div class="mt-4 space-y-3">
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="status" value="approved" class="form-radio text-green-600 h-4 w-4" required>
+                                <span class="ml-2 text-sm text-gray-700">Setujui (Approved)</span>
+                            </label>
+                            <label class="inline-flex items-center ml-6">
+                                <input type="radio" name="status" value="rejected" class="form-radio text-red-600 h-4 w-4">
+                                <span class="ml-2 text-sm text-gray-700">Tolak (Rejected)</span>
+                            </label>
+                        </div>
+                        <p class="mt-3 text-sm font-medium text-gray-700">Status Saat Ini: <span id="current_status_display_galeri" class="font-bold"></span></p>
                     </div>
-                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse space-y-2 sm:space-y-0 sm:space-x-2">
-                        <button type="submit" onclick="document.getElementById('verify_galeri_status_input').value='approved'" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
-                            <i class="fas fa-check-circle mr-1"></i> Setujui (Approve)
+                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                        <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
+                            Simpan Status
                         </button>
-                        <button type="submit" onclick="document.getElementById('verify_galeri_status_input').value='rejected'" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
-                            <i class="fas fa-times-circle mr-1"></i> Tolak (Reject)
-                        </button>
-                        <button type="button" onclick="closeVerifyGaleriModal()" class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm">
+                        <button type="button" onclick="closeVerifyGaleriModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                             Batal
                         </button>
                     </div>
@@ -2189,27 +2199,32 @@ if ($active_page === 'pengumuman' && $pdo) {
         </div>
     </div>
     
-    <div id="verifyPublikasiModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[1001] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div id="verifyPublikasiModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[1001] hidden overflow-y-auto">
         <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-sm sm:w-full">
+            <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
                 <form action="admin-dashboard.php?page=publikasi" method="POST">
                     <input type="hidden" name="action" value="verify_publikasi">
                     <input type="hidden" name="id_publikasi" id="verify_id_publikasi">
-                    <input type="hidden" name="status" id="verify_publikasi_status_input">
-
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                        <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Verifikasi Publikasi</h3>
-                        <p class="text-sm text-gray-500" id="verify_publikasi_current_status">Status saat ini: </p>
-                        <p class="mt-2 text-sm text-gray-700">Pilih aksi untuk publikasi ini:</p>
+                        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Verifikasi Publikasi</h3>
+                        <p class="text-sm text-gray-500">Pilih status verifikasi untuk Publikasi ID: <span id="verify_publikasi_modal_id"></span>.</p>
+                        <div class="mt-4 space-y-3">
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="status" value="approved" class="form-radio text-green-600 h-4 w-4" required>
+                                <span class="ml-2 text-sm text-gray-700">Setujui (Approved)</span>
+                            </label>
+                            <label class="inline-flex items-center ml-6">
+                                <input type="radio" name="status" value="rejected" class="form-radio text-red-600 h-4 w-4">
+                                <span class="ml-2 text-sm text-gray-700">Tolak (Rejected)</span>
+                            </label>
+                        </div>
+                        <p class="mt-3 text-sm font-medium text-gray-700">Status Saat Ini: <span id="current_status_display_publikasi" class="font-bold"></span></p>
                     </div>
-                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse space-y-2 sm:space-y-0 sm:space-x-2">
-                        <button type="submit" onclick="document.getElementById('verify_publikasi_status_input').value='approved'" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
-                            <i class="fas fa-check-circle mr-1"></i> Setujui (Approve)
+                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                        <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
+                            Simpan Status
                         </button>
-                        <button type="submit" onclick="document.getElementById('verify_publikasi_status_input').value='rejected'" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
-                            <i class="fas fa-times-circle mr-1"></i> Tolak (Reject)
-                        </button>
-                        <button type="button" onclick="closeVerifyPublikasiModal()" class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm">
+                        <button type="button" onclick="closeVerifyPublikasiModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                             Batal
                         </button>
                     </div>
@@ -2218,27 +2233,32 @@ if ($active_page === 'pengumuman' && $pdo) {
         </div>
     </div>
     
-    <div id="verifyPengumumanModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[1001] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div id="verifyPengumumanModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[1001] hidden overflow-y-auto">
         <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-sm sm:w-full">
+            <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
                 <form action="admin-dashboard.php?page=pengumuman" method="POST">
                     <input type="hidden" name="action" value="verify_pengumuman">
                     <input type="hidden" name="id_pengumuman" id="verify_id_pengumuman">
-                    <input type="hidden" name="status" id="verify_pengumuman_status_input">
-
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                        <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Verifikasi Pengumuman</h3>
-                        <p class="text-sm text-gray-500" id="verify_pengumuman_current_status">Status saat ini: </p>
-                        <p class="mt-2 text-sm text-gray-700">Pilih aksi untuk pengumuman ini:</p>
+                        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Verifikasi Pengumuman</h3>
+                        <p class="text-sm text-gray-500">Pilih status verifikasi untuk Pengumuman ID: <span id="verify_pengumuman_modal_id"></span>.</p>
+                        <div class="mt-4 space-y-3">
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="status" value="approved" class="form-radio text-green-600 h-4 w-4" required>
+                                <span class="ml-2 text-sm text-gray-700">Setujui (Approved)</span>
+                            </label>
+                            <label class="inline-flex items-center ml-6">
+                                <input type="radio" name="status" value="rejected" class="form-radio text-red-600 h-4 w-4">
+                                <span class="ml-2 text-sm text-gray-700">Tolak (Rejected)</span>
+                            </label>
+                        </div>
+                        <p class="mt-3 text-sm font-medium text-gray-700">Status Saat Ini: <span id="current_status_display_pengumuman" class="font-bold"></span></p>
                     </div>
-                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse space-y-2 sm:space-y-0 sm:space-x-2">
-                        <button type="submit" onclick="document.getElementById('verify_pengumuman_status_input').value='approved'" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
-                            <i class="fas fa-check-circle mr-1"></i> Setujui (Approve)
+                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                        <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
+                            Simpan Status
                         </button>
-                        <button type="submit" onclick="document.getElementById('verify_pengumuman_status_input').value='rejected'" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
-                            <i class="fas fa-times-circle mr-1"></i> Tolak (Reject)
-                        </button>
-                        <button type="button" onclick="closeVerifyPengumumanModal()" class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm">
+                        <button type="button" onclick="closeVerifyPengumumanModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                             Batal
                         </button>
                     </div>
@@ -2855,10 +2875,10 @@ if ($active_page === 'pengumuman' && $pdo) {
 
         function openVerifyGaleriModal(id, status) {
             document.getElementById('verify_id_foto').value = id;
-            document.getElementById('verify_galeri_current_status').innerHTML = `Status saat ini: <b>${status.toUpperCase()}</b>`;
+            document.getElementById('verify_galeri_modal_id').textContent = id;
+            document.getElementById('current_status_display_galeri').textContent = status;
             document.getElementById('verifyGaleriModal').classList.remove('hidden');
             document.body.classList.add('modal-open');
-            document.body.classList.add('modal-open'); // Add modal-open class
         }
 
         function closeVerifyGaleriModal() {
@@ -2868,7 +2888,8 @@ if ($active_page === 'pengumuman' && $pdo) {
         
         function openVerifyModal(id, status) {
             document.getElementById('verify_id_berita').value = id;
-            document.getElementById('verify_current_status').innerHTML = `Status saat ini: <b>${status.toUpperCase()}</b>`;
+            document.getElementById('verify_modal_id').textContent = id;
+            document.getElementById('current_status_display_berita').textContent = status;
             document.getElementById('verifyModal').classList.remove('hidden');
             document.body.classList.add('modal-open');
         }
@@ -2880,7 +2901,8 @@ if ($active_page === 'pengumuman' && $pdo) {
 
         function openVerifyPublikasiModal(id, status) {
             document.getElementById('verify_id_publikasi').value = id;
-            document.getElementById('verify_publikasi_current_status').innerHTML = `Status saat ini: <b>${status.toUpperCase()}</b>`;
+            document.getElementById('verify_publikasi_modal_id').textContent = id;
+            document.getElementById('current_status_display_publikasi').textContent = status;
             document.getElementById('verifyPublikasiModal').classList.remove('hidden');
             document.body.classList.add('modal-open');
         }
@@ -2892,7 +2914,8 @@ if ($active_page === 'pengumuman' && $pdo) {
         
         function openVerifyPengumumanModal(id, status) {
             document.getElementById('verify_id_pengumuman').value = id;
-            document.getElementById('verify_pengumuman_current_status').innerHTML = `Status saat ini: <b>${status.toUpperCase()}</b>`;
+            document.getElementById('verify_pengumuman_modal_id').textContent = id;
+            document.getElementById('current_status_display_pengumuman').textContent = status;
             document.getElementById('verifyPengumumanModal').classList.remove('hidden');
             document.body.classList.add('modal-open');
         }
