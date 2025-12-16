@@ -1615,7 +1615,7 @@ if ($active_page === 'pengumuman' && $pdo) {
                                            class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
                                             <i class="fas fa-trash"></i>
                                         </a>
-                                        <button onclick="openVerifyModal(<?php echo $news['id_berita']; ?>, '<?php echo $news['status']; ?>')" class="text-gray-500 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100" title="Verifikasi Berita">
+                                        <button onclick="openVerifyBeritaModal(<?php echo $news['id_berita']; ?>, '<?php echo $news['status']; ?>')" class="text-gray-500 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100" title="Verifikasi Berita">
                                             <i class="fas fa-check-double"></i>
                                         </button>
                                     </td>
@@ -2876,7 +2876,23 @@ if ($active_page === 'pengumuman' && $pdo) {
         function openVerifyGaleriModal(id, status) {
             document.getElementById('verify_id_foto').value = id;
             document.getElementById('verify_galeri_modal_id').textContent = id;
-            document.getElementById('current_status_display_galeri').textContent = status;
+
+            // Atur radio button berdasarkan status saat ini
+            document.querySelectorAll('#verifyGaleriModal input[name="status"]').forEach(radio => {
+                radio.checked = radio.value === status;
+            });
+
+            const currentStatusDisplay = document.getElementById('current_status_display_galeri');
+            currentStatusDisplay.textContent = status.toUpperCase();
+            currentStatusDisplay.className = 'font-bold';
+            if (status === 'pending') {
+                currentStatusDisplay.classList.add('text-yellow-600');
+            } else if (status === 'approved') {
+                currentStatusDisplay.classList.add('text-green-600');
+            } else if (status === 'rejected') {
+                currentStatusDisplay.classList.add('text-red-600');
+            }
+
             document.getElementById('verifyGaleriModal').classList.remove('hidden');
             document.body.classList.add('modal-open');
         }
@@ -2886,10 +2902,26 @@ if ($active_page === 'pengumuman' && $pdo) {
             document.body.classList.remove('modal-open');
         }
         
-        function openVerifyModal(id, status) {
+        function openVerifyBeritaModal(id, status) {
             document.getElementById('verify_id_berita').value = id;
             document.getElementById('verify_modal_id').textContent = id;
-            document.getElementById('current_status_display_berita').textContent = status;
+
+            // Atur radio button berdasarkan status saat ini
+            document.querySelectorAll('#verifyModal input[name="status"]').forEach(radio => {
+                radio.checked = radio.value === status;
+            });
+
+            const currentStatusDisplay = document.getElementById('current_status_display_berita');
+            currentStatusDisplay.textContent = status.toUpperCase();
+            currentStatusDisplay.className = 'font-bold';
+            if (status === 'pending') {
+                currentStatusDisplay.classList.add('text-yellow-600');
+            } else if (status === 'approved') {
+                currentStatusDisplay.classList.add('text-green-600');
+            } else if (status === 'rejected') {
+                currentStatusDisplay.classList.add('text-red-600');
+            }
+
             document.getElementById('verifyModal').classList.remove('hidden');
             document.body.classList.add('modal-open');
         }
@@ -2902,7 +2934,23 @@ if ($active_page === 'pengumuman' && $pdo) {
         function openVerifyPublikasiModal(id, status) {
             document.getElementById('verify_id_publikasi').value = id;
             document.getElementById('verify_publikasi_modal_id').textContent = id;
-            document.getElementById('current_status_display_publikasi').textContent = status;
+
+            // Atur radio button berdasarkan status saat ini
+            document.querySelectorAll('#verifyPublikasiModal input[name="status"]').forEach(radio => {
+                radio.checked = radio.value === status;
+            });
+
+            const currentStatusDisplay = document.getElementById('current_status_display_publikasi');
+            currentStatusDisplay.textContent = status.toUpperCase();
+            currentStatusDisplay.className = 'font-bold';
+            if (status === 'pending') {
+                currentStatusDisplay.classList.add('text-yellow-600');
+            } else if (status === 'approved') {
+                currentStatusDisplay.classList.add('text-green-600');
+            } else if (status === 'rejected') {
+                currentStatusDisplay.classList.add('text-red-600');
+            }
+
             document.getElementById('verifyPublikasiModal').classList.remove('hidden');
             document.body.classList.add('modal-open');
         }
@@ -2915,7 +2963,23 @@ if ($active_page === 'pengumuman' && $pdo) {
         function openVerifyPengumumanModal(id, status) {
             document.getElementById('verify_id_pengumuman').value = id;
             document.getElementById('verify_pengumuman_modal_id').textContent = id;
-            document.getElementById('current_status_display_pengumuman').textContent = status;
+
+            // Atur radio button berdasarkan status saat ini
+            document.querySelectorAll('#verifyPengumumanModal input[name="status"]').forEach(radio => {
+                radio.checked = radio.value === status;
+            });
+
+            const currentStatusDisplay = document.getElementById('current_status_display_pengumuman');
+            currentStatusDisplay.textContent = status.toUpperCase();
+            currentStatusDisplay.className = 'font-bold';
+            if (status === 'pending') {
+                currentStatusDisplay.classList.add('text-yellow-600');
+            } else if (status === 'approved') {
+                currentStatusDisplay.classList.add('text-green-600');
+            } else if (status === 'rejected') {
+                currentStatusDisplay.classList.add('text-red-600');
+            }
+
             document.getElementById('verifyPengumumanModal').classList.remove('hidden');
             document.body.classList.add('modal-open');
         }
