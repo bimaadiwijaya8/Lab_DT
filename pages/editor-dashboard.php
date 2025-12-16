@@ -11,9 +11,11 @@ if (!$is_authenticated) {
 }
 
 $current_year = date('Y');
-$username = "Editor LDT";
+// GANTI DENGAN DATA DARI SESI
+$username = $_SESSION['username'] ?? "Editor LDT"; 
 $active_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
-$admin_user_id = 1;
+// GANTI DENGAN DATA DARI SESI
+$admin_user_id = $_SESSION['user_id'] ?? 1; // ID user yang login
 $message = '';
 
 $pdo = null;
@@ -714,7 +716,7 @@ if ($active_page === 'pengumuman' && $pdo) {
         </div>
 
         <div class="mt-6 pt-4 border-t border-slate-800/60">
-            <a href="logout.php" class="flex items-center px-3 py-2 rounded-lg text-red-300 hover:bg-red-500/10 hover:text-red-100 text-sm font-medium transition-colors duration-150">
+            <a href="/assets/php/logout.php" class="flex items-center px-3 py-2 rounded-lg text-red-300 hover:bg-red-500/10 hover:text-red-100 text-sm font-medium transition-colors duration-150">
                 <i class="fas fa-sign-out-alt w-5 h-5 mr-3 flex items-center justify-center"></i> Logout (<?php echo htmlspecialchars($username); ?>)
             </a>
         </div>
