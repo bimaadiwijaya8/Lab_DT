@@ -347,9 +347,10 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'publikasi
 
     if ($action === 'add_publikasi' && $pdo) {
         $judul = trim($_POST['judul']);
-        $penulis = trim($_POST['penulis']);
+        $penulis = trim($_POST['penulis'] ?? '');
         $tanggal_terbit = trim($_POST['tanggal_terbit']);
         $deskripsi = trim($_POST['deskripsi']);
+        $author_id = (int)($_POST['author'] ?? 0);
 
         $upload_ok = true;
         $file_path_for_db = '';
@@ -379,7 +380,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'publikasi
                 $sql = "INSERT INTO publikasi (judul, penulis, tanggal_terbit, file_publikasi, deskripsi, id_anggota, status) VALUES (:judul, :penulis, :tanggal_terbit, :file, :deskripsi, :id_anggota, :status)";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([
-                    ':id_anggota' => $admin_user_id,
+                    ':id_anggota' => $author_id,
                     ':judul' => $judul,
                     ':penulis' => $penulis,
                     ':tanggal_terbit' => $tanggal_terbit,
@@ -1313,6 +1314,17 @@ if ($active_page === 'pengumuman' && $pdo) {
                             <div>
                                 <label for="penulis" class="block text-sm font-medium text-gray-700">Penulis (Opsional)</label>
                                 <input type="text" name="penulis" id="penulis" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2">
+                            </div>
+                            <div>
+                                <label for="author" class="block text-sm font-medium text-gray-700">Author</label>
+                                <select name="author" id="author" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2">
+                                    <option value="">Pilih Author</option>
+                                    <?php if (!empty($anggota_list)): ?>
+                                        <?php foreach ($anggota_list as $anggota): ?>
+                                            <option value="<?php echo $anggota['id_anggota']; ?>"><?php echo htmlspecialchars($anggota['nama_gelar']); ?></option>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </select>
                             </div>
                             <div>
                                 <label for="tanggal_terbit" class="block text-sm font-medium text-gray-700">Tanggal Terbit</label>
