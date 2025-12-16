@@ -159,7 +159,7 @@ $active_page = 'anggota';
             </p>
 
             <div class="flex flex-col sm:flex-row gap-4 mb-12">
-              <a href="pages/profil-lab.html" class="group inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-[#00A0D6] to-blue-600 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
+              <a href="pages/profil-lab.php" class="group inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-[#00A0D6] to-blue-600 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
@@ -168,7 +168,7 @@ $active_page = 'anggota';
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                 </svg>
               </a>
-              <a href="pages/penelitian.html" class="group inline-flex items-center justify-center px-8 py-4 bg-white border-2 border-gray-200 text-gray-700 font-semibold rounded-xl hover:border-[#00A0D6] hover:text-[#00A0D6] transition-all duration-300 hover:scale-105 shadow-sm hover:shadow-md">
+              <a href="pages/penelitian.php" class="group inline-flex items-center justify-center px-8 py-4 bg-white border-2 border-gray-200 text-gray-700 font-semibold rounded-xl hover:border-[#00A0D6] hover:text-[#00A0D6] transition-all duration-300 hover:scale-105 shadow-sm hover:shadow-md">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                 </svg>
@@ -351,7 +351,7 @@ $active_page = 'anggota';
               </div>
             </div>
 
-            <a href="pages/profil-lab.html" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#00A0D6] to-blue-600 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 hover:scale-105 shadow-lg">
+            <a href="pages/profil-lab.php" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#00A0D6] to-blue-600 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 hover:scale-105 shadow-lg">
               Pelajari Lebih Lanjut
               <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -395,7 +395,7 @@ $active_page = 'anggota';
               Mengembangkan solusi teknologi data yang inovatif dan berkelanjutan untuk masa depan yang lebih baik.
             </p>
             <div class="flex items-center justify-between">
-              <a href="pages/profil-lab.html" class="inline-flex items-center text-[#00A0D6] font-bold hover:text-blue-700 transition-all duration-300 group">
+              <a href="pages/profil-lab.php" class="inline-flex items-center text-[#00A0D6] font-bold hover:text-blue-700 transition-all duration-300 group">
                 Pelajari visi kami
                 <svg class="w-5 h-5 ml-2 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
@@ -417,7 +417,7 @@ $active_page = 'anggota';
               Program penelitian aktif dengan fokus pada AI, Machine Learning, dan Big Data Analytics yang berkelanjutan.
             </p>
             <div class="flex items-center justify-between">
-              <a href="pages/penelitian.html" class="inline-flex items-center text-[#6AC259] font-bold hover:text-green-700 transition-all duration-300 group">
+              <a href="pages/penelitian.php" class="inline-flex items-center text-[#6AC259] font-bold hover:text-green-700 transition-all duration-300 group">
                 Lihat penelitian
                 <svg class="w-5 h-5 ml-2 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
@@ -439,7 +439,7 @@ $active_page = 'anggota';
               Didukung oleh tim dosen, peneliti, dan mahasiswa berpengalaman yang berdedikasi dalam pengembangan teknologi data.
             </p>
             <div class="flex items-center justify-between">
-              <a href="pages/anggota.html" class="inline-flex items-center text-purple-600 font-bold hover:text-purple-700 transition-all duration-300 group">
+              <a href="pages/anggota.php" class="inline-flex items-center text-purple-600 font-bold hover:text-purple-700 transition-all duration-300 group">
                 Kenali tim kami
                 <svg class="w-5 h-5 ml-2 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
@@ -467,22 +467,22 @@ $active_page = 'anggota';
 
         <!-- Quick Access Grid -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-          <a href="pages/fasilitas.html" class="group p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl hover:from-blue-100 hover:to-blue-200 transition-all duration-300 text-center hover:scale-105 shadow-sm hover:shadow-lg">
+          <a href="pages/fasilitas.php" class="group p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl hover:from-blue-100 hover:to-blue-200 transition-all duration-300 text-center hover:scale-105 shadow-sm hover:shadow-lg">
             <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">🏢</div>
             <div class="font-bold text-gray-900 mb-2">Fasilitas</div>
             <div class="text-sm text-gray-600">Peralatan & infrastruktur modern</div>
           </a>
-          <a href="pages/galeri.html" class="group p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl hover:from-green-100 hover:to-green-200 transition-all duration-300 text-center hover:scale-105 shadow-sm hover:shadow-lg">
+          <a href="pages/galeri.php" class="group p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl hover:from-green-100 hover:to-green-200 transition-all duration-300 text-center hover:scale-105 shadow-sm hover:shadow-lg">
             <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">📸</div>
             <div class="font-bold text-gray-900 mb-2">Galeri</div>
             <div class="text-sm text-gray-600">Dokumentasi kegiatan lab</div>
           </a>
-          <a href="pages/berita.html" class="group p-6 bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl hover:from-purple-100 hover:to-purple-200 transition-all duration-300 text-center hover:scale-105 shadow-sm hover:shadow-lg">
+          <a href="pages/berita.php" class="group p-6 bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl hover:from-purple-100 hover:to-purple-200 transition-all duration-300 text-center hover:scale-105 shadow-sm hover:shadow-lg">
             <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">📰</div>
             <div class="font-bold text-gray-900 mb-2">Berita</div>
             <div class="text-sm text-gray-600">Update & pengumuman terbaru</div>
           </a>
-          <a href="pages/kontak.html" class="group p-6 bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl hover:from-orange-100 hover:to-orange-200 transition-all duration-300 text-center hover:scale-105 shadow-sm hover:shadow-lg">
+          <a href="pages/kontak.php" class="group p-6 bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl hover:from-orange-100 hover:to-orange-200 transition-all duration-300 text-center hover:scale-105 shadow-sm hover:shadow-lg">
             <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">📞</div>
             <div class="font-bold text-gray-900 mb-2">Kontak</div>
             <div class="text-sm text-gray-600">Hubungi tim laboratorium</div>
@@ -500,7 +500,7 @@ $active_page = 'anggota';
             <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-2" data-editable="heading" data-element-id="news-title">Berita Terbaru</h2>
             <p class="text-lg text-gray-600" data-editable="text" data-element-id="news-description">Informasi kegiatan, rilis, dan pengumuman terbaru</p>
           </div>
-          <a href="pages/berita.html" class="text-[#00A0D6] font-semibold hover:text-blue-700 transition-colors">Lihat semua</a>
+          <a href="pages/berita.php" class="text-[#00A0D6] font-semibold hover:text-blue-700 transition-colors">Lihat semua</a>
         </div>
 
         <!-- News Grid -->
@@ -523,7 +523,7 @@ $active_page = 'anggota';
               <p class="text-gray-600 text-sm mb-4 line-clamp-3">
                 Tim peneliti lab berhasil mengembangkan algoritma baru yang meningkatkan akurasi prediksi hingga 95%...
               </p>
-              <a href="pages/berita.html" class="inline-flex items-center text-[#00A0D6] font-semibold hover:text-blue-700 transition-colors">
+              <a href="pages/berita.php" class="inline-flex items-center text-[#00A0D6] font-semibold hover:text-blue-700 transition-colors">
                 Lihat Selengkapnya
                 <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -550,7 +550,7 @@ $active_page = 'anggota';
               <p class="text-gray-600 text-sm mb-4 line-clamp-3">
                 Paper penelitian kami diterima di jurnal IEEE dengan impact factor tinggi, membahas inovasi dalam analisis big data...
               </p>
-              <a href="pages/penelitian.html" class="inline-flex items-center text-[#6AC259] font-semibold hover:text-green-700 transition-colors">
+              <a href="pages/penelitian.php" class="inline-flex items-center text-[#6AC259] font-semibold hover:text-green-700 transition-colors">
                 Lihat Selengkapnya
                 <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -577,7 +577,7 @@ $active_page = 'anggota';
               <p class="text-gray-600 text-sm mb-4 line-clamp-3">
                 Kegiatan workshop intensif selama 3 hari dengan peserta dari berbagai universitas dan perusahaan teknologi...
               </p>
-              <a href="pages/galeri.html" class="inline-flex items-center text-purple-500 font-semibold hover:text-purple-700 transition-colors">
+              <a href="pages/galeri.php" class="inline-flex items-center text-purple-500 font-semibold hover:text-purple-700 transition-colors">
                 Lihat Selengkapnya
                 <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -682,25 +682,25 @@ $active_page = 'anggota';
           <h3 class="font-bold text-lg text-white mb-6">Navigasi Cepat</h3>
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-3">
-              <a href="pages/profil-lab.html" class="flex items-center gap-2 text-gray-300 hover:text-[#00A0D6] transition-colors group">
+              <a href="pages/profil-lab.php" class="flex items-center gap-2 text-gray-300 hover:text-[#00A0D6] transition-colors group">
                 <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                 </svg>
                 <span>Profil Lab</span>
               </a>
-              <a href="pages/fasilitas.html" class="flex items-center gap-2 text-gray-300 hover:text-[#00A0D6] transition-colors group">
+              <a href="pages/fasilitas.php" class="flex items-center gap-2 text-gray-300 hover:text-[#00A0D6] transition-colors group">
                 <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                 </svg>
                 <span>Fasilitas</span>
               </a>
-              <a href="pages/penelitian.html" class="flex items-center gap-2 text-gray-300 hover:text-[#00A0D6] transition-colors group">
+              <a href="pages/penelitian.php" class="flex items-center gap-2 text-gray-300 hover:text-[#00A0D6] transition-colors group">
                 <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                 </svg>
                 <span>Publikasi</span>
               </a>
-              <a href="pages/berita.html" class="flex items-center gap-2 text-gray-300 hover:text-[#00A0D6] transition-colors group">
+              <a href="pages/berita.php" class="flex items-center gap-2 text-gray-300 hover:text-[#00A0D6] transition-colors group">
                 <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                 </svg>
@@ -708,19 +708,19 @@ $active_page = 'anggota';
               </a>
             </div>
             <div class="space-y-3">
-              <a href="pages/galeri.html" class="flex items-center gap-2 text-gray-300 hover:text-[#00A0D6] transition-colors group">
+              <a href="pages/galeri.php" class="flex items-center gap-2 text-gray-300 hover:text-[#00A0D6] transition-colors group">
                 <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                 </svg>
                 <span>Galeri</span>
               </a>
-              <a href="pages/anggota.html" class="flex items-center gap-2 text-gray-300 hover:text-[#00A0D6] transition-colors group">
+              <a href="pages/anggota.php" class="flex items-center gap-2 text-gray-300 hover:text-[#00A0D6] transition-colors group">
                 <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                 </svg>
                 <span>Anggota</span>
               </a>
-              <a href="pages/kontak.html" class="flex items-center gap-2 text-gray-300 hover:text-[#00A0D6] transition-colors group">
+              <a href="pages/kontak.php" class="flex items-center gap-2 text-gray-300 hover:text-[#00A0D6] transition-colors group">
                 <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                 </svg>
