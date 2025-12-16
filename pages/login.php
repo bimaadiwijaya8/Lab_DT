@@ -6,7 +6,7 @@ session_start();
 
 // Menyertakan file koneksi database (menggunakan PDO)
 // Pastikan file db_connect.php ada di direktori yang sama
-include 'db_connect.php'; 
+include '../assets/php/db_connect.php'; 
 
 // Variabel untuk Pesan Status
 $errorMessage = '';
