@@ -71,7 +71,6 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'publikasi
         $penulis = trim($_POST['penulis']);
         $tanggal_terbit = trim($_POST['tanggal_terbit']);
         $deskripsi = trim($_POST['deskripsi']);
-        $id_anggota = (int)$_POST['id_anggota']; // ID anggota/user yang posting (masih menggunakan kolom id_anggota di tabel publikasi)
 
         $upload_ok = true;
         $file_path_for_db = '';
@@ -102,8 +101,8 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'publikasi
         // 3. Simpan ke database jika upload berhasil
         if ($upload_ok) {
             try {
-                $sql = "INSERT INTO publikasi (judul, penulis, tanggal_terbit, file_publikasi, deskripsi, id_anggota, status) 
-                        VALUES (:judul, :penulis, :tanggal_terbit, :file_publikasi, :deskripsi, :id_anggota, :status)";
+                $sql = "INSERT INTO publikasi (judul, penulis, tanggal_terbit, file_publikasi, deskripsi, id_member, status) 
+                        VALUES (:judul, :penulis, :tanggal_terbit, :file_publikasi, :deskripsi, :id_member, :status)";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([
                     ':judul' => $judul,
@@ -111,7 +110,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'publikasi
                     ':tanggal_terbit' => $tanggal_terbit,
                     ':file_publikasi' => $file_path_for_db,
                     ':deskripsi' => $deskripsi,
-                    ':id_anggota' => $id_anggota,
+                    ':id_member' => $hardcoded_member_id,
                     ':status' => 'pending' // Default status for new publications
                 ]);
                 $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Publikasi baru berhasil ditambahkan!</div>";
@@ -134,7 +133,6 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'publikasi
         $penulis = trim($_POST['penulis']);
         $tanggal_terbit = trim($_POST['tanggal_terbit']);
         $deskripsi = trim($_POST['deskripsi']);
-        $id_anggota = (int)$_POST['id_anggota']; // ID anggota/user yang posting
 
         $new_file_name = $_FILES['file_publikasi']['name'] ?? '';
         $current_file_path = $_POST['current_file_publikasi']; // Path file lama
@@ -173,7 +171,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'publikasi
                             tanggal_terbit = :tanggal_terbit, 
                             file_publikasi = :file_publikasi, 
                             deskripsi = :deskripsi,
-                            id_anggota = :id_anggota,
+                            id_member = :id_member,
                             status = 'pending'
                         WHERE id_publikasi = :id";
                 $stmt = $pdo->prepare($sql);
@@ -183,7 +181,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'publikasi
                     ':tanggal_terbit' => $tanggal_terbit,
                     ':file_publikasi' => $file_path_for_db, // Path baru atau lama
                     ':deskripsi' => $deskripsi,
-                    ':id_anggota' => $id_anggota,
+                    ':id_member' => $hardcoded_member_id,
                     ':id' => $id_publikasi
                 ]);
                 $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Publikasi ID {$id_publikasi} berhasil diupdate!</div>";
@@ -964,17 +962,6 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'settings'
                                 <label for="deskripsi" class="block text-sm font-medium text-gray-700">Deskripsi Singkat/Abstrak</label>
                                 <textarea name="deskripsi" id="deskripsi" rows="3" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2"></textarea>
                             </div>
-                            <div>
-                                <label for="id_anggota" class="block text-sm font-medium text-gray-700">Author Upload</label>
-                                <select name="id_anggota" id="id_anggota" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2">
-                                    <?php foreach ($anggota_list as $anggota): // list ini berisi data member yang sudah di-map 
-                                    ?>
-                                        <option value="<?php echo $anggota['id_anggota']; ?>" <?php echo $anggota['id_anggota'] == $hardcoded_member_id ? 'selected' : ''; ?>>
-                                            <?php echo htmlspecialchars($anggota['nama_gelar']); ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
                         </div>
                     </div>
                     <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
@@ -1019,16 +1006,6 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'settings'
                             <div>
                                 <label for="edit_deskripsi" class="block text-sm font-medium text-gray-700">Deskripsi Singkat/Abstrak</label>
                                 <textarea name="deskripsi" id="edit_deskripsi" rows="3" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2"></textarea>
-                            </div>
-                            <div>
-                                <label for="edit_id_anggota_publikasi" class="block text-sm font-medium text-gray-700">Author Upload</label>
-                                <select name="id_anggota" id="edit_id_anggota_publikasi" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2">
-                                    <?php foreach ($anggota_list as $anggota): ?>
-                                        <option value="<?php echo $anggota['id_anggota']; ?>">
-                                            <?php echo htmlspecialchars($anggota['nama_gelar']); ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
                             </div>
                         </div>
                     </div>
@@ -1083,7 +1060,6 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'settings'
             document.getElementById('edit_current_file_publikasi').value = file_publikasi;
             document.getElementById('current_file_name').textContent = file_publikasi.split('/').pop();
             document.getElementById('edit_deskripsi').value = deskripsi;
-            document.getElementById('edit_id_anggota_publikasi').value = id_anggota; // Set selected option
 
             document.getElementById('editPublikasiModal').classList.remove('hidden');
             document.body.classList.add('modal-open');
@@ -1097,7 +1073,6 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'settings'
             document.getElementById('edit_tanggal_terbit').value = '';
             document.getElementById('edit_file_publikasi').value = '';
             document.getElementById('edit_deskripsi').value = '';
-            document.getElementById('edit_id_anggota_publikasi').value = '';
         }
 
         // --- Sidebar Toggle Function ---
