@@ -6,7 +6,7 @@ session_start();
 
 // Menyertakan file koneksi database (menggunakan PDO)
 // Pastikan file db_connect.php ada di direktori yang sama
-include '../assets/php/db_connect.php'; 
+include '../assets/php/db_connect.php';
 
 // Variabel untuk Pesan Status
 $errorMessage = '';
@@ -17,84 +17,68 @@ $showSuccess = 'hidden';
 
 // 2. LOGIKA PEMROSESAN FORM
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $input = htmlspecialchars($_POST['email'] ?? '');
-    $password = $_POST['password'] ?? '';
+  $input = htmlspecialchars($_POST['email'] ?? '');
+  $password = $_POST['password'] ?? '';
 
-    // Cek apakah input tidak kosong
-    if (empty($input) || empty($password)) {
-        $errorMessage = 'Silakan isi email/username dan password.';
-        $showError = '';
-    } else {
-        try {
-            // Dapatkan koneksi PDO
-            $pdo = Database::getConnection();
-            
-            // Query untuk mencari pengguna berdasarkan email atau username
-            // MENAMBAH id ke dalam SELECT statement
-            $sql = "SELECT id, username, password, role FROM users WHERE email = :input OR username = :input";
-            
-            $stmt = $pdo->prepare($sql);
-            // Bind parameter input tunggal ke placeholder yang sama
-            $stmt->bindParam(':input', $input, PDO::PARAM_STR);
-            $stmt->execute();
+  // Cek apakah input tidak kosong
+  if (empty($input) || empty($password)) {
+    $errorMessage = 'Silakan isi email/username dan password.';
+    $showError = '';
+  } else {
+    try {
+      $pdo = Database::getConnection();
 
-            if ($stmt->rowCount() == 1) {
-                $user = $stmt->fetch(PDO::FETCH_ASSOC);
-                
-                // Verifikasi Password menggunakan password_verify()
-                if (password_verify($password, $user['password'])) {
-                    // Login Berhasil
-                    
-                    // Membuat variabel sesi
-                    $_SESSION['loggedin'] = true;
-                    $_SESSION['user_id'] = $user['id'];     // <-- ID PENGGUNA DISIMPAN DI SINI
-                    $_SESSION['username'] = $user['username'];
-                    $_SESSION['role'] = $user['role'];      // <-- PERAN (ROLE) DISIMPAN DI SINI
-                    
-                    $successMessage = 'Login berhasil. Mengarahkan ke dashboard...';
-                    $showSuccess = '';
-                    
-                    // Pengalihan berbasis peran
-                    switch ($user['role']) {
-                        case 'admin':
-                            header("Location: admin-dashboard.php");
-                            break;
-                        case 'editor':
-                            header("Location: editor-dashboard.php");
-                            break;
-                        case 'member':
-                            header("Location: member-dashboard.php");
-                            break;
-                        default:
-                            $errorMessage = 'Peran pengguna tidak valid. Silakan hubungi administrator.';
-                            $showError = '';
-                            break;
-                    }
-                    exit();
+      // QUERY UNTUK CEK DI DUA TABEL (users dan member)
+      $sql = "
+                SELECT id AS user_id, username AS identity, password, role FROM public.users 
+                WHERE email = :input OR username = :input
+                UNION ALL
+                SELECT id_member AS user_id, email AS identity, password, 'member' AS role FROM public.member 
+                WHERE email = :input
+            ";
 
-                } else {
-                    // Password Salah
-                    $errorMessage = 'Email/Username atau Password salah.';
-                    $showError = '';
-                }
-            } else {
-                // Pengguna tidak ditemukan
-                $errorMessage = 'Email/Username atau Password salah.';
-                $showError = '';
-            }
-            
-        } catch (PDOException $e) {
-            // Tangani error koneksi atau query database
-            // Di lingkungan produksi, log error ini, jangan tampilkan ke pengguna.
-            error_log("Login PDO Error: " . $e->getMessage()); 
-            $errorMessage = "Terjadi masalah sistem. Silakan coba lagi nanti. (Kode: " . $e->getCode() . ")";
-            $showError = '';
+      $stmt = $pdo->prepare($sql);
+      $stmt->bindParam(':input', $input, PDO::PARAM_STR);
+      $stmt->execute();
+
+      $user = $stmt->fetch();
+
+      // Verifikasi Password
+      if ($user && password_verify($password, $user['password'])) {
+        // Simpan data ke Sesi
+        $_SESSION['loggedin'] = true;
+        $_SESSION['user_id'] = $user['user_id']; // Mengambil ID (bisa id_user atau id_member)
+        $_SESSION['username'] = $user['identity']; // Mengambil Email/Username
+        $_SESSION['role'] = $user['role'];
+
+        $successMessage = 'Login berhasil! Mengarahkan...';
+        $showSuccess = '';
+
+        // Redirect sesuai role
+        if ($user['role'] === 'admin') {
+          header("refresh:1;url=admin-dashboard.php");
+        } elseif ($user['role'] === 'editor') {
+          header("refresh:1;url=editor-dashboard.php");
+        } else {
+          header("refresh:1;url=member-dashboard.php");
         }
+      } else {
+        $errorMessage = 'Email/Username atau password salah.';
+        $showError = '';
+      }
+    } catch (PDOException $e) {
+      // Tangani error koneksi atau query database
+      // Di lingkungan produksi, log error ini, jangan tampilkan ke pengguna.
+      error_log("Login PDO Error: " . $e->getMessage());
+      $errorMessage = "Terjadi masalah sistem. Silakan coba lagi nanti. (Kode: " . $e->getCode() . ")";
+      $showError = '';
     }
+  }
 }
 ?>
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -111,6 +95,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
+
     .gradient-accent {
       background-image: linear-gradient(to right, #00A0D6, #6AC259);
     }
@@ -128,31 +113,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
   </script>
 </head>
+
 <body class="bg-white text-gray-900" style="font-family: 'Inter', sans-serif;">
   <section class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 relative overflow-hidden">
     <div class="absolute inset-0 opacity-5">
       <div class="absolute top-20 left-20 w-64 h-64 bg-gradient-to-br from-[#00A0D6] to-[#6AC259] rounded-full blur-3xl"></div>
       <div class="absolute bottom-20 right-20 w-96 h-96 bg-gradient-to-br from-[#6AC259] to-[#00A0D6] rounded-full blur-3xl"></div>
     </div>
-    
+
     <div class="relative z-10 min-h-screen flex items-center justify-center px-6 lg:px-8">
       <div class="w-full max-w-6xl">
         <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div class="text-center lg:text-left">
-            
+
             <div class="mb-12">
               <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight">
                 Selamat Datang di<br>
                 <span class="text-gradient">Portal Internal</span>
               </h1>
-              
+
               <p class="text-xl text-gray-600 mb-8 leading-relaxed">
                 Akses eksklusif untuk anggota laboratorium. Kelola penelitian, publikasi, dan kolaborasi dalam satu platform terintegrasi.
               </p>
-              
+
             </div>
           </div>
-          
+
           <div class="max-w-md mx-auto w-full">
             <div class="bg-white/80 backdrop-blur rounded-3xl shadow-xl border border-gray-100 p-8">
               <div class="text-center mb-4">
@@ -160,7 +146,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                   <img src="../assets/img/logo.png" alt="Lab Data Technologies Logo" class="w-full h-full object-cover rounded-xl">
                 </span>
               </div>
-              
+
               <div class="text-center mb-8">
                 <h2 class="text-2xl font-bold text-gray-900 mb-2">Masuk ke Portal</h2>
                 <p class="text-gray-600">Laboratorium Data Technologies</p>
@@ -171,28 +157,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="space-y-4">
                   <div>
                     <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email atau Username</label>
-                    <input id="email" 
-                           name="email"
-                           type="text" 
-                           placeholder="Masukkan email atau username" 
-                           class="input-focus w-full h-12 border border-gray-200 rounded-xl px-4 focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200" 
-                           required>
+                    <input id="email"
+                      name="email"
+                      type="text"
+                      placeholder="Masukkan email atau username"
+                      class="input-focus w-full h-12 border border-gray-200 rounded-xl px-4 focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
+                      required>
                   </div>
-                  
+
                   <div>
                     <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                    <input id="password" 
-                           name="password"
-                           type="password" 
-                           placeholder="Masukkan password" 
-                           class="input-focus w-full h-12 border border-gray-200 rounded-xl px-4 focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200" 
-                           required>
+                    <input id="password"
+                      name="password"
+                      type="password"
+                      placeholder="Masukkan password"
+                      class="input-focus w-full h-12 border border-gray-200 rounded-xl px-4 focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
+                      required>
                   </div>
                 </div>
 
-                <button type="submit" 
-                        id="loginBtn" 
-                        class="w-full h-12 gradient-accent text-white font-semibold rounded-xl hover:scale-[1.02] hover:shadow-lg transition-all duration-200">
+                <button type="submit"
+                  id="loginBtn"
+                  class="w-full h-12 gradient-accent text-white font-semibold rounded-xl hover:scale-[1.02] hover:shadow-lg transition-all duration-200">
                   <span class="flex items-center justify-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
@@ -245,4 +231,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
   </section>
 </body>
+
 </html>

@@ -16,10 +16,8 @@ if (!$is_authenticated) {
 
 // 1. Variabel Konfigurasi Dasar
 $current_year = date('Y');
-// GANTI DENGAN DATA DARI SESI
-$username = $_SESSION['username'] ?? "MemberLDT"; 
-// GANTI DENGAN DATA DARI SESI
-$hardcoded_member_id = $_SESSION['user_id'] ?? 1; // ID Member yang sedang login
+$username = $_SESSION['username']; 
+$hardcoded_member_id = $_SESSION['user_id'];
 $active_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard'; 
 $message = '';
 
