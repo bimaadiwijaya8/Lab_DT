@@ -675,7 +675,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'settings'
                             <?php if (!empty($publikasi_data)): 
                                 $latest_status = $publikasi_data[0]['status'] ?? 'pending';
                             ?>
-                                <p class="text-sm text-gray-700 truncate">Publikasi terbaru: **<?php echo htmlspecialchars($publikasi_data[0]['judul']); ?>**</p>
+                                <p class="text-sm text-gray-700 truncate">Publikasi terbaru: <b><?php echo htmlspecialchars($publikasi_data[0]['judul']); ?></b></p>
                                 <p class="text-xs text-gray-500">Status: <span class="font-medium text-<?php echo $latest_status === 'approved' ? 'green-500' : ($latest_status === 'rejected' ? 'red-500' : 'yellow-500'); ?>"><?php echo ucfirst($latest_status); ?></span></p>
                                 <p class="text-xs text-gray-500">Tanggal: <?php echo isset($publikasi_data[0]['created_at']) ? date('d M Y', strtotime($publikasi_data[0]['created_at'])) : (isset($publikasi_data[0]['tanggal_terbit']) ? date('d M Y', strtotime($publikasi_data[0]['tanggal_terbit'])) : '-'); ?></p>
                             <?php else: ?>
