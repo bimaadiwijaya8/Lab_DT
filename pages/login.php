@@ -22,19 +22,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
   // Cek apakah input tidak kosong
   if (empty($input) || empty($password)) {
-    $errorMessage = 'Silakan isi email/username dan password.';
+    $errorMessage = 'Silakan isi email/username/nama dan password.';
     $showError = '';
   } else {
     try {
       $pdo = Database::getConnection();
 
       // QUERY UNTUK CEK DI DUA TABEL (users dan member)
+      // Users: login dengan email atau username
+      // Members: login dengan email atau nama
       $sql = "
                 SELECT id AS user_id, username AS identity, password, role FROM public.users 
                 WHERE email = :input OR username = :input
                 UNION ALL
-                SELECT id_member AS user_id, email AS identity, password, 'member' AS role FROM public.member 
-                WHERE email = :input
+                SELECT id_member AS user_id, 
+                       CASE 
+                           WHEN email = :input THEN email 
+                           ELSE nama 
+                       END AS identity, 
+                       password, 
+                       'member' AS role 
+                FROM public.member 
+                WHERE email = :input OR nama = :input
             ";
 
       $stmt = $pdo->prepare($sql);
@@ -44,26 +53,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       $user = $stmt->fetch();
 
       // Verifikasi Password
-      if ($user && password_verify($password, $user['password'])) {
-        // Simpan data ke Sesi
-        $_SESSION['loggedin'] = true;
-        $_SESSION['user_id'] = $user['user_id']; // Mengambil ID (bisa id_user atau id_member)
-        $_SESSION['username'] = $user['identity']; // Mengambil Email/Username
-        $_SESSION['role'] = $user['role'];
-
-        $successMessage = 'Login berhasil! Mengarahkan...';
-        $showSuccess = '';
-
-        // Redirect sesuai role
-        if ($user['role'] === 'admin') {
-          header("refresh:1;url=admin-dashboard.php");
-        } elseif ($user['role'] === 'editor') {
-          header("refresh:1;url=editor-dashboard.php");
+      if ($user) {
+        $is_password_valid = false;
+        
+        // Check password hashing method and verify accordingly
+        if ($user['role'] === 'member') {
+          // Members use MD5 hashing
+          $is_password_valid = (md5($password) === $user['password']);
         } else {
-          header("refresh:1;url=member-dashboard.php");
+          // Users (admin/editor) use password_hash()
+          $is_password_valid = password_verify($password, $user['password']);
+        }
+        
+        if ($is_password_valid) {
+          // Simpan data ke Sesi
+          $_SESSION['loggedin'] = true;
+          $_SESSION['user_id'] = $user['user_id']; // Mengambil ID (bisa id_user atau id_member)
+          $_SESSION['username'] = $user['identity']; // Mengambil Email/Username
+          $_SESSION['role'] = $user['role'];
+
+          $successMessage = 'Login berhasil! Mengarahkan...';
+          $showSuccess = '';
+
+          // Redirect sesuai role
+          if ($user['role'] === 'admin') {
+            header("refresh:1;url=admin-dashboard.php");
+          } elseif ($user['role'] === 'editor') {
+            header("refresh:1;url=editor-dashboard.php");
+          } else {
+            header("refresh:1;url=member-dashboard.php");
+          }
+        } else {
+          $errorMessage = 'Email/Username/Nama atau password salah.';
+          $showError = '';
         }
       } else {
-        $errorMessage = 'Email/Username atau password salah.';
+        $errorMessage = 'Email/Username/Nama atau password salah.';
         $showError = '';
       }
     } catch (PDOException $e) {
@@ -156,11 +181,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               <form id="loginForm" method="POST" action="login.php" class="space-y-6">
                 <div class="space-y-4">
                   <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email atau Username</label>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email, Username, atau Nama</label>
                     <input id="email"
                       name="email"
                       type="text"
-                      placeholder="Masukkan email atau username"
+                      placeholder="Masukkan email, username, atau nama"
                       class="input-focus w-full h-12 border border-gray-200 rounded-xl px-4 focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                       required>
                   </div>
@@ -193,7 +218,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                   <svg class="w-5 h-5 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                   </svg>
-                  <span class="text-sm text-red-700" id="loginErrorMessage"><?php echo $errorMessage ?: 'Email/Username atau Password salah'; ?></span>
+                  <span class="text-sm text-red-700" id="loginErrorMessage"><?php echo $errorMessage ?: 'Email/Username/Nama atau Password salah'; ?></span>
                 </div>
               </div>
 
