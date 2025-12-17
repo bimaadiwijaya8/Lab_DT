@@ -12,10 +12,10 @@ if (!$is_authenticated) {
 
 $current_year = date('Y');
 // GANTI DENGAN DATA DARI SESI
-$username = $_SESSION['username'] ?? "Editor LDT"; 
+$username = $_SESSION['username']; 
 $active_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
 // GANTI DENGAN DATA DARI SESI
-$admin_user_id = $_SESSION['user_id'] ?? 1; // ID user yang login
+$admin_user_id = $_SESSION['user_id']; // ID user yang login
 $message = '';
 
 $pdo = null;
