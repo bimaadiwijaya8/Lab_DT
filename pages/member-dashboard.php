@@ -536,11 +536,48 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'settings'
         }
 
         .main-content-shifted {
-            margin-left: 0;
+            margin-left: 0 !important;
+        }
+
+        .toggle-btn {
+            position: fixed;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            z-index: 1000;
+            background: white;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-btn:hover {
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .sidebar-open .toggle-btn {
+            left: 268px;
         }
 
         body.modal-open {
             overflow: hidden;
+        }
+
+        /* Modal backdrop styles to prevent interaction */
+        .modal-open .toggle-btn {
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        /* Increase modal z-index to be higher than toggle button */
+        .modal {
+            z-index: 1001;
         }
 
         /* Text Ellipsis Helper (used for table cells) */
@@ -553,9 +590,9 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'settings'
     </style>
 </head>
 
-<body class="bg-gray-50 flex">
+<body class="bg-gray-50 flex sidebar-open">
 
-    <button class="toggle-btn fixed top-6 left-6 z-[1002] bg-white p-3 rounded-full shadow-lg border border-gray-200 transition-all duration-300 ease-in-out" aria-label="Toggle Sidebar">
+    <button class="toggle-btn" onclick="toggleSidebar()" aria-label="Toggle Sidebar">
         <i class="fas fa-chevron-left text-gray-700"></i>
     </button>
 
@@ -694,7 +731,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'settings'
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Terbit</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">File</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/4">Deskripsi (Snippet)</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Status</th>
                                 <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                             </tr>
                         </thead>
@@ -1168,8 +1205,10 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'settings'
             }
         }
 
-        // Add event listener to the toggle button
-        document.querySelector('.toggle-btn').addEventListener('click', toggleSidebar);
+        const toggleButton = document.querySelector('.toggle-btn');
+        if (toggleButton) {
+            toggleButton.onclick = toggleSidebar;
+        }
     </script>
 </body>
 
