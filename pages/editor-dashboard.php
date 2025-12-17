@@ -87,15 +87,16 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'berita') 
 
         if ($upload_ok) {
             try {
-                $sql = "INSERT INTO berita (judul, gambar, informasi, tanggal, author, status) 
-                        VALUES (:judul, :gambar, :informasi, :tanggal, :author, 'pending')";
+                $sql = "INSERT INTO berita (judul, gambar, informasi, tanggal, author, approval_status, created_by) 
+                        VALUES (:judul, :gambar, :informasi, :tanggal, :author, 'pending', :created_by)";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([
                     ':judul' => $judul,
                     ':gambar' => $gambar_path_for_db,
                     ':informasi' => $informasi,
                     ':tanggal' => $tanggal,
-                    ':author' => $author
+                    ':author' => $author,
+                    ':created_by' => $admin_user_id
                 ]);
                 $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Berita baru berhasil ditambahkan!</div>";
             } catch (Exception $e) {
@@ -149,7 +150,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'berita') 
 
         if ($upload_ok) {
             try {
-                $sql = "UPDATE berita SET judul = :judul, informasi = :informasi, tanggal = :tanggal, gambar = :gambar, author = :author, status = 'pending' WHERE id_berita = :id";
+                $sql = "UPDATE berita SET judul = :judul, informasi = :informasi, tanggal = :tanggal, gambar = :gambar, author = :author, approval_status = 'pending', created_by = :created_by WHERE id_berita = :id";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([
                     ':judul' => $judul,
@@ -157,6 +158,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'berita') 
                     ':tanggal' => $tanggal,
                     ':gambar' => $gambar_path_for_db,
                     ':author' => $author,
+                    ':created_by' => $admin_user_id,
                     ':id' => $id_berita
                 ]);
                 $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Berita ID {$id_berita} berhasil diupdate!</div>";
@@ -237,15 +239,14 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'galeri') 
         
         if ($upload_ok) {
             try {
-                $sql = "INSERT INTO galeri (nama_foto, deskripsi, file_foto, id_anggota, updated_by, status) VALUES (:nama_foto, :deskripsi, :file_foto, :id_anggota, :updated_by, :status)";
+                $sql = "INSERT INTO galeri (nama_foto, deskripsi, file_foto, id_anggota, approval_status, created_by) VALUES (:nama_foto, :deskripsi, :file_foto, :id_anggota, 'pending', :created_by)";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([
                     ':nama_foto' => $nama_foto,
                     ':deskripsi' => $deskripsi,
                     ':file_foto' => $file_foto_path_for_db,
                     ':id_anggota' => $id_anggota,
-                    ':updated_by' => $admin_user_id,
-                    ':status' => 'pending'
+                    ':created_by' => $admin_user_id
                 ]);
                 $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Foto Galeri baru berhasil ditambahkan!</div>";
             } catch (Exception $e) {
@@ -289,14 +290,14 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'galeri') 
 
         if ($upload_ok) {
             try {
-                $sql = "UPDATE galeri SET nama_foto = :nama_foto, deskripsi = :deskripsi, file_foto = :file_foto, id_anggota = :id_anggota, updated_by = :updated_by, status = 'pending' WHERE id_foto = :id";
+                $sql = "UPDATE galeri SET nama_foto = :nama_foto, deskripsi = :deskripsi, file_foto = :file_foto, id_anggota = :id_anggota, approval_status = 'pending', created_by = :created_by WHERE id_foto = :id";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([
                     ':nama_foto' => $nama_foto,
                     ':deskripsi' => $deskripsi,
                     ':file_foto' => $file_foto_path_for_db,
                     ':id_anggota' => $id_anggota,
-                    ':updated_by' => $admin_user_id,
+                    ':created_by' => $admin_user_id,
                     ':id' => $id_foto
                 ]);
                 $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Foto Galeri ID {$id_foto} berhasil diupdate!</div>";
@@ -379,7 +380,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'publikasi
 
         if ($upload_ok) {
             try {
-                $sql = "INSERT INTO publikasi (judul, penulis, tanggal_terbit, file_publikasi, deskripsi, id_anggota, status) VALUES (:judul, :penulis, :tanggal_terbit, :file, :deskripsi, :id_anggota, :status)";
+                $sql = "INSERT INTO publikasi (judul, penulis, tanggal_terbit, file_publikasi, deskripsi, id_anggota, approval_status, created_by) VALUES (:judul, :penulis, :tanggal_terbit, :file, :deskripsi, :id_anggota, 'pending', :created_by)";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([
                     ':id_anggota' => $author_id,
@@ -388,7 +389,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'publikasi
                     ':tanggal_terbit' => $tanggal_terbit,
                     ':file' => $file_path_for_db,
                     ':deskripsi' => $deskripsi,
-                    ':status' => 'pending'
+                    ':created_by' => $admin_user_id
                 ]);
                 $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Publikasi baru berhasil ditambahkan!</div>";
             } catch (Exception $e) {
@@ -433,7 +434,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'publikasi
 
         if ($upload_ok) {
             try {
-                $sql = "UPDATE publikasi SET judul = :judul, penulis = :penulis, tanggal_terbit = :tanggal_terbit, deskripsi = :deskripsi, file_publikasi = :file_publikasi, status = 'pending' WHERE id_publikasi = :id";
+                $sql = "UPDATE publikasi SET judul = :judul, penulis = :penulis, tanggal_terbit = :tanggal_terbit, deskripsi = :deskripsi, file_publikasi = :file_publikasi, approval_status = 'pending', created_by = :created_by WHERE id_publikasi = :id";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([
                     ':judul' => $judul,
@@ -441,6 +442,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'publikasi
                     ':tanggal_terbit' => $tanggal_terbit,
                     ':deskripsi' => $deskripsi,
                     ':file_publikasi' => $file_path_for_db,
+                    ':created_by' => $admin_user_id,
                     ':id' => $id_publikasi
                 ]);
                 $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Publikasi ID {$id_publikasi} berhasil diupdate!</div>";
@@ -493,14 +495,14 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'pengumuma
              $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Judul, Isi Pengumuman, dan Tanggal Posting wajib diisi.</div>";
         } else {
             try {
-                $sql = "INSERT INTO pengumuman (judul, informasi, tanggal, id_anggota, status) VALUES (:judul, :isi, :tanggal, :author, :status)";
+                $sql = "INSERT INTO pengumuman (judul, informasi, tanggal, id_anggota, approval_status, created_by) VALUES (:judul, :isi, :tanggal, :author, 'pending', :created_by)";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([
                     ':judul' => $judul,
                     ':isi' => $informasi,
                     ':tanggal' => $tanggal,
                     ':author' => $author,
-                    ':status' => 'pending'
+                    ':created_by' => $admin_user_id
                 ]);
                 $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Pengumuman baru berhasil ditambahkan!</div>";
             } catch (Exception $e) {
@@ -520,13 +522,14 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'pengumuma
              $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Judul, Isi Pengumuman, dan Tanggal Posting wajib diisi.</div>";
         } else {
             try {
-                $sql = "UPDATE pengumuman SET judul = :judul, informasi = :isi, tanggal = :tanggal, id_anggota = :author, status = 'pending' WHERE id_pengumuman = :id";
+                $sql = "UPDATE pengumuman SET judul = :judul, informasi = :isi, tanggal = :tanggal, id_anggota = :author, approval_status = 'pending', created_by = :created_by WHERE id_pengumuman = :id";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([
                     ':judul' => $judul,
                     ':isi' => $informasi,
                     ':tanggal' => $tanggal,
                     ':author' => $author,
+                    ':created_by' => $admin_user_id,
                     ':id' => $id_pengumuman
                 ]);
                 $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Pengumuman ID {$id_pengumuman} berhasil diupdate!</div>";
