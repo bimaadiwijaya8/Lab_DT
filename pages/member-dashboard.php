@@ -57,28 +57,6 @@ if (file_exists($db_connect_path)) {
 // --- START: Penanganan Operasi CRUD Publikasi (Hanya jika koneksi berhasil dan di halaman publikasi) ---
 if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'publikasi') {
     $action = $_POST['action'] ?? '';
-    // --- VERIFICATION (Approve/Reject Publikasi) ---
-    // Logika verifikasi tetap ada, namun biasanya fitur ini adalah untuk Admin.
-    if ($action === 'verify_publikasi') {
-        $id_publikasi = (int)$_POST['id_publikasi'];
-        $status = $_POST['status']; // 'approved' or 'rejected'
-
-        if (in_array($status, ['approved', 'rejected'])) {
-            try {
-                $sql = "UPDATE publikasi SET status = :status WHERE id_publikasi = :id";
-                $stmt = $pdo->prepare($sql);
-                $stmt->execute([
-                    ':status' => $status,
-                    ':id' => $id_publikasi
-                ]);
-
-                $status_text = $status === 'approved' ? 'disetujui' : 'ditolak';
-                $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Publikasi ID {$id_publikasi} berhasil {$status_text}!</div>";
-            } catch (Exception $e) {
-                $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Gagal memperbarui status publikasi: " . htmlspecialchars($e->getMessage()) . "</div>";
-            }
-        }
-    }
     $target_dir = '../assets/files/publikasi/'; // Direktori Publikasi (PDF/File)
 
     // Pastikan direktori ada
@@ -775,9 +753,6 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'settings'
                                             <a href="member-dashboard.php?page=publikasi&action=delete&id=<?php echo $publikasi['id_publikasi']; ?>" onclick="return confirm('Apakah Anda yakin ingin menghapus publikasi ini? File juga akan terhapus dari server.')" class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
                                                 <i class="fas fa-trash"></i>
                                             </a>
-                                            <button onclick="openVerifyPublikasiModal(<?php echo $publikasi['id_publikasi']; ?>, '<?php echo htmlspecialchars($status); ?>')" class="text-gray-500 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100" title="Verifikasi Publikasi">
-                                                <i class="fas fa-check-double"></i>
-                                            </button>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -1067,44 +1042,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'settings'
                             Batal
                         </button>
                     </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <div id="verifyPublikasiModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[1001] hidden overflow-y-auto">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
-                <form action="member-dashboard.php?page=publikasi" method="POST"> <input type="hidden" name="action" value="verify_publikasi">
-                    <input type="hidden" name="id_publikasi" id="verify_id_publikasi">
-                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Verifikasi Publikasi</h3>
-                        <p class="text-sm text-gray-500">Pilih status verifikasi untuk Publikasi ID: <span id="verify_modal_id"></span>.</p>
-                        <div class="mt-4 space-y-3">
-                            <label class="inline-flex items-center">
-                                <input type="radio" name="status" value="approved" class="form-radio text-green-600 h-4 w-4" required>
-                                <span class="ml-2 text-sm text-gray-700">Setujui (Approved)</span>
-                            </label>
-                            <label class="inline-flex items-center ml-6">
-                                <input type="radio" name="status" value="rejected" class="form-radio text-red-600 h-4 w-4">
-                                <span class="ml-2 text-sm text-gray-700">Tolak (Rejected)</span>
-                            </label>
-                        </div>
-                        <p class="mt-3 text-sm font-medium text-gray-700">Status Saat Ini: <span id="current_status_display" class="font-bold"></span></p>
-                    </div>
-                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                        <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
-                            Simpan Status
-                        </button>
-                        <button type="button" onclick="closeVerifyPublikasiModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                            Batal
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
+            
     <script>
         // Utility function
         function formatDate(dateString) {
@@ -1156,35 +1094,12 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'settings'
         function closeEditPublikasiModal() {
             document.getElementById('editPublikasiModal').classList.add('hidden');
             document.body.classList.remove('modal-open');
-        }
-
-        function openVerifyPublikasiModal(id, currentStatus) {
-            document.getElementById('verify_id_publikasi').value = id;
-            document.getElementById('verify_modal_id').textContent = id;
-
-            // Atur radio button berdasarkan status saat ini
-            document.querySelectorAll('#verifyPublikasiModal input[name="status"]').forEach(radio => {
-                radio.checked = radio.value === currentStatus;
-            });
-
-            const currentStatusDisplay = document.getElementById('current_status_display');
-            currentStatusDisplay.textContent = currentStatus.toUpperCase();
-            currentStatusDisplay.className = 'font-bold';
-            if (currentStatus === 'pending') {
-                currentStatusDisplay.classList.add('text-yellow-600');
-            } else if (currentStatus === 'approved') {
-                currentStatusDisplay.classList.add('text-green-600');
-            } else if (currentStatus === 'rejected') {
-                currentStatusDisplay.classList.add('text-red-600');
-            }
-
-            document.getElementById('verifyPublikasiModal').classList.remove('hidden');
-            document.body.classList.add('modal-open');
-        }
-
-        function closeVerifyPublikasiModal() {
-            document.getElementById('verifyPublikasiModal').classList.add('hidden');
-            document.body.classList.remove('modal-open');
+            document.getElementById('edit_judul').value = '';
+            document.getElementById('edit_penulis').value = '';
+            document.getElementById('edit_tanggal_terbit').value = '';
+            document.getElementById('edit_file_publikasi').value = '';
+            document.getElementById('edit_deskripsi').value = '';
+            document.getElementById('edit_id_anggota_publikasi').value = '';
         }
 
         // --- Sidebar Toggle Function ---
