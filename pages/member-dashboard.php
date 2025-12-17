@@ -266,7 +266,7 @@ if ($pdo) {
     try {
         // PERBAIKAN: Mengganti tabel 'anggota' menjadi 'member' dan kolom 'nama_gelar' menjadi 'nama', 'foto_profil' menjadi 'foto', dan 'id_anggota' menjadi 'id_member'.
         // DITAMBAHKAN: kolom jurusan, prodi, kelas, tahun_angkatan, no_telp, status
-        $sql_member = "SELECT id_member, nama, nim, foto, jurusan, prodi, kelas, tahun_angkatan, no_telp, status FROM member WHERE id_member = :id";
+        $sql_member = "SELECT id_member, nama, nim, foto, jurusan, prodi, kelas, tahun_angkatan, no_telp, status, email FROM member WHERE id_member = :id";
         $stmt_member = $pdo->prepare($sql_member);
         $stmt_member->execute([':id' => $hardcoded_member_id]);
         $fetched_member = $stmt_member->fetch(PDO::FETCH_ASSOC);
@@ -283,7 +283,8 @@ if ($pdo) {
                 'kelas' => $fetched_member['kelas'], // DATA BARU
                 'tahun_angkatan' => $fetched_member['tahun_angkatan'], // DATA BARU
                 'no_telp' => $fetched_member['no_telp'], // DATA BARU
-                'status' => $fetched_member['status'] // DATA BARU
+                'status' => $fetched_member['status'], // DATA BARU
+                'email' => $fetched_member['email'] // DATA BARU
             ];
             $username = $member_data['nama_gelar']; // Update username di header
         }
@@ -847,6 +848,10 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'settings'
                             <div class="border-t pt-4 border-gray-200">
                                 <p class="text-sm font-semibold text-gray-800 mb-3">Informasi Kontak & Status</p>
                                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                                    <div>
+                                        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                                        <input type="text" id="email" value="<?php echo htmlspecialchars($member_data['email'] ?? ''); ?>" disabled class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 shadow-sm sm:text-sm p-2 cursor-not-allowed">
+                                    </div>
                                     <div>
                                         <label for="no_telp" class="block text-sm font-medium text-gray-700">Nomor Telepon</label>
                                         <input type="text" name="no_telp" id="no_telp" value="<?php echo htmlspecialchars($member_data['no_telp'] ?? ''); ?>" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2">
