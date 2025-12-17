@@ -2,12 +2,12 @@
 -- PostgreSQL database dump
 --
 
-\restrict pJSaGErz46WsJ4C5abUcO9EhqBGKpEpAx6qUR7sIFo3ExVdydrncqA2u6qiCAJl
+\restrict 0hKsTAVJTZYqUStWf9ldUhMXpQTGVmtmvSgXRpMpwdMhc1ibiY5A6w45wIXTOOn
 
 -- Dumped from database version 15.14
 -- Dumped by pg_dump version 15.14
 
--- Started on 2025-12-16 21:49:54
+-- Started on 2025-12-17 12:19:26
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1001,7 +1001,7 @@ COPY public.kontak (id_kontak, nama, email, no_telp, deskripsi_tujuan, opsi_kerj
 COPY public.member (id_member, email, nama, foto, nim, jurusan, prodi, kelas, tahun_angkatan, no_telp, status, password) FROM stdin;
 2	doni.s@mhs.id	Doni Saputra	foto_doni.jpg	123002	Teknik Elektro	Informatika	TI-B	2021	081998877665	alumni	pass_hash_doni
 3	sinta.a@mhs.id	Sinta Amelia	foto_sinta.jpg	456003	Teknik Mesin	Mekatronika	TM-C	2023	082887766554	luar_lab	pass_hash_sinta
-1	rani.p@mhs.id	Phrolova	../assets/img/profile/profile_1_1765883634.jpg	22222	Teknik Elektro	Informatika	TI-2G	2022	22222222	aktif	f4de7d978f41a366fd54b973b264457d
+1	rani.p@mhs.id	Phrolova	../assets/img/profile/profile_1_1765883634.jpg	22222	Teknik Elektro	Informatika	TI-2G	2022	22222222	aktif	a3d79436502a27af820271d7a16c5fff
 \.
 
 
@@ -1030,13 +1030,15 @@ COPY public.pengumuman (id_pengumuman, judul, informasi, id_anggota, tanggal, st
 --
 
 COPY public.publikasi (id_publikasi, judul, penulis, tanggal_terbit, file_publikasi, deskripsi, created_at, updated_at, id_anggota, status, id_member) FROM stdin;
-12	iu394	33i4j34	2025-12-16	../assets/files/publikasi/publikasi_1765855692_English_Assignment_EX10.pdf	2323	2025-12-16 10:28:12.128965	2025-12-16 10:28:12.128965	2	rejected	\N
-14	CRUD	CRUD	2025-12-12	../assets/files/publikasi/publikasi_1765883484_ENGLISH_U6.pdf	CRUD	2025-12-16 18:11:24.080816	2025-12-16 18:11:24.080816	3	pending	\N
 4	5JUDUL4	IEJRIER5	2025-12-02	../assets/files/publikasi/publikasi_1765793435_English_Assignment_EX10.pdf	EIJRIERrwr	2025-12-14 02:53:44.249846	2025-12-14 02:53:44.249846	\N	pending	1
 9	rwwewe	ewewewee	2025-12-05	../assets/files/publikasi/publikasi_1765793546_ENGLISH_U6.pdf	ewew4wewe	2025-12-15 17:12:07.920172	2025-12-15 17:12:07.920172	\N	approved	2
 3	Review Metode Sensor Fusion3	Sinta Amelia, Citra Dewi	2025-11-20	file_publikasi_12.pdf	Makalah review tentang berbagai teknik fusi data sensor.	2025-12-04 00:41:54.5758	2025-12-04 00:41:54.5758	3	rejected	\N
 5	TRY5N	IEJRIER5	2025-12-10	../assets/files/publikasi/publikasi_1765785106_ENGLISH_U6.pdf	e42	2025-12-15 14:45:18.954999	2025-12-15 14:45:18.954999	\N	approved	3
 2	Analisis Performa Sistem Kontrol PIDe	Doni Saputra, Budi Santoso	2024-05-01	file_publikasi_11.pdf	Skripsi alumni tentang optimasi kontrol PID pada lengan robot.	2025-12-04 00:41:54.5758	2025-12-04 00:41:54.5758	2	pending	\N
+12	iu394x	33i4j34	2025-12-16	../assets/files/publikasi/publikasi_1765855692_English_Assignment_EX10.pdf	2323	2025-12-16 10:28:12.128965	2025-12-16 10:28:12.128965	2	pending	\N
+14	CRUD	CRUD	2025-12-12	../assets/files/publikasi/publikasi_1765883484_ENGLISH_U6.pdf	CRUD	2025-12-16 18:11:24.080816	2025-12-16 18:11:24.080816	3	approved	\N
+20	EDT	EDT	2025-12-12	../assets/files/publikasi/publikasi_1765902769_publikasi_1765643036_BimaAdiwijaya_Polimorfisme.pdf	EDT	2025-12-16 23:32:30.86939	2025-12-16 23:32:30.86939	5	pending	\N
+21	qqqq11	qqqq11	2025-12-16	../assets/files/publikasi/publikasi_1765902797_publikasi_1765793546_ENGLISH_U6.pdf	EEER	2025-12-16 23:33:17.48487	2025-12-16 23:33:17.48487	4	pending	\N
 \.
 
 
@@ -1058,9 +1060,11 @@ COPY public.settings (id, key, value, updated_at, updated_by) FROM stdin;
 --
 
 COPY public.users (id, username, password, nama, email, no_telp, role, created_at, updated_at) FROM stdin;
-1	admin_lab	hashed_password_1	Budi Santoso	budi.s@lab.id	081234567890	admin	2025-12-04 00:41:14.876157	2025-12-04 00:41:14.876157
 2	editor_konten	hashed_password_2	Citra Dewi	citra.d@lab.id	085098765432	editor	2025-12-04 00:41:14.876157	2025-12-04 00:41:14.876157
 3	editor_galeri	hashed_password_3	Agus Salim	agus.s@lab.id	087112233445	editor	2025-12-04 00:41:14.876157	2025-12-04 00:41:14.876157
+1	admin_lab	3f7caa3d471688b704b73e9a77b1107f	Budi Santoso	budi.s@lab.id	081234567890	admin	2025-12-04 00:41:14.876157	2025-12-04 00:41:14.876157
+4	tes_admin	$2y$12$9V32QC4BPpQRPdVweWG3puoXJHdaQkQ9Tj1b5ClipLfULcKimqCtG	tes_admin	tesadmin@gmail.com	tes_admin	admin	2025-12-17 00:41:58.796053	2025-12-17 00:41:58.796053
+5	tes_editor	$2y$12$RoPz.bNCyZEkDAPVBVXsbuCVgnWJIpZtc010heeEyuiiQugoL1qAq	tes_editor	teseditor@gmail.com	teseditor	editor	2025-12-17 00:53:04.453197	2025-12-17 00:53:04.453197
 \.
 
 
@@ -1160,7 +1164,7 @@ SELECT pg_catalog.setval('public.pengumuman_id_pengumuman_seq', 12, true);
 -- Name: publikasi_id_publikasi_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.publikasi_id_publikasi_seq', 14, true);
+SELECT pg_catalog.setval('public.publikasi_id_publikasi_seq', 21, true);
 
 
 --
@@ -1178,7 +1182,7 @@ SELECT pg_catalog.setval('public.settings_id_seq', 1, true);
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.users_id_seq', 3, true);
+SELECT pg_catalog.setval('public.users_id_seq', 5, true);
 
 
 --
@@ -1460,11 +1464,11 @@ ALTER TABLE ONLY public.jurnal
     ADD CONSTRAINT jurnal_penyusun_fkey FOREIGN KEY (penyusun) REFERENCES public.anggota(id_anggota) ON DELETE SET NULL;
 
 
--- Completed on 2025-12-16 21:49:55
+-- Completed on 2025-12-17 12:19:27
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict pJSaGErz46WsJ4C5abUcO9EhqBGKpEpAx6qUR7sIFo3ExVdydrncqA2u6qiCAJl
+\unrestrict 0hKsTAVJTZYqUStWf9ldUhMXpQTGVmtmvSgXRpMpwdMhc1ibiY5A6w45wIXTOOn
 
