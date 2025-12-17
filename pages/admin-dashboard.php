@@ -306,7 +306,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'fasilitas
                     ':nama' => $nama_fasilitas,
                     ':deskripsi' => $deskripsi,
                     ':foto' => $foto_path_for_db,
-                    ':created_by' => 1 // Hardcoded user_id since we don't have login session yet
+                    ':created_by' => $admin_user_id
                 ]);
                 $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Fasilitas baru berhasil ditambahkan!</div>";
             } catch (Exception $e) {
@@ -366,7 +366,8 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'fasilitas
                 $sql = "UPDATE fasilitas SET 
                             nama_fasilitas = :nama, 
                             deskripsi = :deskripsi, 
-                            foto = :foto
+                            foto = :foto,
+                            created_by = $admin_user_id
                         WHERE id_fasilitas = :id";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([
@@ -1240,8 +1241,11 @@ if ($active_page === 'berita' && $pdo) {
 $fasilitas_data = [];
 if ($active_page === 'fasilitas' && $pdo) {
     try {
-        // READ: Mengambil semua data fasilitas
-        $sql = "SELECT * FROM fasilitas ORDER BY id_fasilitas DESC";
+        // READ: Mengambil semua data fasilitas beserta username pembuat
+        $sql = "SELECT f.*, u.username 
+                FROM fasilitas f 
+                LEFT JOIN users u ON f.created_by = u.id 
+                ORDER BY f.id_fasilitas DESC";
         $stmt = $pdo->query($sql);
         $fasilitas_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
@@ -1690,6 +1694,7 @@ if ($active_page === 'pengumuman' && $pdo) {
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Foto</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Fasilitas</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deskripsi (Snippet)</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Diupload Oleh</th>
                             <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                         </tr>
                     </thead>
@@ -1705,6 +1710,7 @@ if ($active_page === 'pengumuman' && $pdo) {
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo htmlspecialchars($fasilitas['nama_fasilitas']); ?></td>
                                     <td class="px-6 py-4 text-sm text-gray-500 max-w-xs truncate" style="max-width: 400px;"><?php echo htmlspecialchars(substr($fasilitas['deskripsi'], 0, 100)) . (strlen($fasilitas['deskripsi']) > 100 ? '...' : ''); ?></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($fasilitas['username'] ?? 'Admin'); ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end space-x-2">
                                         <button onclick="openEditFasilitasModal(this)" class="text-indigo-600 hover:text-indigo-900 p-2 rounded-md hover:bg-gray-100">
                                             <i class="fas fa-edit"></i>
@@ -1719,7 +1725,7 @@ if ($active_page === 'pengumuman' && $pdo) {
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="4" class="px-6 py-4 text-center text-gray-500">Belum ada data fasilitas.</td>
+                                <td colspan="5" class="px-6 py-4 text-center text-gray-500">Belum ada data fasilitas.</td>
                             </tr>
                         <?php endif; ?>
                     </tbody>
