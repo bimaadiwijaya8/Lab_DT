@@ -3,9 +3,9 @@
 
 session_start();
 date_default_timezone_set('Asia/Jakarta');
-$is_authenticated = true;
 
-if (!$is_authenticated) {
+// Logika Proteksi Sesi dan Role
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || $_SESSION['role'] !== 'editor') {
     header('Location: login.php');
     exit;
 }

@@ -4,9 +4,9 @@
 // --- Bagian Logika PHP Awal ---
 session_start();
 date_default_timezone_set('Asia/Jakarta');
-$is_authenticated = true; // Ganti dengan logika otentikasi sesungguhnya (misal: isset($_SESSION['user_id']))
 
-if (!$is_authenticated) {
+// Logika Proteksi Sesi dan Role
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || $_SESSION['role'] !== 'member') {
     header('Location: login.php');
     exit;
 }
