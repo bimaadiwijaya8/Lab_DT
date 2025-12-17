@@ -313,8 +313,9 @@ if ($pdo) {
         try {
             // PERBAIKAN: Join ke tabel 'member' bukan 'anggota'. Asumsi: id_anggota di publikasi merujuk ke id_member.
             // Kolom: 'nama' sebagai author_name, 'jurusan' sebagai author_bidang
-            $sql = "SELECT p.*, m.nama AS author_name, m.jurusan AS author_bidang FROM publikasi p LEFT JOIN member m ON p.id_anggota = m.id_member ORDER BY p.tanggal_terbit DESC, p.id_publikasi DESC";
-            $stmt = $pdo->query($sql);
+            $sql = "SELECT p.*, m.nama AS author_name, m.jurusan AS author_bidang FROM publikasi p LEFT JOIN member m ON p.id_member = m.id_member WHERE p.id_member = :member_id ORDER BY p.tanggal_terbit DESC, p.id_publikasi DESC";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([':member_id' => $hardcoded_member_id]);
             $publikasi_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $publikasi_count = count($publikasi_data);
         } catch (Exception $e) {
