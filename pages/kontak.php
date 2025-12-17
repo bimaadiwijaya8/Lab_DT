@@ -275,10 +275,6 @@ $active_page = 'kontak';
               <button id="contact-submit" class="w-full h-12 rounded-full bg-gradient-to-r from-[#00A0D6] to-blue-600 text-white font-semibold hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
                 Kirim Pesan
               </button>
-
-              <div id="contact-hint" class="text-center text-sm text-gray-500">
-                Semua data hanya untuk demonstrasi UI.
-              </div>
             </form>
           </div>
         </div>
