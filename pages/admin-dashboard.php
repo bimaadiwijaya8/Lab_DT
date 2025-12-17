@@ -1656,9 +1656,11 @@ if ($active_page === 'pengumuman' && $pdo) {
                                             class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
                                             <i class="fas fa-trash"></i>
                                         </a>
+                                        <?php if ($news['status'] === 'pending'): ?>
                                         <button onclick="openVerifyBeritaModal(<?php echo $news['id_berita']; ?>, '<?php echo $news['status']; ?>')" class="text-gray-500 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100" title="Verifikasi Berita">
                                             <i class="fas fa-check-double"></i>
                                         </button>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -1783,9 +1785,11 @@ if ($active_page === 'pengumuman' && $pdo) {
                                             class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
                                             <i class="fas fa-trash"></i>
                                         </a>
+                                        <?php if ($galeri['status'] === 'pending'): ?>
                                         <button onclick="openVerifyGaleriModal(<?php echo $galeri['id_foto']; ?>, '<?php echo $galeri['status']; ?>')" class="text-gray-500 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100" title="Verifikasi Galeri">
                                             <i class="fas fa-check-double"></i>
                                         </button>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -1870,9 +1874,11 @@ if ($active_page === 'pengumuman' && $pdo) {
                                             class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
                                             <i class="fas fa-trash"></i>
                                         </a>
+                                        <?php if ($publikasi['status'] === 'pending'): ?>
                                         <button onclick="openVerifyPublikasiModal(<?php echo $publikasi['id_publikasi']; ?>, '<?php echo $publikasi['status']; ?>')" class="text-gray-500 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100" title="Verifikasi Publikasi">
                                             <i class="fas fa-check-double"></i>
                                         </button>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -2006,9 +2012,11 @@ if ($active_page === 'pengumuman' && $pdo) {
                                             class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
                                             <i class="fas fa-trash"></i>
                                         </a>
+                                        <?php if ($pengumuman['status'] === 'pending'): ?>
                                         <button onclick="openVerifyPengumumanModal(<?php echo $pengumuman['id_pengumuman']; ?>, '<?php echo $pengumuman['status']; ?>')" class="text-gray-500 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100" title="Verifikasi Pengumuman">
                                             <i class="fas fa-check-double"></i>
                                         </button>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
