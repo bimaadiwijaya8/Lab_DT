@@ -4,6 +4,36 @@ $active_page = 'kontak';
 // Include database connection and get settings
 include '../assets/php/db_connect.php';
 $settings = [];
+$success_message = '';
+$error_message = '';
+
+// Handle form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    try {
+        $pdo = Database::getConnection();
+        
+        if (isset($_POST['form_type']) && $_POST['form_type'] === 'ask') {
+            // Handle pertanyaan form
+            $nama = trim($_POST['nama']);
+            $email = trim($_POST['email']);
+            $pesan = trim($_POST['pesan']);
+            
+            $sql = "INSERT INTO pertanyaan (nama_lengkap, email, pesan, status) 
+                    VALUES (:nama, :email, :pesan, 'pending')";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                ':nama' => $nama,
+                ':email' => $email,
+                ':pesan' => $pesan
+            ]);
+            
+            $success_message = 'Terima kasih! Pertanyaan Anda telah terkirim dan akan dijawab oleh admin.';
+        }
+    } catch (Exception $e) {
+        $error_message = 'Terjadi kesalahan: ' . $e->getMessage();
+    }
+}
+
 try {
   $pdo = Database::getConnection();
   $stmt = $pdo->prepare("SELECT key, value FROM settings");
@@ -227,6 +257,18 @@ try {
           <div class="bg-white p-6 lg:p-8 rounded-2xl border border-gray-100 shadow-xl hover:shadow-2xl transition-all duration-300">
             <h2 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-8">Formulir Kontak</h2>
 
+            <?php if (!empty($success_message)) : ?>
+              <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                <?php echo $success_message; ?>
+              </div>
+            <?php endif; ?>
+            
+            <?php if (!empty($error_message)) : ?>
+              <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                <?php echo $error_message; ?>
+              </div>
+            <?php endif; ?>
+            
             <div class="w-full flex justify-center mb-8">
               <div class="inline-flex rounded-full bg-gray-100 p-1 shadow-sm" role="tablist" aria-label="Mode Form">
                 <button type="button" data-form-type="ask" class="pill-switch-btn active flex-1 text-center px-6 py-3 rounded-full text-sm font-medium transition-all" role="tab" aria-selected="true">
@@ -238,16 +280,17 @@ try {
               </div>
             </div>
             
-            <form id="contact-form" class="space-y-5" novalidate>
+            <form id="contact-form" class="space-y-5" method="POST" novalidate>
+              <input type="hidden" name="form_type" id="form_type" value="ask">
               <div id="form-ask" class="space-y-5">
                 <div>
-                  <input id="ask-name" class="w-full h-12 rounded-lg border border-gray-300 px-4 focus:outline-none focus:ring-2 focus:ring-[#00A0D6] focus:border-transparent transition-all" placeholder="Nama Lengkap" />
+                  <input name="nama" id="ask-name" required class="w-full h-12 rounded-lg border border-gray-300 px-4 focus:outline-none focus:ring-2 focus:ring-[#00A0D6] focus:border-transparent transition-all" placeholder="Nama Lengkap" />
                 </div>
                 <div>
-                  <input id="ask-email" type="email" class="w-full h-12 rounded-lg border border-gray-300 px-4 focus:outline-none focus:ring-2 focus:ring-[#00A0D6] focus:border-transparent transition-all" placeholder="Email Aktif" />
+                  <input name="email" id="ask-email" type="email" required class="w-full h-12 rounded-lg border border-gray-300 px-4 focus:outline-none focus:ring-2 focus:ring-[#00A0D6] focus:border-transparent transition-all" placeholder="Email Aktif" />
                 </div>
                 <div>
-                  <textarea id="ask-message" class="w-full min-h-[120px] rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#00A0D6] focus:border-transparent transition-all resize-none" placeholder="Pesan Anda"></textarea>
+                  <textarea name="pesan" id="ask-message" required class="w-full min-h-[120px] rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#00A0D6] focus:border-transparent transition-all resize-none" placeholder="Pesan Anda"></textarea>
                 </div>
               </div>
 
@@ -332,10 +375,12 @@ try {
             formAsk.classList.remove('hidden');
             formCoop.classList.add('hidden');
             submitButton.textContent = 'Kirim Pesan';
+            document.getElementById('form_type').value = 'ask';
           } else if (formType === 'coop') {
             formAsk.classList.add('hidden');
             formCoop.classList.remove('hidden');
             submitButton.textContent = 'Kirim Proposal Kerja Sama';
+            document.getElementById('form_type').value = 'coop';
           }
         });
       });
@@ -353,23 +398,22 @@ try {
 
       // Handle form submission
       contactForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
         const activeForm = document.querySelector('.pill-switch-btn.active').getAttribute('data-form-type');
         
         if (activeForm === 'ask') {
-          // Handle question form submission
+          // Handle question form submission - will be submitted to server
           const name = document.getElementById('ask-name').value;
           const email = document.getElementById('ask-email').value;
           const message = document.getElementById('ask-message').value;
           
-          if (name && email && message) {
-            alert('Terima kasih! Pesan Anda telah terkirim.\n\nNama: ' + name + '\nEmail: ' + email + '\nPesan: ' + message);
-            contactForm.reset();
-          } else {
+          if (!name || !email || !message) {
+            e.preventDefault();
             alert('Mohon lengkapi semua field yang diperlukan.');
+            return false;
           }
+          // Form will submit normally to server
         } else if (activeForm === 'coop') {
+          e.preventDefault();
           // Handle cooperation form submission
           const name = document.getElementById('coop-name').value;
           const email = document.getElementById('coop-email').value;

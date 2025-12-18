@@ -21,7 +21,7 @@ try {
 
 // Get logo from database settings
 // Get logo from settings or use default
-$logo_path = isset($settings['logo']) && !empty($settings['logo']) && file_exists($settings['logo']) ? $settings['logo'] : '../assets/img/logo.png';
+$logo_path = isset($settings['logo_utama']) && !empty($settings['logo_utama']) && file_exists($settings['logo_utama']) ? $settings['logo_utama'] : '../assets/img/logo.png';
 
 // Variabel $current_year harus didefinisikan di file utama sebelum memanggil footer.
 if (!isset($current_year)) {
