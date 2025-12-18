@@ -9,13 +9,13 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || $_SESSION
     exit;
 }
 
-$is_authenticated = true; 
+$is_authenticated = true;
 
 // 1. Variabel Konfigurasi Dasar
 $current_year = date('Y');
 // GANTI VARIABEL HARDCODED INI DENGAN DATA SESI
-$username = $_SESSION['username']; 
-$admin_user_id = $_SESSION['user_id']; 
+$username = $_SESSION['username'];
+$admin_user_id = $_SESSION['user_id'];
 $active_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
 $message = '';
 
@@ -55,12 +55,12 @@ if (file_exists($db_connect_path)) {
 if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'approval') {
     $action = $_POST['action'] ?? '';
     $message_type = '';
-    
+
     if ($action === 'approve_direct') {
         $table_name = $_POST['table_name'];
         $record_id = (int)$_POST['record_id'];
         $primary_key = ApprovalHelper::getPrimaryKey($table_name);
-        
+
         try {
             $sql = "UPDATE $table_name SET approval_status = 'approved', approved_by = :admin_id, approved_at = NOW() WHERE $primary_key = :id";
             $stmt = $pdo->prepare($sql);
@@ -73,7 +73,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'approval'
         $table_name = $_POST['table_name'];
         $record_id = (int)$_POST['record_id'];
         $primary_key = ApprovalHelper::getPrimaryKey($table_name);
-        
+
         try {
             $sql = "UPDATE $table_name SET approval_status = 'rejected', approved_by = :admin_id, approved_at = NOW() WHERE $primary_key = :id";
             $stmt = $pdo->prepare($sql);
@@ -1387,7 +1387,7 @@ if ($active_page === 'approval' && $pdo) {
                        ORDER BY b.created_at DESC";
         $stmt = $pdo->query($sql_berita);
         $pending_berita = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
+
         $sql_publikasi = "SELECT p.*, a.nama_gelar as author_name, u.username as created_by_name 
                           FROM publikasi p 
                           LEFT JOIN anggota a ON p.id_anggota = a.id_anggota 
@@ -1396,7 +1396,7 @@ if ($active_page === 'approval' && $pdo) {
                           ORDER BY p.created_at DESC";
         $stmt = $pdo->query($sql_publikasi);
         $pending_publikasi = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
+
         $sql_galeri = "SELECT g.*, a.nama_gelar as author_name, u.username as created_by_name 
                        FROM galeri g 
                        LEFT JOIN anggota a ON g.id_anggota = a.id_anggota 
@@ -1405,7 +1405,7 @@ if ($active_page === 'approval' && $pdo) {
                        ORDER BY g.created_at DESC";
         $stmt = $pdo->query($sql_galeri);
         $pending_galeri = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
+
         $sql_pengumuman = "SELECT p.*, a.nama_gelar as author_name, u.username as created_by_name 
                            FROM pengumuman p 
                            LEFT JOIN anggota a ON p.id_anggota = a.id_anggota 
@@ -1414,7 +1414,7 @@ if ($active_page === 'approval' && $pdo) {
                            ORDER BY p.created_at DESC";
         $stmt = $pdo->query($sql_pengumuman);
         $pending_pengumuman = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
+
         $sql_fasilitas = "SELECT f.*, u.username as created_by_name 
                           FROM fasilitas f 
                           LEFT JOIN users u ON f.created_by = u.id
@@ -1422,7 +1422,7 @@ if ($active_page === 'approval' && $pdo) {
                           ORDER BY f.created_at DESC";
         $stmt = $pdo->query($sql_fasilitas);
         $pending_fasilitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
+
         $sql_anggota = "SELECT a.*, u.username as created_by_name 
                         FROM anggota a 
                         LEFT JOIN users u ON a.created_by = u.id
@@ -1430,10 +1430,9 @@ if ($active_page === 'approval' && $pdo) {
                         ORDER BY a.created_at DESC";
         $stmt = $pdo->query($sql_anggota);
         $pending_anggota = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        $total_pending_content = count($pending_berita) + count($pending_publikasi) + count($pending_galeri) + 
-                                 count($pending_pengumuman) + count($pending_fasilitas) + count($pending_anggota);
-        
+
+        $total_pending_content = count($pending_berita) + count($pending_publikasi) + count($pending_galeri) +
+            count($pending_pengumuman) + count($pending_fasilitas) + count($pending_anggota);
     } catch (Exception $e) {
         error_log("Error fetching pending content: " . $e->getMessage());
     }
@@ -1575,9 +1574,9 @@ if ($active_page === 'approval' && $pdo) {
                     <li><a href="admin-dashboard.php?page=anggota" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 <?php echo $active_page === 'anggota' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'; ?>"><i class="fas fa-users w-5 h-5 mr-3 flex items-center justify-center"></i> Kelola Anggota</a></li>
                     <li>
                         <a href="admin-dashboard.php?page=approval" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 <?php echo $active_page === 'approval' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'; ?>">
-                            <i class="fas fa-check-circle w-5 h-5 mr-3 flex items-center justify-center"></i> 
+                            <i class="fas fa-check-circle w-5 h-5 mr-3 flex items-center justify-center"></i>
                             Approval Management
-                            <?php 
+                            <?php
                             if ($pdo) {
                                 try {
                                     $pending_count = 0;
@@ -1588,12 +1587,13 @@ if ($active_page === 'approval' && $pdo) {
                                         $result = $stmt->fetch(PDO::FETCH_ASSOC);
                                         $pending_count += (int)$result['count'];
                                     }
-                                    if ($pending_count > 0): 
+                                    if ($pending_count > 0):
                             ?>
-                            <span class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full"><?php echo $pending_count; ?></span>
-                            <?php 
+                                        <span class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full"><?php echo $pending_count; ?></span>
+                            <?php
                                     endif;
-                                } catch (Exception $e) {}
+                                } catch (Exception $e) {
+                                }
                             }
                             ?>
                         </a>
@@ -1793,9 +1793,9 @@ if ($active_page === 'approval' && $pdo) {
                                             <i class="fas fa-trash"></i>
                                         </a>
                                         <?php if ($news['status'] === 'pending'): ?>
-                                        <button onclick="openVerifyBeritaModal(<?php echo $news['id_berita']; ?>, '<?php echo $news['status']; ?>')" class="text-gray-500 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100" title="Verifikasi Berita">
-                                            <i class="fas fa-check-double"></i>
-                                        </button>
+                                            <button onclick="openVerifyBeritaModal(<?php echo $news['id_berita']; ?>, '<?php echo $news['status']; ?>')" class="text-gray-500 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100" title="Verifikasi Berita">
+                                                <i class="fas fa-check-double"></i>
+                                            </button>
                                         <?php endif; ?>
                                     </td>
                                 </tr>
@@ -1924,9 +1924,9 @@ if ($active_page === 'approval' && $pdo) {
                                             <i class="fas fa-trash"></i>
                                         </a>
                                         <?php if ($galeri['status'] === 'pending'): ?>
-                                        <button onclick="openVerifyGaleriModal(<?php echo $galeri['id_foto']; ?>, '<?php echo $galeri['status']; ?>')" class="text-gray-500 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100" title="Verifikasi Galeri">
-                                            <i class="fas fa-check-double"></i>
-                                        </button>
+                                            <button onclick="openVerifyGaleriModal(<?php echo $galeri['id_foto']; ?>, '<?php echo $galeri['status']; ?>')" class="text-gray-500 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100" title="Verifikasi Galeri">
+                                                <i class="fas fa-check-double"></i>
+                                            </button>
                                         <?php endif; ?>
                                     </td>
                                 </tr>
@@ -2013,9 +2013,9 @@ if ($active_page === 'approval' && $pdo) {
                                             <i class="fas fa-trash"></i>
                                         </a>
                                         <?php if ($publikasi['status'] === 'pending'): ?>
-                                        <button onclick="openVerifyPublikasiModal(<?php echo $publikasi['id_publikasi']; ?>, '<?php echo $publikasi['status']; ?>')" class="text-gray-500 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100" title="Verifikasi Publikasi">
-                                            <i class="fas fa-check-double"></i>
-                                        </button>
+                                            <button onclick="openVerifyPublikasiModal(<?php echo $publikasi['id_publikasi']; ?>, '<?php echo $publikasi['status']; ?>')" class="text-gray-500 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100" title="Verifikasi Publikasi">
+                                                <i class="fas fa-check-double"></i>
+                                            </button>
                                         <?php endif; ?>
                                     </td>
                                 </tr>
@@ -2151,9 +2151,9 @@ if ($active_page === 'approval' && $pdo) {
                                             <i class="fas fa-trash"></i>
                                         </a>
                                         <?php if ($pengumuman['status'] === 'pending'): ?>
-                                        <button onclick="openVerifyPengumumanModal(<?php echo $pengumuman['id_pengumuman']; ?>, '<?php echo $pengumuman['status']; ?>')" class="text-gray-500 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100" title="Verifikasi Pengumuman">
-                                            <i class="fas fa-check-double"></i>
-                                        </button>
+                                            <button onclick="openVerifyPengumumanModal(<?php echo $pengumuman['id_pengumuman']; ?>, '<?php echo $pengumuman['status']; ?>')" class="text-gray-500 hover:text-gray-900 p-2 rounded-md hover:bg-gray-100" title="Verifikasi Pengumuman">
+                                                <i class="fas fa-check-double"></i>
+                                            </button>
                                         <?php endif; ?>
                                     </td>
                                 </tr>
@@ -2232,7 +2232,7 @@ if ($active_page === 'approval' && $pdo) {
         <?php elseif ($active_page === 'approval'): ?>
             <h1 class="text-3xl font-bold text-gray-800 mb-6"><i class="fas fa-check-circle text-blue-600 mr-2"></i>Approval Management</h1>
             <p class="text-gray-600 mb-6">Kelola semua perubahan yang memerlukan persetujuan dari editor dan member</p>
-            
+
             <?php echo $message; ?>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -2247,7 +2247,7 @@ if ($active_page === 'approval' && $pdo) {
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="bg-white rounded-lg shadow p-6">
                     <div class="flex items-center justify-between">
                         <div>
@@ -2259,7 +2259,7 @@ if ($active_page === 'approval' && $pdo) {
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="bg-white rounded-lg shadow p-6">
                     <div class="flex items-center justify-between">
                         <div>
@@ -2274,131 +2274,131 @@ if ($active_page === 'approval' && $pdo) {
             </div>
 
             <?php if (count($pending_berita) > 0): ?>
-            <div class="bg-white rounded-lg shadow mb-6">
-                <div class="px-6 py-4 border-b border-gray-200">
-                    <h2 class="text-xl font-semibold text-gray-900">
-                        <i class="fas fa-newspaper text-yellow-600 mr-2"></i>
-                        Berita Menunggu Approval (<?php echo count($pending_berita); ?>)
-                    </h2>
-                </div>
-                <div class="p-6">
-                    <div class="grid grid-cols-1 gap-4">
-                        <?php foreach ($pending_berita as $berita): ?>
-                        <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
-                            <div class="flex justify-between items-start">
-                                <div class="flex-1">
-                                    <h3 class="font-semibold text-lg text-gray-900 mb-2"><?php echo htmlspecialchars($berita['judul']); ?></h3>
-                                    <p class="text-gray-600 text-sm mb-2"><?php echo substr(htmlspecialchars($berita['informasi']), 0, 150); ?>...</p>
-                                    <div class="flex items-center gap-4 text-sm text-gray-500">
-                                        <span><i class="fas fa-user mr-1"></i><?php echo htmlspecialchars($berita['author_name'] ?? 'Unknown'); ?></span>
-                                        <span><i class="fas fa-calendar mr-1"></i><?php echo htmlspecialchars($berita['tanggal']); ?></span>
+                <div class="bg-white rounded-lg shadow mb-6">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h2 class="text-xl font-semibold text-gray-900">
+                            <i class="fas fa-newspaper text-yellow-600 mr-2"></i>
+                            Berita Menunggu Approval (<?php echo count($pending_berita); ?>)
+                        </h2>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid grid-cols-1 gap-4">
+                            <?php foreach ($pending_berita as $berita): ?>
+                                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
+                                    <div class="flex justify-between items-start">
+                                        <div class="flex-1">
+                                            <h3 class="font-semibold text-lg text-gray-900 mb-2"><?php echo htmlspecialchars($berita['judul']); ?></h3>
+                                            <p class="text-gray-600 text-sm mb-2"><?php echo substr(htmlspecialchars($berita['informasi']), 0, 150); ?>...</p>
+                                            <div class="flex items-center gap-4 text-sm text-gray-500">
+                                                <span><i class="fas fa-user mr-1"></i><?php echo htmlspecialchars($berita['author_name'] ?? 'Unknown'); ?></span>
+                                                <span><i class="fas fa-calendar mr-1"></i><?php echo htmlspecialchars($berita['tanggal']); ?></span>
+                                            </div>
+                                        </div>
+                                        <?php if (!empty($berita['gambar'])): ?>
+                                            <img src="<?php echo htmlspecialchars($berita['gambar']); ?>" alt="Preview" class="w-24 h-24 object-cover rounded ml-4">
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="mt-4 flex gap-2">
+                                        <form method="POST" class="inline">
+                                            <input type="hidden" name="action" value="approve_direct">
+                                            <input type="hidden" name="table_name" value="berita">
+                                            <input type="hidden" name="record_id" value="<?php echo $berita['id_berita']; ?>">
+                                            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                                                <i class="fas fa-check mr-1"></i>Setujui
+                                            </button>
+                                        </form>
+                                        <button onclick="showRejectModal('berita', <?php echo $berita['id_berita']; ?>)" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+                                            <i class="fas fa-times mr-1"></i>Tolak
+                                        </button>
                                     </div>
                                 </div>
-                                <?php if (!empty($berita['gambar'])): ?>
-                                <img src="<?php echo htmlspecialchars($berita['gambar']); ?>" alt="Preview" class="w-24 h-24 object-cover rounded ml-4">
-                                <?php endif; ?>
-                            </div>
-                            <div class="mt-4 flex gap-2">
-                                <form method="POST" class="inline">
-                                    <input type="hidden" name="action" value="approve_direct">
-                                    <input type="hidden" name="table_name" value="berita">
-                                    <input type="hidden" name="record_id" value="<?php echo $berita['id_berita']; ?>">
-                                    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-                                        <i class="fas fa-check mr-1"></i>Setujui
-                                    </button>
-                                </form>
-                                <button onclick="showRejectModal('berita', <?php echo $berita['id_berita']; ?>)" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
-                                    <i class="fas fa-times mr-1"></i>Tolak
-                                </button>
-                            </div>
+                            <?php endforeach; ?>
                         </div>
-                        <?php endforeach; ?>
                     </div>
                 </div>
-            </div>
             <?php endif; ?>
 
             <?php if (count($pending_publikasi) > 0): ?>
-            <div class="bg-white rounded-lg shadow mb-6">
-                <div class="px-6 py-4 border-b border-gray-200">
-                    <h2 class="text-xl font-semibold text-gray-900">
-                        <i class="fas fa-file-alt text-purple-600 mr-2"></i>
-                        Publikasi Menunggu Approval (<?php echo count($pending_publikasi); ?>)
-                    </h2>
-                </div>
-                <div class="p-6">
-                    <div class="grid grid-cols-1 gap-4">
-                        <?php foreach ($pending_publikasi as $pub): ?>
-                        <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
-                            <h3 class="font-semibold text-lg text-gray-900 mb-2"><?php echo htmlspecialchars($pub['judul']); ?></h3>
-                            <p class="text-gray-600 text-sm mb-2"><?php echo substr(htmlspecialchars($pub['deskripsi'] ?? ''), 0, 150); ?>...</p>
-                            <div class="flex items-center gap-4 text-sm text-gray-500 mb-4">
-                                <span><i class="fas fa-user mr-1"></i><?php echo htmlspecialchars($pub['penulis']); ?></span>
-                                <span><i class="fas fa-calendar mr-1"></i><?php echo htmlspecialchars($pub['tanggal_terbit']); ?></span>
-                            </div>
-                            <div class="flex gap-2">
-                                <form method="POST" class="inline">
-                                    <input type="hidden" name="action" value="approve_direct">
-                                    <input type="hidden" name="table_name" value="publikasi">
-                                    <input type="hidden" name="record_id" value="<?php echo $pub['id_publikasi']; ?>">
-                                    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-                                        <i class="fas fa-check mr-1"></i>Setujui
-                                    </button>
-                                </form>
-                                <button onclick="showRejectModal('publikasi', <?php echo $pub['id_publikasi']; ?>)" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
-                                    <i class="fas fa-times mr-1"></i>Tolak
-                                </button>
-                            </div>
+                <div class="bg-white rounded-lg shadow mb-6">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h2 class="text-xl font-semibold text-gray-900">
+                            <i class="fas fa-file-alt text-purple-600 mr-2"></i>
+                            Publikasi Menunggu Approval (<?php echo count($pending_publikasi); ?>)
+                        </h2>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid grid-cols-1 gap-4">
+                            <?php foreach ($pending_publikasi as $pub): ?>
+                                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
+                                    <h3 class="font-semibold text-lg text-gray-900 mb-2"><?php echo htmlspecialchars($pub['judul']); ?></h3>
+                                    <p class="text-gray-600 text-sm mb-2"><?php echo substr(htmlspecialchars($pub['deskripsi'] ?? ''), 0, 150); ?>...</p>
+                                    <div class="flex items-center gap-4 text-sm text-gray-500 mb-4">
+                                        <span><i class="fas fa-user mr-1"></i><?php echo htmlspecialchars($pub['penulis']); ?></span>
+                                        <span><i class="fas fa-calendar mr-1"></i><?php echo htmlspecialchars($pub['tanggal_terbit']); ?></span>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <form method="POST" class="inline">
+                                            <input type="hidden" name="action" value="approve_direct">
+                                            <input type="hidden" name="table_name" value="publikasi">
+                                            <input type="hidden" name="record_id" value="<?php echo $pub['id_publikasi']; ?>">
+                                            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                                                <i class="fas fa-check mr-1"></i>Setujui
+                                            </button>
+                                        </form>
+                                        <button onclick="showRejectModal('publikasi', <?php echo $pub['id_publikasi']; ?>)" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+                                            <i class="fas fa-times mr-1"></i>Tolak
+                                        </button>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
                         </div>
-                        <?php endforeach; ?>
                     </div>
                 </div>
-            </div>
             <?php endif; ?>
 
             <?php if (count($pending_galeri) > 0): ?>
-            <div class="bg-white rounded-lg shadow mb-6">
-                <div class="px-6 py-4 border-b border-gray-200">
-                    <h2 class="text-xl font-semibold text-gray-900">
-                        <i class="fas fa-images text-green-600 mr-2"></i>
-                        Galeri Menunggu Approval (<?php echo count($pending_galeri); ?>)
-                    </h2>
-                </div>
-                <div class="p-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <?php foreach ($pending_galeri as $foto): ?>
-                        <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
-                            <?php if (!empty($foto['file_foto'])): ?>
-                            <img src="<?php echo htmlspecialchars($foto['file_foto']); ?>" alt="<?php echo htmlspecialchars($foto['nama_foto']); ?>" class="w-full h-48 object-cover rounded mb-3">
-                            <?php endif; ?>
-                            <h3 class="font-semibold text-gray-900 mb-2"><?php echo htmlspecialchars($foto['nama_foto']); ?></h3>
-                            <p class="text-gray-600 text-sm mb-2"><?php echo htmlspecialchars($foto['deskripsi'] ?? ''); ?></p>
-                            <div class="mt-4 flex gap-2">
-                                <form method="POST" class="inline">
-                                    <input type="hidden" name="action" value="approve_direct">
-                                    <input type="hidden" name="table_name" value="galeri">
-                                    <input type="hidden" name="record_id" value="<?php echo $foto['id_foto']; ?>">
-                                    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 text-sm">
-                                        <i class="fas fa-check mr-1"></i>Setujui
-                                    </button>
-                                </form>
-                                <button onclick="showRejectModal('galeri', <?php echo $foto['id_foto']; ?>)" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 text-sm">
-                                    <i class="fas fa-times mr-1"></i>Tolak
-                                </button>
-                            </div>
+                <div class="bg-white rounded-lg shadow mb-6">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h2 class="text-xl font-semibold text-gray-900">
+                            <i class="fas fa-images text-green-600 mr-2"></i>
+                            Galeri Menunggu Approval (<?php echo count($pending_galeri); ?>)
+                        </h2>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <?php foreach ($pending_galeri as $foto): ?>
+                                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
+                                    <?php if (!empty($foto['file_foto'])): ?>
+                                        <img src="<?php echo htmlspecialchars($foto['file_foto']); ?>" alt="<?php echo htmlspecialchars($foto['nama_foto']); ?>" class="w-full h-48 object-cover rounded mb-3">
+                                    <?php endif; ?>
+                                    <h3 class="font-semibold text-gray-900 mb-2"><?php echo htmlspecialchars($foto['nama_foto']); ?></h3>
+                                    <p class="text-gray-600 text-sm mb-2"><?php echo htmlspecialchars($foto['deskripsi'] ?? ''); ?></p>
+                                    <div class="mt-4 flex gap-2">
+                                        <form method="POST" class="inline">
+                                            <input type="hidden" name="action" value="approve_direct">
+                                            <input type="hidden" name="table_name" value="galeri">
+                                            <input type="hidden" name="record_id" value="<?php echo $foto['id_foto']; ?>">
+                                            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 text-sm">
+                                                <i class="fas fa-check mr-1"></i>Setujui
+                                            </button>
+                                        </form>
+                                        <button onclick="showRejectModal('galeri', <?php echo $foto['id_foto']; ?>)" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 text-sm">
+                                            <i class="fas fa-times mr-1"></i>Tolak
+                                        </button>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
                         </div>
-                        <?php endforeach; ?>
                     </div>
                 </div>
-            </div>
             <?php endif; ?>
 
             <?php if ($total_pending_content === 0): ?>
-            <div class="bg-white rounded-lg shadow p-12 text-center">
-                <i class="fas fa-check-circle text-green-500 text-6xl mb-4"></i>
-                <h3 class="text-2xl font-semibold text-gray-900 mb-2">Tidak Ada Pending Approval</h3>
-                <p class="text-gray-600">Semua konten telah disetujui atau ditolak</p>
-            </div>
+                <div class="bg-white rounded-lg shadow p-12 text-center">
+                    <i class="fas fa-check-circle text-green-500 text-6xl mb-4"></i>
+                    <h3 class="text-2xl font-semibold text-gray-900 mb-2">Tidak Ada Pending Approval</h3>
+                    <p class="text-gray-600">Semua konten telah disetujui atau ditolak</p>
+                </div>
             <?php endif; ?>
 
         <?php elseif ($active_page === 'settings'): ?>
@@ -3619,243 +3619,243 @@ if ($active_page === 'approval' && $pdo) {
             document.body.classList.add('modal-open');
         }
 
-                document.getElementById('edit_id_foto').value = id;
-                document.getElementById('edit_nama_foto').value = nama_foto;
-                document.getElementById('edit_deskripsi_galeri').value = deskripsi;
-                document.getElementById('edit_current_file_foto').value = file_foto; // Path file lama
-                document.getElementById('edit_current_file_foto_preview').src = file_foto; // Preview file lama
+        document.getElementById('edit_id_foto').value = id;
+        document.getElementById('edit_nama_foto').value = nama_foto;
+        document.getElementById('edit_deskripsi_galeri').value = deskripsi;
+        document.getElementById('edit_current_file_foto').value = file_foto; // Path file lama
+        document.getElementById('edit_current_file_foto_preview').src = file_foto; // Preview file lama
 
-                // Set author dropdown value
-                document.getElementById('edit_author_galeri').value = author;
+        // Set author dropdown value
+        document.getElementById('edit_author_galeri').value = author;
 
-                // Reset input file
-                document.getElementById('edit_file_foto').value = '';
+        // Reset input file
+        document.getElementById('edit_file_foto').value = '';
 
-                document.getElementById('editGaleriModal').classList.remove('hidden');
-                document.body.classList.add('modal-open');
+        document.getElementById('editGaleriModal').classList.remove('hidden');
+        document.body.classList.add('modal-open');
+        
+
+        function closeEditGaleriModal() {
+            document.getElementById('editGaleriModal').classList.add('hidden');
+            document.body.classList.remove('modal-open');
+        }
+
+        // --- Publikasi Modals ---
+        function openAddPublikasiModal() {
+            document.getElementById('addPublikasiModal').classList.remove('hidden');
+            document.body.classList.add('modal-open');
+        }
+
+        function closeAddPublikasiModal() {
+            document.getElementById('addPublikasiModal').classList.add('hidden');
+            document.body.classList.remove('modal-open');
+        }
+
+        function openEditPublikasiModal(button) {
+            const row = button.closest('tr');
+            const id = row.dataset.id;
+            const judul = row.dataset.judul;
+            const penulis = row.dataset.penulis;
+            const tanggal_terbit = row.dataset.tanggal_terbit;
+            const deskripsi = row.dataset.deskripsi;
+            const file_publikasi = row.dataset.file_publikasi;
+
+            document.getElementById('edit_id_publikasi').value = id;
+            document.getElementById('edit_judul_publikasi').value = judul;
+            document.getElementById('edit_penulis').value = penulis;
+            document.getElementById('edit_tanggal_terbit').value = tanggal_terbit;
+            document.getElementById('edit_deskripsi_publikasi').value = deskripsi;
+            document.getElementById('edit_current_file_publikasi').value = file_publikasi;
+
+            // Tampilkan nama file saat ini
+            const filename = file_publikasi.substring(file_publikasi.lastIndexOf('/') + 1);
+            document.getElementById('edit_current_file_publikasi_info').innerHTML = `File saat ini: <a href="${file_publikasi}" target="_blank" class="text-primary hover:text-primary-dark font-medium">${filename}</a>`;
+
+            // Reset input file
+            document.getElementById('edit_file_publikasi').value = '';
+
+            document.getElementById('editPublikasiModal').classList.remove('hidden');
+            document.body.classList.add('modal-open');
+        }
+
+        function closeEditPublikasiModal() {
+            document.getElementById('editPublikasiModal').classList.add('hidden');
+            document.body.classList.remove('modal-open');
+        }
+
+        // --- Agenda Modals ---
+        function openAddAgendaModal() {
+            document.getElementById('addAgendaModal').classList.remove('hidden');
+            document.body.classList.add('modal-open');
+        }
+
+        function closeAddAgendaModal() {
+            document.getElementById('addAgendaModal').classList.add('hidden');
+            document.body.classList.remove('modal-open');
+        }
+
+        function openEditAgendaModal(button) {
+            const row = button.closest('tr');
+            const id = row.dataset.id;
+            const nama_agenda = row.dataset.nama_agenda;
+            const tgl_agenda = row.dataset.tgl_agenda;
+            const link_agenda = row.dataset.link_agenda;
+            const author_id = row.dataset.authorId;
+
+            document.getElementById('edit_id_agenda').value = id;
+            document.getElementById('edit_nama_agenda').value = nama_agenda;
+            document.getElementById('edit_tgl_agenda').value = tgl_agenda;
+            document.getElementById('edit_link_agenda').value = link_agenda;
+
+            // Set author dropdown value
+            if (author_id) {
+                document.getElementById('edit_author_agenda').value = author_id;
             }
 
-            function closeEditGaleriModal() {
-                document.getElementById('editGaleriModal').classList.add('hidden');
-                document.body.classList.remove('modal-open');
+            document.getElementById('editAgendaModal').classList.remove('hidden');
+            document.body.classList.add('modal-open');
+        }
+
+        function closeEditAgendaModal() {
+            document.getElementById('editAgendaModal').classList.add('hidden');
+            document.body.classList.remove('modal-open');
+        }
+
+        // --- Anggota Modals ---
+        function openAddAnggotaModal() {
+            document.getElementById('addAnggotaModal').classList.remove('hidden');
+            document.body.classList.add('modal-open');
+        }
+
+        function closeAddAnggotaModal() {
+            document.getElementById('addAnggotaModal').classList.add('hidden');
+            document.body.classList.remove('modal-open');
+        }
+
+        function openEditAnggotaModal(button) {
+            const row = button.closest('tr');
+            const id = row.dataset.id;
+            const nama_gelar = row.dataset.nama_gelar;
+            const jabatan = row.dataset.jabatan;
+            const email = row.dataset.email;
+            const no_telp = row.dataset.no_telp;
+            const bidang_keahlian = row.dataset.bidang_keahlian;
+            const foto = row.dataset.foto;
+
+            document.getElementById('edit_id_anggota').value = id;
+            document.getElementById('edit_nama_gelar').value = nama_gelar;
+            document.getElementById('edit_jabatan').value = jabatan;
+            document.getElementById('edit_email').value = email;
+            document.getElementById('edit_no_telp').value = no_telp;
+            document.getElementById('edit_bidang_keahlian').value = bidang_keahlian;
+            document.getElementById('edit_current_foto').value = foto; // Path foto lama
+            document.getElementById('edit_current_foto_preview_anggota').src = foto; // Preview foto lama
+
+            // Reset input file agar tidak terisi otomatis
+            document.getElementById('edit_foto').value = '';
+
+            document.getElementById('editAnggotaModal').classList.remove('hidden');
+            document.body.classList.add('modal-open');
+        }
+
+        function closeEditAnggotaModal() {
+            document.getElementById('editAnggotaModal').classList.add('hidden');
+            document.body.classList.remove('modal-open');
+        }
+
+        // --- Pengumuman Modals ---
+        function openAddPengumumanModal() {
+            document.getElementById('addPengumumanModal').classList.remove('hidden');
+            document.body.classList.add('modal-open');
+        }
+
+        function closeAddPengumumanModal() {
+            document.getElementById('addPengumumanModal').classList.add('hidden');
+            document.body.classList.remove('modal-open');
+        }
+
+        function openEditPengumumanModal(button) {
+            const row = button.closest('tr');
+            const id = row.dataset.id;
+            const judul = row.dataset.judul;
+            const informasi = row.dataset.informasi;
+            const tanggal = row.dataset.tanggal;
+            const author = row.dataset.author; // Author ID
+
+            document.getElementById('edit_id_pengumuman').value = id;
+            document.getElementById('edit_judul_pengumuman').value = judul;
+            document.getElementById('edit_isi_pengumuman').value = informasi;
+            document.getElementById('edit_tanggal_posting').value = tanggal;
+
+            // Set author dropdown value
+            if (author) {
+                document.getElementById('edit_author_pengumuman').value = author;
             }
 
-            // --- Publikasi Modals ---
-            function openAddPublikasiModal() {
-                document.getElementById('addPublikasiModal').classList.remove('hidden');
-                document.body.classList.add('modal-open');
+            document.getElementById('editPengumumanModal').classList.remove('hidden');
+            document.body.classList.add('modal-open');
+        }
+
+        function closeEditPengumumanModal() {
+            document.getElementById('editPengumumanModal').classList.add('hidden');
+            document.body.classList.remove('modal-open');
+        }
+
+        // --- Sidebar Toggle Function ---
+        function toggleSidebar() {
+            const body = document.body;
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            const toggleBtn = document.querySelector('.toggle-btn i');
+
+            if (body.classList.contains('sidebar-open')) {
+                // Close sidebar
+                body.classList.remove('sidebar-open');
+                sidebar.classList.add('sidebar-closed');
+                mainContent.classList.add('main-content-shifted');
+                toggleBtn.classList.remove('fa-chevron-left');
+                toggleBtn.classList.add('fa-chevron-right');
+            } else {
+                // Open sidebar
+                body.classList.add('sidebar-open');
+                sidebar.classList.remove('sidebar-closed');
+                mainContent.classList.remove('main-content-shifted');
+                toggleBtn.classList.remove('fa-chevron-right');
+                toggleBtn.classList.add('fa-chevron-left');
             }
+        }
 
-            function closeAddPublikasiModal() {
-                document.getElementById('addPublikasiModal').classList.add('hidden');
-                document.body.classList.remove('modal-open');
-            }
+        // --- Approval Management Functions ---
+        function showRejectModal(tableName, recordId) {
+            document.getElementById('reject_table_name').value = tableName;
+            document.getElementById('reject_record_id').value = recordId;
+            document.getElementById('rejectModal').classList.remove('hidden');
+        }
 
-            function openEditPublikasiModal(button) {
-                const row = button.closest('tr');
-                const id = row.dataset.id;
-                const judul = row.dataset.judul;
-                const penulis = row.dataset.penulis;
-                const tanggal_terbit = row.dataset.tanggal_terbit;
-                const deskripsi = row.dataset.deskripsi;
-                const file_publikasi = row.dataset.file_publikasi;
+        function closeRejectModal() {
+            document.getElementById('rejectModal').classList.add('hidden');
+        }
+    </script>
 
-                document.getElementById('edit_id_publikasi').value = id;
-                document.getElementById('edit_judul_publikasi').value = judul;
-                document.getElementById('edit_penulis').value = penulis;
-                document.getElementById('edit_tanggal_terbit').value = tanggal_terbit;
-                document.getElementById('edit_deskripsi_publikasi').value = deskripsi;
-                document.getElementById('edit_current_file_publikasi').value = file_publikasi;
-
-                // Tampilkan nama file saat ini
-                const filename = file_publikasi.substring(file_publikasi.lastIndexOf('/') + 1);
-                document.getElementById('edit_current_file_publikasi_info').innerHTML = `File saat ini: <a href="${file_publikasi}" target="_blank" class="text-primary hover:text-primary-dark font-medium">${filename}</a>`;
-
-                // Reset input file
-                document.getElementById('edit_file_publikasi').value = '';
-
-                document.getElementById('editPublikasiModal').classList.remove('hidden');
-                document.body.classList.add('modal-open');
-            }
-
-            function closeEditPublikasiModal() {
-                document.getElementById('editPublikasiModal').classList.add('hidden');
-                document.body.classList.remove('modal-open');
-            }
-
-            // --- Agenda Modals ---
-            function openAddAgendaModal() {
-                document.getElementById('addAgendaModal').classList.remove('hidden');
-                document.body.classList.add('modal-open');
-            }
-
-            function closeAddAgendaModal() {
-                document.getElementById('addAgendaModal').classList.add('hidden');
-                document.body.classList.remove('modal-open');
-            }
-
-            function openEditAgendaModal(button) {
-                const row = button.closest('tr');
-                const id = row.dataset.id;
-                const nama_agenda = row.dataset.nama_agenda;
-                const tgl_agenda = row.dataset.tgl_agenda;
-                const link_agenda = row.dataset.link_agenda;
-                const author_id = row.dataset.authorId;
-
-                document.getElementById('edit_id_agenda').value = id;
-                document.getElementById('edit_nama_agenda').value = nama_agenda;
-                document.getElementById('edit_tgl_agenda').value = tgl_agenda;
-                document.getElementById('edit_link_agenda').value = link_agenda;
-
-                // Set author dropdown value
-                if (author_id) {
-                    document.getElementById('edit_author_agenda').value = author_id;
-                }
-
-                document.getElementById('editAgendaModal').classList.remove('hidden');
-                document.body.classList.add('modal-open');
-            }
-
-            function closeEditAgendaModal() {
-                document.getElementById('editAgendaModal').classList.add('hidden');
-                document.body.classList.remove('modal-open');
-            }
-
-            // --- Anggota Modals ---
-            function openAddAnggotaModal() {
-                document.getElementById('addAnggotaModal').classList.remove('hidden');
-                document.body.classList.add('modal-open');
-            }
-
-            function closeAddAnggotaModal() {
-                document.getElementById('addAnggotaModal').classList.add('hidden');
-                document.body.classList.remove('modal-open');
-            }
-
-            function openEditAnggotaModal(button) {
-                const row = button.closest('tr');
-                const id = row.dataset.id;
-                const nama_gelar = row.dataset.nama_gelar;
-                const jabatan = row.dataset.jabatan;
-                const email = row.dataset.email;
-                const no_telp = row.dataset.no_telp;
-                const bidang_keahlian = row.dataset.bidang_keahlian;
-                const foto = row.dataset.foto;
-
-                document.getElementById('edit_id_anggota').value = id;
-                document.getElementById('edit_nama_gelar').value = nama_gelar;
-                document.getElementById('edit_jabatan').value = jabatan;
-                document.getElementById('edit_email').value = email;
-                document.getElementById('edit_no_telp').value = no_telp;
-                document.getElementById('edit_bidang_keahlian').value = bidang_keahlian;
-                document.getElementById('edit_current_foto').value = foto; // Path foto lama
-                document.getElementById('edit_current_foto_preview_anggota').src = foto; // Preview foto lama
-
-                // Reset input file agar tidak terisi otomatis
-                document.getElementById('edit_foto').value = '';
-
-                document.getElementById('editAnggotaModal').classList.remove('hidden');
-                document.body.classList.add('modal-open');
-            }
-
-            function closeEditAnggotaModal() {
-                document.getElementById('editAnggotaModal').classList.add('hidden');
-                document.body.classList.remove('modal-open');
-            }
-
-            // --- Pengumuman Modals ---
-            function openAddPengumumanModal() {
-                document.getElementById('addPengumumanModal').classList.remove('hidden');
-                document.body.classList.add('modal-open');
-            }
-
-            function closeAddPengumumanModal() {
-                document.getElementById('addPengumumanModal').classList.add('hidden');
-                document.body.classList.remove('modal-open');
-            }
-
-            function openEditPengumumanModal(button) {
-                const row = button.closest('tr');
-                const id = row.dataset.id;
-                const judul = row.dataset.judul;
-                const informasi = row.dataset.informasi;
-                const tanggal = row.dataset.tanggal;
-                const author = row.dataset.author; // Author ID
-
-                document.getElementById('edit_id_pengumuman').value = id;
-                document.getElementById('edit_judul_pengumuman').value = judul;
-                document.getElementById('edit_isi_pengumuman').value = informasi;
-                document.getElementById('edit_tanggal_posting').value = tanggal;
-
-                // Set author dropdown value
-                if (author) {
-                    document.getElementById('edit_author_pengumuman').value = author;
-                }
-
-                document.getElementById('editPengumumanModal').classList.remove('hidden');
-                document.body.classList.add('modal-open');
-            }
-
-            function closeEditPengumumanModal() {
-                document.getElementById('editPengumumanModal').classList.add('hidden');
-                document.body.classList.remove('modal-open');
-            }
-
-            // --- Sidebar Toggle Function ---
-            function toggleSidebar() {
-                const body = document.body;
-                const sidebar = document.getElementById('sidebar');
-                const mainContent = document.getElementById('mainContent');
-                const toggleBtn = document.querySelector('.toggle-btn i');
-
-                if (body.classList.contains('sidebar-open')) {
-                    // Close sidebar
-                    body.classList.remove('sidebar-open');
-                    sidebar.classList.add('sidebar-closed');
-                    mainContent.classList.add('main-content-shifted');
-                    toggleBtn.classList.remove('fa-chevron-left');
-                    toggleBtn.classList.add('fa-chevron-right');
-                } else {
-                    // Open sidebar
-                    body.classList.add('sidebar-open');
-                    sidebar.classList.remove('sidebar-closed');
-                    mainContent.classList.remove('main-content-shifted');
-                    toggleBtn.classList.remove('fa-chevron-right');
-                    toggleBtn.classList.add('fa-chevron-left');
-                }
-            }
-
-            // --- Approval Management Functions ---
-            function showRejectModal(tableName, recordId) {
-                document.getElementById('reject_table_name').value = tableName;
-                document.getElementById('reject_record_id').value = recordId;
-                document.getElementById('rejectModal').classList.remove('hidden');
-            }
-
-            function closeRejectModal() {
-                document.getElementById('rejectModal').classList.add('hidden');
-            }
-        </script>
-
-        <!-- Reject Modal -->
-        <div id="rejectModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1002]">
-            <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-                <h3 class="text-xl font-semibold mb-4">Tolak Konten</h3>
-                <form method="POST" action="admin-dashboard.php?page=approval">
-                    <input type="hidden" name="action" value="reject_direct">
-                    <input type="hidden" name="table_name" id="reject_table_name">
-                    <input type="hidden" name="record_id" id="reject_record_id">
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2">Alasan Penolakan (Opsional)</label>
-                        <textarea name="reason" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" rows="4" placeholder="Masukkan alasan penolakan..."></textarea>
-                    </div>
-                    <div class="flex gap-2">
-                        <button type="button" onclick="closeRejectModal()" class="flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400">Batal</button>
-                        <button type="submit" class="flex-1 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Tolak</button>
-                    </div>
-                </form>
-            </div>
+    <!-- Reject Modal -->
+    <div id="rejectModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1002]">
+        <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h3 class="text-xl font-semibold mb-4">Tolak Konten</h3>
+            <form method="POST" action="admin-dashboard.php?page=approval">
+                <input type="hidden" name="action" value="reject_direct">
+                <input type="hidden" name="table_name" id="reject_table_name">
+                <input type="hidden" name="record_id" id="reject_record_id">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Alasan Penolakan (Opsional)</label>
+                    <textarea name="reason" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" rows="4" placeholder="Masukkan alasan penolakan..."></textarea>
+                </div>
+                <div class="flex gap-2">
+                    <button type="button" onclick="closeRejectModal()" class="flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400">Batal</button>
+                    <button type="submit" class="flex-1 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Tolak</button>
+                </div>
+            </form>
         </div>
-    </body>
+    </div>
+</body>
 
-    </html>
+</html>
