@@ -4,17 +4,31 @@ $active_page = 'profil-lab';
 // Include database connection and get settings
 include '../assets/php/db_connect.php';
 $settings = [];
+
 try {
-  $pdo = Database::getConnection();
-  $stmt = $pdo->prepare("SELECT key, value FROM settings");
+  $conn = Database::getConnection();
+  
+  // Get settings
+  $stmt = $conn->prepare("SELECT key, value FROM settings");
   $stmt->execute();
   $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
   foreach ($results as $result) {
     $settings[$result['key']] = $result['value'];
   }
-} catch (Exception $e) {
-  // Keep default values if there's an error
+  
+  // Query counts for profile statistics
+  $publikasi_count = $conn->query("SELECT COUNT(*) FROM publikasi WHERE status = 'approved'")->fetchColumn();
+  $proyek_count = $conn->query("SELECT COUNT(*) FROM fasilitas")->fetchColumn();
+  $anggota_count = $conn->query("SELECT COUNT(*) FROM anggota")->fetchColumn();
+  $member_count = $conn->query("SELECT COUNT(*) FROM member where approval_status = 'pending'")->fetchColumn();
+  $alumni_count = $anggota_count + $member_count;
+  
+} catch (PDOException $e) {
+  // Fallback to default values if database fails
   $settings = [];
+  $publikasi_count = 50;
+  $proyek_count = 20;
+  $alumni_count = 500;
 }
 ?>
 
@@ -263,7 +277,7 @@ try {
                         </path>
                       </svg>
                     </div>
-                    <div class="text-3xl font-bold text-[#00A0D6] mb-2">50+</div>
+                    <div class="text-3xl font-bold text-[#00A0D6] mb-2"><?php echo $publikasi_count . ''; ?></div>
                     <div class="text-sm font-medium text-gray-600">Publikasi Ilmiah</div>
                   </div>
 
@@ -274,12 +288,12 @@ try {
                       class="w-16 h-16 bg-gradient-to-br from-[#6AC259] to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
                       <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2V8a2 2 0 012-2V6">
+                          d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
                         </path>
                       </svg>
                     </div>
-                    <div class="text-3xl font-bold text-[#6AC259] mb-2">20+</div>
-                    <div class="text-sm font-medium text-gray-600">Proyek Industri</div>
+                    <div class="text-3xl font-bold text-[#6AC259] mb-2"><?php echo $proyek_count . ''; ?></div>
+                    <div class="text-sm font-medium text-gray-600">Fasilitas</div>
                   </div>
 
                   <!-- Stat Card 3 -->
@@ -289,14 +303,12 @@ try {
                       class="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
                       <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M12 14l9-5-9-5-9 5 9 5z"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z">
+                          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
                         </path>
                       </svg>
                     </div>
-                    <div class="text-3xl font-bold text-purple-600 mb-2">500+</div>
-                    <div class="text-sm font-medium text-gray-600">Alumni Kompeten</div>
+                    <div class="text-3xl font-bold text-purple-600 mb-2"><?php echo $alumni_count . ''; ?></div>
+                    <div class="text-sm font-medium text-gray-600">Anggota & Member Lab</div>
                   </div>
                 </div>
               </div>
@@ -431,135 +443,6 @@ try {
       </div>
     </section>
 
-    <!-- Area Fokus Penelitian -->
-    <section class="relative py-20 bg-gradient-to-br from-gray-50 via-white to-blue-50 overflow-hidden">
-      <!-- Background Decorations -->
-      <div class="absolute top-10 left-10 w-24 h-24 bg-[#6AC259]/10 rounded-full blur-2xl"></div>
-      <div class="absolute bottom-10 right-10 w-32 h-32 bg-[#00A0D6]/10 rounded-full blur-2xl"></div>
-
-      <div class="max-w-7xl mx-auto px-6 lg:px-8 relative">
-        <div class="text-center mb-16">
-          <div
-            class="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white px-4 py-2 rounded-full font-medium mb-6 text-sm">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z">
-              </path>
-            </svg>
-            <span>Area Penelitian</span>
-          </div>
-          <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-            Fokus <span class="text-gradient">Penelitian</span> Unggulan
-          </h2>
-          <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-            Empat pilar utama penelitian yang mendorong inovasi teknologi data untuk masa depan
-          </p>
-        </div>
-
-        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <!-- Data Mining Card -->
-          <div
-            class="group bg-white/60 backdrop-blur border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-2">
-            <div
-              class="w-16 h-16 bg-gradient-to-br from-[#00A0D6] to-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
-                </path>
-              </svg>
-            </div>
-            <h3 class="text-xl font-bold text-gray-900 mb-3">Data Mining</h3>
-            <p class="text-gray-600 leading-relaxed mb-4">
-              Eksplorasi dan analisis data untuk menemukan pola tersembunyi dan insight berharga yang mendukung
-              pengambilan keputusan.
-            </p>
-            <div
-              class="flex items-center text-[#00A0D6] font-medium text-sm group-hover:translate-x-1 transition-transform">
-              <span>Pelajari lebih lanjut</span>
-              <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-              </svg>
-            </div>
-          </div>
-
-          <!-- Machine Learning Card -->
-          <div
-            class="group bg-white/60 backdrop-blur border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-2">
-            <div
-              class="w-16 h-16 bg-gradient-to-br from-[#6AC259] to-green-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4">
-                </path>
-              </svg>
-            </div>
-            <h3 class="text-xl font-bold text-gray-900 mb-3">Machine Learning</h3>
-            <p class="text-gray-600 leading-relaxed mb-4">
-              Pengembangan algoritma pembelajaran mesin canggih untuk prediksi, klasifikasi, dan otomatisasi proses
-              bisnis.
-            </p>
-            <div
-              class="flex items-center text-[#6AC259] font-medium text-sm group-hover:translate-x-1 transition-transform">
-              <span>Pelajari lebih lanjut</span>
-              <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-              </svg>
-            </div>
-          </div>
-
-          <!-- Computer Vision Card -->
-          <div
-            class="group bg-white/60 backdrop-blur border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-2">
-            <div
-              class="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z">
-                </path>
-              </svg>
-            </div>
-            <h3 class="text-xl font-bold text-gray-900 mb-3">Computer Vision</h3>
-            <p class="text-gray-600 leading-relaxed mb-4">
-              Pengolahan citra dan video untuk aplikasi pengenalan pola visual, deteksi objek, dan analisis visual
-              otomatis.
-            </p>
-            <div
-              class="flex items-center text-purple-600 font-medium text-sm group-hover:translate-x-1 transition-transform">
-              <span>Pelajari lebih lanjut</span>
-              <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-              </svg>
-            </div>
-          </div>
-
-          <!-- Big Data Analytics Card -->
-          <div
-            class="group bg-white/60 backdrop-blur border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-2">
-            <div
-              class="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9">
-                </path>
-              </svg>
-            </div>
-            <h3 class="text-xl font-bold text-gray-900 mb-3">Big Data Analytics</h3>
-            <p class="text-gray-600 leading-relaxed mb-4">
-              Analisis data skala besar menggunakan teknologi distributed computing dan cloud untuk insight bisnis
-              real-time.
-            </p>
-            <div
-              class="flex items-center text-orange-600 font-medium text-sm group-hover:translate-x-1 transition-transform">
-              <span>Pelajari lebih lanjut</span>
-              <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-              </svg>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <!-- Struktur Organisasi -->
     <section id="struktur-organisasi" class="bg-gray-50 py-20">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -569,12 +452,6 @@ try {
             Struktur kepemimpinan dan manajemen Laboratorium Data Technologies
           </p>
         </div>
-
-        <?php if (!empty($settings['struktur_anggota'])): ?>
-        <div class="mb-12 bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
-          <?php echo $settings['struktur_anggota']; ?>
-        </div>
-        <?php endif; ?>
 
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 py-12 px-8">
           <div class="flex flex-col lg:flex-row items-start lg:items-center justify-center gap-8 lg:gap-16">

@@ -9,7 +9,7 @@ try {
     $conn = Database::getConnection();
     
     // Query counts for each category
-    $publikasi_count = $conn->query("SELECT COUNT(*) FROM publikasi")->fetchColumn();
+    $publikasi_count = $conn->query("SELECT COUNT(*) FROM publikasi where status = 'approved'")->fetchColumn();
     $berita_count = $conn->query("SELECT COUNT(*) FROM berita WHERE status = 'approved'")->fetchColumn();
     $fasilitas_count = $conn->query("SELECT COUNT(*) FROM fasilitas")->fetchColumn();
     $anggota_count = $conn->query("SELECT COUNT(*) FROM anggota")->fetchColumn();
@@ -178,7 +178,7 @@ try {
               </svg>
             </div>
             <div class="text-3xl font-bold text-gray-900 mb-2"><?php echo $total_anggota; ?></div>
-            <div class="text-sm font-medium text-gray-600">Anggota Lab</div>
+            <div class="text-sm font-medium text-gray-600">Anggota & Member Lab</div>
           </div>
         </div>
       </div>
