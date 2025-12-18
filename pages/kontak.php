@@ -12,22 +12,77 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $pdo = Database::getConnection();
         
-        if (isset($_POST['form_type']) && $_POST['form_type'] === 'ask') {
-            // Handle pertanyaan form
-            $nama = trim($_POST['nama']);
-            $email = trim($_POST['email']);
-            $pesan = trim($_POST['pesan']);
+        $form_type = $_POST['form_type'] ?? '';
+
+        if ($form_type === 'ask' && $pdo) {
+            $nama_lengkap = trim($_POST['nama'] ?? '');
+            $email = trim($_POST['email'] ?? '');
+            $pesan = trim($_POST['pesan'] ?? '');
+
+            if (!empty($nama_lengkap) && !empty($email) && !empty($pesan)) {
+                try {
+                    $sql = "INSERT INTO pertanyaan (nama_lengkap, email, pesan, status) VALUES (:nama, :email, :pesan, 'pending')";
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute([
+                        ':nama' => $nama_lengkap,
+                        ':email' => $email,
+                        ':pesan' => $pesan
+                    ]);
+                    $success_message = "Pertanyaan Anda telah berhasil dikirim!";
+                } catch (Exception $e) {
+                    $error_message = "Gagal mengirim pertanyaan: " . $e->getMessage();
+                }
+            } else {
+                $error_message = "Semua field harus diisi!";
+            }
+        }
+        
+        if ($form_type === 'cooperation' && $pdo) {
+            $nama = trim($_POST['nama'] ?? '');
+            $email = trim($_POST['email'] ?? '');
+            $no_telp = trim($_POST['no_telp'] ?? '');
+            $nama_perusahaan = trim($_POST['nama_perusahaan'] ?? '');
+            $kontak_perusahaan = trim($_POST['kontak_perusahaan'] ?? '');
+            $deskripsi = trim($_POST['deskripsi'] ?? '');
             
-            $sql = "INSERT INTO pertanyaan (nama_lengkap, email, pesan, status) 
-                    VALUES (:nama, :email, :pesan, 'pending')";
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute([
-                ':nama' => $nama,
-                ':email' => $email,
-                ':pesan' => $pesan
-            ]);
-            
-            $success_message = 'Terima kasih! Pertanyaan Anda telah terkirim dan akan dijawab oleh admin.';
+            if (!empty($nama) && !empty($email) && !empty($no_telp) && !empty($nama_perusahaan) && !empty($deskripsi)) {
+                $file_proposal = null;
+                
+                if (isset($_FILES['proposal']) && $_FILES['proposal']['error'] == UPLOAD_ERR_OK) {
+                    $target_dir = '../assets/files/publikasi/';
+                    if (!is_dir($target_dir)) {
+                        mkdir($target_dir, 0777, true);
+                    }
+                    
+                    $file_name = basename($_FILES['proposal']['name']);
+                    $safe_file_name = preg_replace('/[^a-zA-Z0-9\-\.]/', '_', $file_name);
+                    $unique_name = 'proposal_' . time() . '_' . $safe_file_name;
+                    $target_file = $target_dir . $unique_name;
+                    
+                    if (move_uploaded_file($_FILES['proposal']['tmp_name'], $target_file)) {
+                        $file_proposal = '../assets/files/publikasi/' . $unique_name;
+                    }
+                }
+                
+                try {
+                    $sql = "INSERT INTO kerjasama (nama, email, no_telp, nama_perusahaan, kontak_perusahaan, deskripsi_tujuan, file_proposal) VALUES (:nama, :email, :no_telp, :nama_perusahaan, :kontak_perusahaan, :deskripsi, :file_proposal)";
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute([
+                        ':nama' => $nama,
+                        ':email' => $email,
+                        ':no_telp' => $no_telp,
+                        ':nama_perusahaan' => $nama_perusahaan,
+                        ':kontak_perusahaan' => $kontak_perusahaan,
+                        ':deskripsi' => $deskripsi,
+                        ':file_proposal' => $file_proposal
+                    ]);
+                    $success_message = "Pengajuan kerja sama Anda telah berhasil dikirim!";
+                } catch (Exception $e) {
+                    $error_message = "Gagal mengirim pengajuan: " . $e->getMessage();
+                }
+            } else {
+                $error_message = "Semua field wajib harus diisi!";
+            }
         }
     } catch (Exception $e) {
         $error_message = 'Terjadi kesalahan: ' . $e->getMessage();
@@ -280,7 +335,7 @@ try {
               </div>
             </div>
             
-            <form id="contact-form" class="space-y-5" method="POST" novalidate>
+            <form id="contact-form" class="space-y-5" method="POST" enctype="multipart/form-data" novalidate>
               <input type="hidden" name="form_type" id="form_type" value="ask">
               <div id="form-ask" class="space-y-5">
                 <div>
@@ -297,25 +352,25 @@ try {
               <div id="form-coop" class="space-y-5 hidden">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
                   <div>
-                    <input id="coop-name" class="w-full h-12 rounded-lg border border-gray-300 px-4 focus:outline-none focus:ring-2 focus:ring-[#00A0D6] focus:border-transparent transition-all" placeholder="Nama Lengkap" />
+                    <input name="nama" id="coop-name" required class="w-full h-12 rounded-lg border border-gray-300 px-4 focus:outline-none focus:ring-2 focus:ring-[#00A0D6] focus:border-transparent transition-all" placeholder="Nama Lengkap" />
                   </div>
                   <div>
-                    <input id="coop-email" type="email" class="w-full h-12 rounded-lg border border-gray-300 px-4 focus:outline-none focus:ring-2 focus:ring-[#00A0D6] focus:border-transparent transition-all" placeholder="Email Aktif" />
+                    <input name="email" id="coop-email" type="email" required class="w-full h-12 rounded-lg border border-gray-300 px-4 focus:outline-none focus:ring-2 focus:ring-[#00A0D6] focus:border-transparent transition-all" placeholder="Email Aktif" />
                   </div>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
                   <div>
-                    <input id="coop-phone" class="w-full h-12 rounded-lg border border-gray-300 px-4 focus:outline-none focus:ring-2 focus:ring-[#00A0D6] focus:border-transparent transition-all" placeholder="Nomor Telepon" />
+                    <input name="no_telp" id="coop-phone" required class="w-full h-12 rounded-lg border border-gray-300 px-4 focus:outline-none focus:ring-2 focus:ring-[#00A0D6] focus:border-transparent transition-all" placeholder="Nomor Telepon" />
                   </div>
                   <div>
-                    <input id="coop-company" class="w-full h-12 rounded-lg border border-gray-300 px-4 focus:outline-none focus:ring-2 focus:ring-[#00A0D6] focus:border-transparent transition-all" placeholder="Nama Perusahaan" />
+                    <input name="nama_perusahaan" id="coop-company" required class="w-full h-12 rounded-lg border border-gray-300 px-4 focus:outline-none focus:ring-2 focus:ring-[#00A0D6] focus:border-transparent transition-all" placeholder="Nama Perusahaan" />
                   </div>
                 </div>
                 <div>
-                  <textarea id="coop-purpose" class="w-full min-h-[100px] rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#00A0D6] focus:border-transparent transition-all resize-none" placeholder="Deskripsi Tujuan Kerja Sama"></textarea>
+                  <textarea name="deskripsi" id="coop-purpose" required class="w-full min-h-[100px] rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#00A0D6] focus:border-transparent transition-all resize-none" placeholder="Deskripsi Tujuan Kerja Sama"></textarea>
                 </div>
                 <div>
-                  <input id="coop-contact" class="w-full h-12 rounded-lg border border-gray-300 px-4 focus:outline-none focus:ring-2 focus:ring-[#00A0D6] focus:border-transparent transition-all" placeholder="Kontak Perusahaan" />
+                  <input name="kontak_perusahaan" id="coop-contact" class="w-full h-12 rounded-lg border border-gray-300 px-4 focus:outline-none focus:ring-2 focus:ring-[#00A0D6] focus:border-transparent transition-all" placeholder="Kontak Perusahaan (Opsional)" />
                 </div>
                 <div class="space-y-2">
                   <label for="coop-proposal" class="block text-sm font-medium text-gray-700">Unggah Proposal Kerja Sama (PDF/DOC/DOCX, maks. 5MB)</label>
@@ -380,7 +435,7 @@ try {
             formAsk.classList.add('hidden');
             formCoop.classList.remove('hidden');
             submitButton.textContent = 'Kirim Proposal Kerja Sama';
-            document.getElementById('form_type').value = 'coop';
+            document.getElementById('form_type').value = 'cooperation';
           }
         });
       });
@@ -396,12 +451,11 @@ try {
         });
       }
 
-      // Handle form submission
+      // Handle form submission validation
       contactForm.addEventListener('submit', function(e) {
         const activeForm = document.querySelector('.pill-switch-btn.active').getAttribute('data-form-type');
         
         if (activeForm === 'ask') {
-          // Handle question form submission - will be submitted to server
           const name = document.getElementById('ask-name').value;
           const email = document.getElementById('ask-email').value;
           const message = document.getElementById('ask-message').value;
@@ -411,36 +465,17 @@ try {
             alert('Mohon lengkapi semua field yang diperlukan.');
             return false;
           }
-          // Form will submit normally to server
         } else if (activeForm === 'coop') {
-          e.preventDefault();
-          // Handle cooperation form submission
           const name = document.getElementById('coop-name').value;
           const email = document.getElementById('coop-email').value;
           const phone = document.getElementById('coop-phone').value;
           const company = document.getElementById('coop-company').value;
           const purpose = document.getElementById('coop-purpose').value;
-          const contact = document.getElementById('coop-contact').value;
-          const proposal = document.getElementById('coop-proposal').files[0];
           
-          if (name && email && phone && company && purpose && contact) {
-            let formData = 'Terima kasih! Proposal kerja sama telah terkirim.\n\n';
-            formData += 'Nama: ' + name + '\n';
-            formData += 'Email: ' + email + '\n';
-            formData += 'Telepon: ' + phone + '\n';
-            formData += 'Perusahaan: ' + company + '\n';
-            formData += 'Tujuan: ' + purpose + '\n';
-            formData += 'Kontak: ' + contact;
-            
-            if (proposal) {
-              formData += '\nFile Proposal: ' + proposal.name;
-            }
-            
-            alert(formData);
-            contactForm.reset();
-            fileName.textContent = 'Klik untuk memilih file';
-          } else {
+          if (!name || !email || !phone || !company || !purpose) {
+            e.preventDefault();
             alert('Mohon lengkapi semua field yang diperlukan.');
+            return false;
           }
         }
       });
