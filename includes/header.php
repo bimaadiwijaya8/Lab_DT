@@ -65,7 +65,7 @@ function get_mobile_nav_classes($page_name, $active_page) {
 <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm border-b border-gray-100">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
-        <a href="../index.php" class="group">
+        <a href="index.php" class="group">
           <div class="flex items-center gap-3">
             <span class="inline-flex h-12 w-12 rounded-xl to-blue-600 items-center justify-center group-hover:shadow-xl transition-all duration-300">
               <img src="<?php echo htmlspecialchars($logo_path); ?>" alt="" class="w-full h-full object-cover rounded-xl">
@@ -80,7 +80,7 @@ function get_mobile_nav_classes($page_name, $active_page) {
         <nav class="hidden lg:flex items-center gap-0,5">
           
           <?php $nav = get_desktop_nav_classes('beranda', $active_page); ?>
-          <a class="<?php echo $nav['link_class']; ?>" href="../index.php">
+          <a class="<?php echo $nav['link_class']; ?>" href="index.php">
             <span class="relative z-10">Beranda</span>
             <?php echo $nav['after_divs']; ?>
           </a>
@@ -103,7 +103,7 @@ function get_mobile_nav_classes($page_name, $active_page) {
             <?php echo $nav['after_divs']; ?>
           </a>
           
-          <?php $nav = get_desktop_nav_classes('publikasi', $active_page); ?>
+          <?php $nav = get_desktop_nav_classes('penelitian', $active_page); ?>
           <a class="<?php echo $nav['link_class']; ?>" href="penelitian.php">
             <span class="relative z-10">Publikasi</span>
             <?php echo $nav['after_divs']; ?>
@@ -170,7 +170,7 @@ function get_mobile_nav_classes($page_name, $active_page) {
             </div>
           </a>
           
-          <?php $nav = get_mobile_nav_classes('publikasi', $active_page); ?>
+          <?php $nav = get_mobile_nav_classes('penelitian', $active_page); ?>
           <a class="<?php echo $nav['link_class']; ?>" href="penelitian.php">
             <div class="flex items-center gap-3">
               <?php echo $nav['bullet_div']; ?>

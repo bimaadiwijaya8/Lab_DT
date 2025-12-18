@@ -54,45 +54,45 @@ if (!isset($current_year)) {
           <h3 class="font-bold text-lg text-white mb-6">Navigasi Cepat</h3>
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-3">
-              <a href="profil-lab.html" class="flex items-center gap-2 text-gray-300 hover:text-[#00A0D6] transition-colors group">
+              <a href="profil-lab.php" class="flex items-center gap-2 text-gray-300 hover:text-[#00A0D6] transition-colors group">
                 <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                 </svg>
                 <span>Profil Lab</span>
               </a>
-              <a href="fasilitas.html" class="flex items-center gap-2 text-gray-300 hover:text-[#00A0D6] transition-colors group">
+              <a href="fasilitas.php" class="flex items-center gap-2 text-gray-300 hover:text-[#00A0D6] transition-colors group">
                 <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                 </svg>
                 <span>Fasilitas</span>
               </a>
-              <a href="penelitian.html" class="flex items-center gap-2 text-gray-300 hover:text-[#00A0D6] transition-colors group">
+              <a href="penelitian.php" class="flex items-center gap-2 text-gray-300 hover:text-[#00A0D6] transition-colors group">
                 <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                 </svg>
                 <span>Publikasi</span>
               </a>
-              <a href="berita.php" class="flex items-center gap-2 text-[#00A0D6] font-semibold">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <a href="berita.php" class="flex items-center gap-2 text-gray-300 hover:text-[#00A0D6] transition-colors group">
+                <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                 </svg>
                 <span>Berita</span>
               </a>
             </div>
             <div class="space-y-3">
-              <a href="galeri.html" class="flex items-center gap-2 text-gray-300 hover:text-[#00A0D6] transition-colors group">
+              <a href="galeri.php" class="flex items-center gap-2 text-gray-300 hover:text-[#00A0D6] transition-colors group">
                 <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                 </svg>
                 <span>Galeri</span>
               </a>
-              <a href="anggota.html" class="flex items-center gap-2 text-gray-300 hover:text-[#00A0D6] transition-colors group">
+              <a href="anggota.php" class="flex items-center gap-2 text-gray-300 hover:text-[#00A0D6] transition-colors group">
                 <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                 </svg>
                 <span>Anggota</span>
               </a>
-              <a href="kontak.html" class="flex items-center gap-2 text-gray-300 hover:text-[#00A0D6] transition-colors group">
+              <a href="kontak.php" class="flex items-center gap-2 text-gray-300 hover:text-[#00A0D6] transition-colors group">
                 <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                 </svg>
