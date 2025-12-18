@@ -796,32 +796,28 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'publikasi
                     ':deskripsi' => $deskripsi,
                     ':file_publikasi' => $file_path_for_db, // Path baru atau lama
                     ':id' => $id_publikasi
-                ]);
+            ]);
                 $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Publikasi ID {$id_publikasi} berhasil diupdate!</div>";
             } catch (Exception $e) {
                 $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Gagal mengupdate publikasi: " . htmlspecialchars($e->getMessage()) . "</div>";
             }
         }
     }
-}
 
+    // --- DELETE (Hapus Publikasi - Menggunakan GET request) ---
+    if ($pdo && $active_page === 'publikasi' && isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
+        $id_publikasi = (int)$_GET['id'];
+        // 1. Ambil path file untuk dihapus dari server
+        $file_to_delete = '';
+        try {
+            $sql_select = "SELECT file_publikasi FROM publikasi WHERE id_publikasi = :id";
+            $stmt_select = $pdo->prepare($sql_select);
+            $stmt_select->execute([':id' => $id_publikasi]);
+            $result = $stmt_select->fetch(PDO::FETCH_ASSOC);
+            if ($result) {
+                $file_to_delete = $result['file_publikasi'];
+            }
 
-
-// --- DELETE (Hapus Publikasi - Menggunakan GET request) ---
-if ($pdo && $active_page === 'publikasi' && isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
-    $id_publikasi = (int)$_GET['id'];
-    // 1. Ambil path file untuk dihapus dari server
-    $file_to_delete = '';
-    try {
-        $sql_select = "SELECT file_publikasi FROM publikasi WHERE id_publikasi = :id";
-        $stmt_select = $pdo->prepare($sql_select);
-        $stmt_select->execute([':id' => $id_publikasi]);
-        $result = $stmt_select->fetch(PDO::FETCH_ASSOC);
-        if ($result) {
-            $file_to_delete = $result['file_publikasi'];
-        }
-
-        // 2. Hapus dari database
         $sql = "DELETE FROM publikasi WHERE id_publikasi = :id";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([':id' => $id_publikasi]);
@@ -832,14 +828,111 @@ if ($pdo && $active_page === 'publikasi' && isset($_GET['action']) && $_GET['act
         }
 
         $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Publikasi ID {$id_publikasi} berhasil dihapus!</div>";
-    } catch (Exception $e) {
-        $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Gagal menghapus publikasi: " . htmlspecialchars($e->getMessage()) . "</div>";
+        } catch (Exception $e) {
+            $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Gagal menghapus publikasi: " . htmlspecialchars($e->getMessage()) . "</div>";
+        }
+        // Redirect untuk menghilangkan parameter GET dari URL
+        header("Location: admin-dashboard.php?page=publikasi");
+        exit;
     }
-    // Redirect untuk menghilangkan parameter GET dari URL
-    header("Location: admin-dashboard.php?page=publikasi");
-    exit;
 }
 // --- END: Penanganan Operasi CRUD Publikasi ---
+
+// --- START: Penanganan Settings (Logo Upload) ---
+if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'settings') {
+    $action = $_POST['action'] ?? '';
+
+    // --- UPDATE Logo ---
+    if ($action === 'update_logo') {
+        $upload_ok = true;
+        $logo_path_for_db = '';
+        $upload_message = '';
+        $target_dir = '../assets/img/';
+
+        if (isset($_FILES['logo']) && $_FILES['logo']['error'] == UPLOAD_ERR_OK) {
+            // 1. Validasi file type (hanya gambar)
+            $allowed_types = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+            $file_type = mime_content_type($_FILES['logo']['tmp_name']);
+            
+            if (!in_array($file_type, $allowed_types)) {
+                $upload_ok = false;
+                $upload_message = "Hanya file gambar (JPG, PNG, GIF, WebP) yang diperbolehkan.";
+            } else {
+                // 2. Tentukan nama file
+                $file_name = basename($_FILES['logo']['name']);
+                $safe_file_name = preg_replace('/[^a-zA-Z0-9\-\.]/', '_', $file_name);
+                $unique_name = 'logo_' . time() . '_' . $safe_file_name;
+                $target_file = $target_dir . $unique_name;
+                $logo_path_for_db = $target_file;
+
+                // 3. Hapus logo lama jika ada
+                try {
+                    $sql_select = "SELECT value FROM settings WHERE key = 'logo'";
+                    $stmt_select = $pdo->prepare($sql_select);
+                    $stmt_select->execute();
+                    $result = $stmt_select->fetch(PDO::FETCH_ASSOC);
+                    if ($result && !empty($result['value']) && file_exists($result['value'])) {
+                        @unlink($result['value']);
+                    }
+                } catch (Exception $e) {
+                    // Lanjutkan meskipun gagal menghapus logo lama
+                }
+
+                // 4. Lakukan proses upload
+                if (!move_uploaded_file($_FILES['logo']['tmp_name'], $target_file)) {
+                    $upload_ok = false;
+                    $upload_message = "Gagal mengupload logo. Pastikan folder '{$target_dir}' memiliki izin tulis.";
+                }
+            }
+        } else if ($_FILES['logo']['error'] === UPLOAD_ERR_NO_FILE) {
+            $upload_ok = false;
+            $upload_message = "Harap pilih file logo untuk diupload.";
+        } else {
+            $upload_ok = false;
+            $upload_message = "Terjadi error saat upload file. Kode error: " . $_FILES['logo']['error'];
+        }
+
+        // 5. Simpan ke database jika upload berhasil
+        if ($upload_ok) {
+            try {
+                // Cek apakah setting logo sudah ada
+                $sql_check = "SELECT id FROM settings WHERE key = 'logo'";
+                $stmt_check = $pdo->prepare($sql_check);
+                $stmt_check->execute();
+                $existing = $stmt_check->fetch(PDO::FETCH_ASSOC);
+
+                if ($existing) {
+                    // Update existing
+                    $sql = "UPDATE settings SET value = :value, updated_at = NOW(), updated_by = :user_id WHERE key = 'logo'";
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute([
+                        ':value' => $logo_path_for_db,
+                        ':user_id' => $admin_user_id
+                    ]);
+                } else {
+                    // Insert new
+                    $sql = "INSERT INTO settings (key, value, updated_at, updated_by) VALUES ('logo', :value, NOW(), :user_id)";
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute([
+                        ':value' => $logo_path_for_db,
+                        ':user_id' => $admin_user_id
+                    ]);
+                }
+                $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Logo berhasil diperbarui!</div>";
+            } catch (Exception $e) {
+                // Jika gagal simpan DB, hapus file yang sudah terupload
+                if (file_exists($logo_path_for_db)) {
+                    @unlink($logo_path_for_db);
+                }
+                $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Gagal menyimpan logo (DB Error): " . htmlspecialchars($e->getMessage()) . "</div>";
+            }
+        } else {
+            $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Gagal upload logo: {$upload_message}</div>";
+        }
+    }
+}
+
+// --- END: Penanganan Settings ---
 
 // --- START: Penanganan Operasi CRUD Agenda (Hanya jika koneksi berhasil) ---
 if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'agenda') {
@@ -1439,6 +1532,22 @@ if ($active_page === 'approval' && $pdo) {
 }
 // --- END: Data Approval Management ---
 
+// --- Get Current Logo for Settings Page ---
+$current_logo = '';
+if ($pdo) {
+    try {
+        $sql = "SELECT value FROM settings WHERE key = 'logo'";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($result && !empty($result['value'])) {
+            $current_logo = $result['value'];
+        }
+    } catch (Exception $e) {
+        // Logo fetch failed, continue with empty logo
+    }
+}
+
 // --- Bagian HTML/Design Dashboard Dimulai ---
 ?>
 <!DOCTYPE html>
@@ -1598,6 +1707,7 @@ if ($active_page === 'approval' && $pdo) {
                             ?>
                         </a>
                     </li>
+                    <li><a href="admin-dashboard.php?page=settings" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 <?php echo $active_page === 'settings' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'; ?>"><i class="fas fa-cog w-5 h-5 mr-3 flex items-center justify-center"></i> Settings</a></li>
                 </ul>
             </nav>
         </div>
@@ -2404,8 +2514,78 @@ if ($active_page === 'approval' && $pdo) {
         <?php elseif ($active_page === 'settings'): ?>
             <h1 class="text-3xl font-bold text-gray-800 mb-6">Pengaturan Sistem</h1>
             <?php echo $message; ?>
-            <div class="bg-white p-6 rounded-xl shadow-lg">
-                <p class="text-gray-500">Halaman ini digunakan untuk mengelola pengaturan umum seperti nama situs, footer, dll.</p>
+            
+            <div class="bg-white p-6 rounded-xl shadow-lg mb-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">
+                    <i class="fas fa-image text-blue-600 mr-2"></i>Logo Lab
+                </h2>
+                
+                <!-- Current Logo Display -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Logo Saat Ini</label>
+                    <div class="flex items-center space-x-4">
+                        <?php if (!empty($current_logo) && file_exists($current_logo)): ?>
+                            <img src="<?php echo htmlspecialchars($current_logo); ?>" alt="Current Logo" class="h-20 w-20 object-contain border border-gray-200 rounded-lg p-2 bg-gray-50">
+                            <div>
+                                <p class="text-sm text-gray-600">File: <?php echo basename($current_logo); ?></p>
+                                <p class="text-xs text-gray-500">lib/assets/img/<?php echo basename($current_logo); ?></p>
+                            </div>
+                        <?php else: ?>
+                            <div class="h-20 w-20 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50">
+                                <i class="fas fa-image text-gray-400 text-2xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Belum ada logo</p>
+                                <p class="text-xs text-gray-500">Upload logo untuk menampilkan di situs</p>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <!-- Logo Upload Form -->
+                <form method="POST" enctype="multipart/form-data" class="space-y-4">
+                    <input type="hidden" name="action" value="update_logo">
+                    
+                    <div>
+                        <label for="logo" class="block text-sm font-medium text-gray-700 mb-2">
+                            Upload Logo Baru
+                        </label>
+                        <div class="flex items-center space-x-4">
+                            <input type="file" 
+                                   id="logo" 
+                                   name="logo" 
+                                   accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                                   class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+                        </div>
+                        <p class="mt-2 text-xs text-gray-500">
+                            Format yang didukung: JPG, PNG, GIF, WebP. Ukuran maksimal: 2MB.
+                            Logo akan otomatis di-resize dan di-optimalkan.
+                        </p>
+                    </div>
+
+                    <div class="flex justify-end pt-4">
+                        <button type="submit" 
+                                class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-300 flex items-center">
+                            <i class="fas fa-upload mr-2"></i>
+                            Update Logo
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                <div class="flex items-start">
+                    <i class="fas fa-info-circle text-blue-600 mt-0.5 mr-3"></i>
+                    <div>
+                        <h3 class="text-sm font-semibold text-blue-800 mb-1">Informasi Logo</h3>
+                        <ul class="text-sm text-blue-700 space-y-1">
+                            <li>• Logo akan ditampilkan di header situs dan halaman utama</li>
+                            <li>• Pastikan logo memiliki resolusi yang baik dan background transparan</li>
+                            <li>• File logo lama akan otomatis terhapus saat upload logo baru</li>
+                            <li>• Logo disimpan di folder <code class="bg-blue-100 px-1 rounded">assets/img/</code></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         <?php else: ?>
             <h1 class="text-3xl font-bold text-gray-800 mb-6">Halaman Tidak Ditemukan</h1>
