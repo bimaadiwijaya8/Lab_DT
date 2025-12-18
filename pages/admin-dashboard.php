@@ -2473,7 +2473,7 @@ if ($active_page === 'setting' && $pdo) {
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">No Telp</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama Perusahaan</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Deskripsi</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">PIC Anggota</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Dokumen</th>
                             <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Aksi</th>
                         </tr>
                     </thead>
@@ -2481,13 +2481,21 @@ if ($active_page === 'setting' && $pdo) {
                         <?php if (!empty($kerjasama_data)): ?>
                             <?php foreach ($kerjasama_data as $kerjasama): ?>
                                 <tr>
-                                    <td class="px-6 py-4 text-sm text-gray-900"><?php echo htmlspecialchars($kerjasama['nama']); ?></td>
-                                    <td class="px-6 py-4 text-sm text-gray-500"><?php echo htmlspecialchars($kerjasama['email']); ?></td>
-                                    <td class="px-6 py-4 text-sm text-gray-500"><?php echo htmlspecialchars($kerjasama['no_telp']); ?></td>
-                                    <td class="px-6 py-4 text-sm text-gray-500"><?php echo htmlspecialchars($kerjasama['nama_perusahaan']); ?></td>
-                                    <td class="px-6 py-4 text-sm text-gray-500 line-clamp-2" style="max-width: 300px;"><?php echo htmlspecialchars($kerjasama['deskripsi_tujuan']); ?></td>
-                                    <td class="px-6 py-4 text-sm text-gray-500"><?php echo htmlspecialchars($kerjasama['nama_gelar'] ?? '-'); ?></td>
-                                    <td class="px-6 py-4 text-center space-x-2">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo htmlspecialchars($kerjasama['nama']); ?></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($kerjasama['email']); ?></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($kerjasama['no_telp']); ?></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($kerjasama['nama_perusahaan']); ?></td>
+                                    <td class="px-6 py-4 text-sm text-gray-500" style="max-width: 200px;"><div class="line-clamp-2"><?php echo htmlspecialchars($kerjasama['deskripsi_tujuan']); ?></div></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <?php if (!empty($kerjasama['file_proposal'])): ?>
+                                            <a href="<?php echo htmlspecialchars($kerjasama['file_proposal']); ?>" target="_blank" class="text-blue-600 hover:text-blue-900">
+                                                <i class="fas fa-file-alt"></i> Lihat Dokumen
+                                            </a>
+                                        <?php else: ?>
+                                            <span class="text-gray-400">-</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-center space-x-2">
                                         <?php if (empty($kerjasama['id_anggota'])): ?>
                                         <button onclick="openApproveKerjasamaModal(<?php echo $kerjasama['id_kerjasama']; ?>)" class="text-green-600 hover:text-green-900 p-2 rounded-md hover:bg-gray-100" title="ACC">
                                             <i class="fas fa-check"></i>
@@ -3274,14 +3282,16 @@ if ($active_page === 'setting' && $pdo) {
 
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Tambah Anggota Baru</h3>
-                        <div class="space-y-4">
-                            <div>
                                 <label for="nama_gelar" class="block text-sm font-medium text-gray-700">Nama & Gelar</label>
                                 <input type="text" name="nama_gelar" id="nama_gelar" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2">
                             </div>
                             <div>
                                 <label for="jabatan" class="block text-sm font-medium text-gray-700">Jabatan</label>
-                                <input type="text" name="jabatan" id="jabatan" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2">
+                                <select name="jabatan" id="jabatan" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2">
+                                    <option value="">-- Pilih Jabatan --</option>
+                                    <option value="Anggota">Anggota</option>
+                                    <option value="Staff">Staff</option>
+                                </select>
                             </div>
                             <div>
                                 <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
@@ -3331,7 +3341,10 @@ if ($active_page === 'setting' && $pdo) {
                             </div>
                             <div>
                                 <label for="edit_jabatan" class="block text-sm font-medium text-gray-700">Jabatan</label>
-                                <input type="text" name="jabatan" id="edit_jabatan" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2">
+                                <select name="jabatan" id="edit_jabatan" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2">
+                                    <option value="Anggota">Anggota</option>
+                                    <option value="Staff">Staff</option>
+                                </select>
                             </div>
                             <div>
                                 <label for="edit_email" class="block text-sm font-medium text-gray-700">Email</label>

@@ -138,11 +138,9 @@ try {
               </svg>
             </div>
             <h3 class="text-xl font-bold text-gray-900 mb-4 text-center">Visi</h3>
-            <p class="text-gray-600 leading-relaxed mb-6">
-              Menjadi organisasi riset terkemuka dalam penelitian maupun pengembangan untuk mendorong inovasi
-              teknologi serta keilmuan di bidang <b>penyimpanan</b>, <b>pengolahan</b>, dan <b>rekayasa sistem data</b>
-              yang <b>berkelanjutan</b>.
-            </p>
+            <div class="text-gray-600 leading-relaxed mb-6">
+              <?php echo !empty($settings['visi']) ? $settings['visi'] : 'Visi belum diatur.'; ?>
+            </div>
           </div>
 
           <!-- Misi Card -->
@@ -157,121 +155,8 @@ try {
               </svg>
             </div>
             <h3 class="text-xl font-bold text-gray-900 mb-4 text-center">Misi</h3>
-            <div class="space-y-4">
-              <div class="flex items-start gap-3">
-                <div class="w-6 h-6 bg-[#6AC259]/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <svg class="w-4 h-4 text-[#6AC259]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                  </svg>
-                </div>
-                <div>
-                  <div class="text-gray-600"><b>Mendukung visi dan misi Jurusan Teknologi Informasi Polinema</b> melalui
-                    penelitian dan pengembangan di bidang penyimpanan, pengolahan, serta rekayasa sistem data.</div>
-                </div>
-              </div>
-
-              <div class="flex items-start gap-3">
-                <div class="w-6 h-6 bg-[#6AC259]/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <svg class="w-4 h-4 text-[#6AC259]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                  </svg>
-                </div>
-                <div>
-                  <div class="text-gray-600"><b>Melakukan penelitian berkualitas tinggi</b> yang berkontribusi pada
-                    kemajuan ilmu pengetahuan dan teknologi di bidang data, selaras dengan agenda riset JTI Polinema.
-                  </div>
-                </div>
-              </div>
-
-              <div class="flex items-start gap-3">
-                <div class="w-6 h-6 bg-[#6AC259]/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <svg class="w-4 h-4 text-[#6AC259]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                  </svg>
-                </div>
-                <div>
-                  <div class="text-gray-600"><b>Mengembangkan inovasi teknologi data</b> yang dapat diterapkan dalam
-                    dunia industri, pendidikan, dan pemerintahan guna meningkatkan daya saing lulusan JTI Polinema.
-                  </div>
-                </div>
-              </div>
-
-              <div class="flex items-start gap-3">
-                <div class="w-6 h-6 bg-[#6AC259]/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <svg class="w-4 h-4 text-[#6AC259]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                  </svg>
-                </div>
-                <div>
-                  <div class="text-gray-600"><b>Membangun infrastruktur dan sistem data yang skalabel dan efisien</b>
-                    untuk mendukung kebutuhan analitik, kecerdasan buatan, dan Big Data, serta memperkuat keunggulan
-                    akademik JTI Polinema.</div>
-                </div>
-              </div>
-
-              <div class="flex items-start gap-3">
-                <div class="w-6 h-6 bg-[#6AC259]/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <svg class="w-4 h-4 text-[#6AC259]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                  </svg>
-                </div>
-                <div>
-                  <div class="text-gray-600"><b>Menjalin kolaborasi dengan akademisi, industri, dan pemerintah</b> dalam
-                    pengembangan solusi teknologi data yang inovatif, sejalan dengan misi JTI Polinema dalam memperkuat
-                    sinergi dengan dunia kerja.</div>
-                </div>
-              </div>
-
-              <div class="flex items-start gap-3">
-                <div class="w-6 h-6 bg-[#6AC259]/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <svg class="w-4 h-4 text-[#6AC259]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                  </svg>
-                </div>
-                <div>
-                  <div class="text-gray-600"><b>Meningkatkan kapasitas dan kompetensi sumber daya manusia</b> di
-                    lingkungan JTI Polinema melalui pelatihan, penelitian, seminar, dan publikasi ilmiah di bidang
-                    teknologi data.</div>
-                </div>
-              </div>
-
-              <div class="flex items-start gap-3">
-                <div class="w-6 h-6 bg-[#6AC259]/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <svg class="w-4 h-4 text-[#6AC259]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                  </svg>
-                </div>
-                <div>
-                  <div class="text-gray-600"><b>Menyediakan layanan dan rekomendasi berbasis riset</b> bagi JTI Polinema
-                    serta mitra industri dan akademik untuk mengoptimalkan pengelolaan dan pemanfaatan data.</div>
-                </div>
-              </div>
-
-              <div class="flex items-start gap-3">
-                <div class="w-6 h-6 bg-[#6AC259]/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <svg class="w-4 h-4 text-[#6AC259]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                  </svg>
-                </div>
-                <div>
-                  <div class="text-gray-600"><b>Menjaga etika dan keamanan data</b> dalam setiap penelitian dan
-                    pengembangan teknologi, mendukung prinsip tata kelola data yang baik dalam lingkungan akademik dan
-                    industri.</div>
-                </div>
-              </div>
-
-              <div class="flex items-start gap-3">
-                <div class="w-6 h-6 bg-[#6AC259]/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <svg class="w-4 h-4 text-[#6AC259]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                  </svg>
-                </div>
-                <div>
-                  <div class="text-gray-600"><b>Mengembangkan praktik riset dan infrastruktur teknologi data yang
-                      berkelanjutan</b> melalui penerapan prinsip efisiensi energi, optimalisasi sumber daya, serta
-                    pengelolaan siklus hidup data yang ramah lingkungan.</div>
-                </div>
-              </div>
+            <div class="text-gray-600 leading-relaxed">
+              <?php echo !empty($settings['misi']) ? $settings['misi'] : 'Misi belum diatur.'; ?>
             </div>
           </div>
         </div>
