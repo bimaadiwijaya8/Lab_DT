@@ -1176,6 +1176,136 @@ if ($pdo && $active_page === 'pengumuman' && isset($_GET['action']) && $_GET['ac
 }
 // --- END: Penanganan Operasi CRUD Pengumuman ---
 
+// --- START: Penanganan Operasi Verifikasi Member ---
+if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'verifikasi-member') {
+    $action = $_POST['action'] ?? '';
+    
+    if ($action === 'approve_member') {
+        $id_member = (int)$_POST['id_member'];
+        try {
+            $sql = "UPDATE member SET approval_status = 'approved', approved_at = NOW(), approved_by = :admin_id WHERE id_member = :id";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([':admin_id' => $admin_user_id, ':id' => $id_member]);
+            $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Member berhasil disetujui!</div>";
+        } catch (Exception $e) {
+            $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Gagal menyetujui member: " . htmlspecialchars($e->getMessage()) . "</div>";
+        }
+    }
+    
+    if ($action === 'reject_member') {
+        $id_member = (int)$_POST['id_member'];
+        try {
+            $sql = "UPDATE member SET approval_status = 'rejected' WHERE id_member = :id";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([':id' => $id_member]);
+            $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Member ditolak. Data tidak akan ditampilkan.</div>";
+        } catch (Exception $e) {
+            $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Gagal menolak member: " . htmlspecialchars($e->getMessage()) . "</div>";
+        }
+    }
+}
+// --- END: Penanganan Operasi Verifikasi Member ---
+
+// --- START: Penanganan Operasi Pertanyaan ---
+if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'pertanyaan') {
+    $action = $_POST['action'] ?? '';
+    
+    if ($action === 'reply_question') {
+        $id_pertanyaan = (int)$_POST['id_pertanyaan'];
+        $jawaban = trim($_POST['jawaban']);
+        $email_penanya = trim($_POST['email_penanya']);
+        
+        try {
+            // Update database
+            $sql = "UPDATE pertanyaan SET jawaban = :jawaban, status = 'replied', replied_at = NOW(), replied_by = :admin_id WHERE id_pertanyaan = :id";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                ':jawaban' => $jawaban,
+                ':admin_id' => $admin_user_id,
+                ':id' => $id_pertanyaan
+            ]);
+            
+            // Send email (simplified - you may need to configure mail settings)
+            $subject = "Jawaban dari Lab Data Technologies";
+            $email_message = "Terima kasih atas pertanyaan Anda.\n\n" . $jawaban . "\n\nSalam,\nLab Data Technologies";
+            $headers = "From: no-reply@labdt.ac.id\r\n";
+            
+            // Attempt to send email
+            @mail($email_penanya, $subject, $email_message, $headers);
+            
+            $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Jawaban berhasil dikirim!</div>";
+        } catch (Exception $e) {
+            $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Gagal mengirim jawaban: " . htmlspecialchars($e->getMessage()) . "</div>";
+        }
+    }
+}
+
+if ($pdo && $active_page === 'pertanyaan' && isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
+    $id_pertanyaan = (int)$_GET['id'];
+    try {
+        $sql = "DELETE FROM pertanyaan WHERE id_pertanyaan = :id";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([':id' => $id_pertanyaan]);
+        $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Pertanyaan berhasil dihapus!</div>";
+    } catch (Exception $e) {
+        $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Gagal menghapus pertanyaan: " . htmlspecialchars($e->getMessage()) . "</div>";
+    }
+    header("Location: admin-dashboard.php?page=pertanyaan");
+    exit;
+}
+// --- END: Penanganan Operasi Pertanyaan ---
+
+// --- START: Penanganan Operasi Setting ---
+if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'setting') {
+    $action = $_POST['action'] ?? '';
+    
+    if ($action === 'update_setting') {
+        $key = $_POST['key'] ?? '';
+        $value = trim($_POST['value']);
+        
+        try {
+            $sql = "UPDATE settings SET value = :value, updated_at = NOW(), updated_by = :admin_id WHERE key = :key";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                ':value' => $value,
+                ':admin_id' => $admin_user_id,
+                ':key' => $key
+            ]);
+            $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Setting berhasil diupdate!</div>";
+        } catch (Exception $e) {
+            $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Gagal mengupdate setting: " . htmlspecialchars($e->getMessage()) . "</div>";
+        }
+    }
+    
+    if ($action === 'update_logo') {
+        if (isset($_FILES['logo']) && $_FILES['logo']['error'] == UPLOAD_ERR_OK) {
+            $target_dir = '../assets/img/';
+            if (!is_dir($target_dir)) {
+                mkdir($target_dir, 0777, true);
+            }
+            
+            $file_name = basename($_FILES['logo']['name']);
+            $safe_file_name = preg_replace('/[^a-zA-Z0-9\-\.]/', '_', $file_name);
+            $unique_name = 'logo_' . time() . '_' . $safe_file_name;
+            $target_file = $target_dir . $unique_name;
+            
+            if (move_uploaded_file($_FILES['logo']['tmp_name'], $target_file)) {
+                $logo_path = '../assets/img/' . $unique_name;
+                
+                try {
+                    $sql = "UPDATE settings SET value = :value, updated_at = NOW(), updated_by = :admin_id WHERE key = 'logo_utama'";
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute([':value' => $logo_path, ':admin_id' => $admin_user_id]);
+                    $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Logo berhasil diupdate!</div>";
+                } catch (Exception $e) {
+                    $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Gagal mengupdate logo: " . htmlspecialchars($e->getMessage()) . "</div>";
+                }
+            }
+        }
+    }
+}
+// --- END: Penanganan Operasi Setting ---
+
 // --- START: Data Dashboard & Data List ---
 $total_news = 0;
 $total_pending_news = 0;
@@ -1333,6 +1463,48 @@ if ($active_page === 'pengumuman' && $pdo) {
 }
 // --- END: Data Pengumuman ---
 
+// --- START: Data Verifikasi Member ---
+$member_pending_data = [];
+if ($active_page === 'verifikasi-member' && $pdo) {
+    try {
+        $sql = "SELECT * FROM member WHERE approval_status = 'pending' ORDER BY id_member DESC";
+        $stmt = $pdo->query($sql);
+        $member_pending_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Gagal mengambil data member: " . htmlspecialchars($e->getMessage()) . "</div>";
+    }
+}
+// --- END: Data Verifikasi Member ---
+
+// --- START: Data Pertanyaan ---
+$pertanyaan_data = [];
+if ($active_page === 'pertanyaan' && $pdo) {
+    try {
+        $sql = "SELECT * FROM pertanyaan ORDER BY id_pertanyaan ASC";
+        $stmt = $pdo->query($sql);
+        $pertanyaan_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Gagal mengambil data pertanyaan: " . htmlspecialchars($e->getMessage()) . "</div>";
+    }
+}
+// --- END: Data Pertanyaan ---
+
+// --- START: Data Setting ---
+$settings_data = [];
+if ($active_page === 'setting' && $pdo) {
+    try {
+        $sql = "SELECT * FROM settings ORDER BY key ASC";
+        $stmt = $pdo->query($sql);
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($results as $row) {
+            $settings_data[$row['key']] = $row['value'];
+        }
+    } catch (Exception $e) {
+        $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Gagal mengambil data setting: " . htmlspecialchars($e->getMessage()) . "</div>";
+    }
+}
+// --- END: Data Setting ---
+
 // --- Bagian HTML/Design Dashboard Dimulai ---
 ?>
 <!DOCTYPE html>
@@ -1344,6 +1516,9 @@ if ($active_page === 'pengumuman' && $pdo) {
     <title>Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
     <style>
         /* Custom colors */
         .bg-primary {
@@ -1466,6 +1641,9 @@ if ($active_page === 'pengumuman' && $pdo) {
                     <li><a href="admin-dashboard.php?page=publikasi" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 <?php echo $active_page === 'publikasi' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'; ?>"><i class="fas fa-book-open w-5 h-5 mr-3 flex items-center justify-center"></i> Kelola Publikasi</a></li>
                     <li><a href="admin-dashboard.php?page=pengumuman" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 <?php echo $active_page === 'pengumuman' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'; ?>"><i class="fas fa-bullhorn w-5 h-5 mr-3 flex items-center justify-center"></i> Kelola Pengumuman</a></li>
                     <li><a href="admin-dashboard.php?page=anggota" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 <?php echo $active_page === 'anggota' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'; ?>"><i class="fas fa-users w-5 h-5 mr-3 flex items-center justify-center"></i> Kelola Anggota</a></li>
+                    <li><a href="admin-dashboard.php?page=verifikasi-member" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 <?php echo $active_page === 'verifikasi-member' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'; ?>"><i class="fas fa-user-check w-5 h-5 mr-3 flex items-center justify-center"></i> Verifikasi Member</a></li>
+                    <li><a href="admin-dashboard.php?page=pertanyaan" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 <?php echo $active_page === 'pertanyaan' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'; ?>"><i class="fas fa-question-circle w-5 h-5 mr-3 flex items-center justify-center"></i> Pertanyaan</a></li>
+                    <li><a href="admin-dashboard.php?page=setting" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 <?php echo $active_page === 'setting' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'; ?>"><i class="fas fa-cog w-5 h-5 mr-3 flex items-center justify-center"></i> Setting</a></li>
                 </ul>
             </nav>
         </div>
@@ -2097,18 +2275,239 @@ if ($active_page === 'pengumuman' && $pdo) {
                 </table>
             </div>
 
-        <?php elseif ($active_page === 'settings'): ?>
-            <h1 class="text-3xl font-bold text-gray-800 mb-6">Pengaturan Sistem</h1>
+        <?php elseif ($active_page === 'verifikasi-member'): ?>
+            <h1 class="text-3xl font-bold text-gray-800 mb-6">Verifikasi Member</h1>
             <?php echo $message; ?>
-            <div class="bg-white p-6 rounded-xl shadow-lg">
-                <p class="text-gray-500">Halaman ini digunakan untuk mengelola pengaturan umum seperti nama situs, footer, dll.</p>
+            
+            <div class="bg-white p-6 rounded-xl shadow-lg overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Foto</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">NIM</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Prodi</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <?php if (!empty($member_pending_data)): ?>
+                            <?php foreach ($member_pending_data as $member): ?>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <img src="<?php echo htmlspecialchars($member['foto'] ?? '../assets/img/default-avatar.png'); ?>" alt="Foto" class="h-10 w-10 rounded-full object-cover">
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-900"><?php echo htmlspecialchars($member['nama']); ?></td>
+                                    <td class="px-6 py-4 text-sm text-gray-500"><?php echo htmlspecialchars($member['nim']); ?></td>
+                                    <td class="px-6 py-4 text-sm text-gray-500"><?php echo htmlspecialchars($member['email']); ?></td>
+                                    <td class="px-6 py-4 text-sm text-gray-500"><?php echo htmlspecialchars($member['prodi']); ?></td>
+                                    <td class="px-6 py-4 text-center space-x-2">
+                                        <form method="POST" class="inline-block">
+                                            <input type="hidden" name="action" value="approve_member">
+                                            <input type="hidden" name="id_member" value="<?php echo $member['id_member']; ?>">
+                                            <button type="submit" class="text-green-600 hover:text-green-900 p-2 rounded-md hover:bg-gray-100" title="Setujui">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                        </form>
+                                        <form method="POST" class="inline-block">
+                                            <input type="hidden" name="action" value="reject_member">
+                                            <input type="hidden" name="id_member" value="<?php echo $member['id_member']; ?>">
+                                            <button type="submit" class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100" title="Tolak" onclick="return confirm('Yakin menolak member ini?')">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="6" class="px-6 py-4 text-center text-gray-500">Tidak ada member yang menunggu verifikasi.</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
             </div>
+
+        <?php elseif ($active_page === 'pertanyaan'): ?>
+            <h1 class="text-3xl font-bold text-gray-800 mb-6">Pertanyaan</h1>
+            <?php echo $message; ?>
+            
+            <div class="bg-white p-6 rounded-xl shadow-lg overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Pesan</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <?php if (!empty($pertanyaan_data)): ?>
+                            <?php foreach ($pertanyaan_data as $pertanyaan): ?>
+                                <tr>
+                                    <td class="px-6 py-4 text-sm text-gray-900"><?php echo htmlspecialchars($pertanyaan['nama_lengkap']); ?></td>
+                                    <td class="px-6 py-4 text-sm text-gray-500"><?php echo htmlspecialchars($pertanyaan['email']); ?></td>
+                                    <td class="px-6 py-4 text-sm text-gray-500 line-clamp-2" style="max-width: 300px;"><?php echo htmlspecialchars($pertanyaan['pesan']); ?></td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <?php echo $pertanyaan['status'] === 'replied' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'; ?>">
+                                            <?php echo $pertanyaan['status'] === 'replied' ? 'Dijawab' : 'Pending'; ?>
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-center space-x-2">
+                                        <?php if ($pertanyaan['status'] !== 'replied'): ?>
+                                        <button onclick="openReplyModal(<?php echo htmlspecialchars(json_encode($pertanyaan)); ?>)" class="text-blue-600 hover:text-blue-900 p-2 rounded-md hover:bg-gray-100" title="Balas">
+                                            <i class="fas fa-reply"></i>
+                                        </button>
+                                        <?php endif; ?>
+                                        <a href="admin-dashboard.php?page=pertanyaan&action=delete&id=<?php echo $pertanyaan['id_pertanyaan']; ?>" onclick="return confirm('Hapus pertanyaan ini?')" class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="5" class="px-6 py-4 text-center text-gray-500">Belum ada pertanyaan.</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div id="replyModal" class="modal hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-[1001]">
+                <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold">Balas Pertanyaan</h3>
+                        <button onclick="closeReplyModal()" class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <form method="POST">
+                        <input type="hidden" name="action" value="reply_question">
+                        <input type="hidden" name="id_pertanyaan" id="reply_id">
+                        <input type="hidden" name="email_penanya" id="reply_email">
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-2">Pertanyaan:</label>
+                            <p id="reply_question" class="text-sm text-gray-700 bg-gray-50 p-3 rounded"></p>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-2">Jawaban:</label>
+                            <textarea name="jawaban" id="reply_answer" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500" rows="5"></textarea>
+                        </div>
+                        <div class="flex justify-end gap-2">
+                            <button type="button" onclick="closeReplyModal()" class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">Batal</button>
+                            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Kirim Jawaban</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        <?php elseif ($active_page === 'setting'): ?>
+            <h1 class="text-3xl font-bold text-gray-800 mb-6">Setting Website</h1>
+            <?php echo $message; ?>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h3 class="text-lg font-semibold mb-4">Logo Utama</h3>
+                    <form method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="action" value="update_logo">
+                        <div class="mb-4">
+                            <img src="<?php echo htmlspecialchars($settings_data['logo_utama'] ?? '../assets/img/logo.png'); ?>" alt="Logo" class="h-20 mb-4">
+                        </div>
+                        <input type="file" name="logo" accept="image/*" class="mb-4 w-full">
+                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Upload Logo</button>
+                    </form>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h3 class="text-lg font-semibold mb-4">Informasi Kontak</h3>
+                    <form method="POST">
+                        <input type="hidden" name="action" value="update_setting">
+                        <input type="hidden" name="key" value="email">
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-2">Email</label>
+                            <input type="email" name="value" value="<?php echo htmlspecialchars($settings_data['email'] ?? ''); ?>" class="w-full px-3 py-2 border rounded-lg">
+                        </div>
+                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Simpan</button>
+                    </form>
+                    
+                    <form method="POST" class="mt-4">
+                        <input type="hidden" name="action" value="update_setting">
+                        <input type="hidden" name="key" value="no_telepon">
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-2">Telepon</label>
+                            <input type="text" name="value" value="<?php echo htmlspecialchars($settings_data['no_telepon'] ?? ''); ?>" class="w-full px-3 py-2 border rounded-lg">
+                        </div>
+                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Simpan</button>
+                    </form>
+                    
+                    <form method="POST" class="mt-4">
+                        <input type="hidden" name="action" value="update_setting">
+                        <input type="hidden" name="key" value="alamat">
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-2">Alamat</label>
+                            <textarea name="value" class="w-full px-3 py-2 border rounded-lg" rows="3"><?php echo htmlspecialchars($settings_data['alamat'] ?? ''); ?></textarea>
+                        </div>
+                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Simpan</button>
+                    </form>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-lg lg:col-span-2">
+                    <h3 class="text-lg font-semibold mb-4">Visi & Misi</h3>
+                    <form method="POST">
+                        <input type="hidden" name="action" value="update_setting">
+                        <input type="hidden" name="key" value="visi_misi">
+                        <div class="mb-4">
+                            <textarea name="value" id="visi_misi_editor" class="w-full"><?php echo htmlspecialchars($settings_data['visi_misi'] ?? ''); ?></textarea>
+                        </div>
+                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Simpan Visi Misi</button>
+                    </form>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-lg lg:col-span-2">
+                    <h3 class="text-lg font-semibold mb-4">Media Sosial</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <form method="POST">
+                            <input type="hidden" name="action" value="update_setting">
+                            <input type="hidden" name="key" value="medsos_linkedin">
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium mb-2">LinkedIn</label>
+                                <input type="url" name="value" value="<?php echo htmlspecialchars($settings_data['medsos_linkedin'] ?? ''); ?>" class="w-full px-3 py-2 border rounded-lg">
+                            </div>
+                            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Simpan</button>
+                        </form>
+                        
+                        <form method="POST">
+                            <input type="hidden" name="action" value="update_setting">
+                            <input type="hidden" name="key" value="medsos_youtube">
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium mb-2">YouTube</label>
+                                <input type="url" name="value" value="<?php echo htmlspecialchars($settings_data['medsos_youtube'] ?? ''); ?>" class="w-full px-3 py-2 border rounded-lg">
+                            </div>
+                            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Simpan</button>
+                        </form>
+                        
+                        <form method="POST">
+                            <input type="hidden" name="action" value="update_setting">
+                            <input type="hidden" name="key" value="medsos_instagram">
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium mb-2">Instagram</label>
+                                <input type="url" name="value" value="<?php echo htmlspecialchars($settings_data['medsos_instagram'] ?? ''); ?>" class="w-full px-3 py-2 border rounded-lg">
+                            </div>
+                            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Simpan</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
         <?php else: ?>
             <h1 class="text-3xl font-bold text-gray-800 mb-6">Halaman Tidak Ditemukan</h1>
             <p class="text-gray-500">Halaman `<?php echo htmlspecialchars($active_page); ?>` tidak tersedia.</p>
         <?php endif; ?>
     </div>
-
 
     <div id="addNewsModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[1001] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-center justify-center min-h-screen p-4">
@@ -3343,6 +3742,37 @@ if ($active_page === 'pengumuman' && $pdo) {
                 toggleBtn.classList.add('fa-chevron-left');
             }
         }
+
+        // --- Reply Modal Functions ---
+        function openReplyModal(pertanyaan) {
+            document.getElementById('reply_id').value = pertanyaan.id_pertanyaan;
+            document.getElementById('reply_email').value = pertanyaan.email;
+            document.getElementById('reply_question').textContent = pertanyaan.pesan;
+            document.getElementById('reply_answer').value = '';
+            document.getElementById('replyModal').classList.remove('hidden');
+            document.body.classList.add('modal-open');
+        }
+
+        function closeReplyModal() {
+            document.getElementById('replyModal').classList.add('hidden');
+            document.body.classList.remove('modal-open');
+        }
+
+        // --- Initialize Summernote for Visi Misi ---
+        $(document).ready(function() {
+            if ($('#visi_misi_editor').length) {
+                $('#visi_misi_editor').summernote({
+                    height: 300,
+                    toolbar: [
+                        ['style', ['style']],
+                        ['font', ['bold', 'italic', 'underline', 'clear']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['insert', ['link']],
+                        ['view', ['codeview', 'help']]
+                    ]
+                });
+            }
+        });
     </script>
 </body>
 

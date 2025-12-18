@@ -8,7 +8,7 @@ include '../assets/php/db_connect.php';
 $logo_path = '../assets/img/logo.png'; // Default fallback
 try {
   $pdo = Database::getConnection();
-  $stmt = $pdo->prepare("SELECT value FROM settings WHERE key = 'logo'");
+  $stmt = $pdo->prepare("SELECT value FROM settings WHERE key = 'logo_utama'");
   $stmt->execute();
   $result = $stmt->fetch(PDO::FETCH_ASSOC);
   if ($result && !empty($result['value']) && file_exists($result['value'])) {
