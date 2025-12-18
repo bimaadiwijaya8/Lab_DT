@@ -2681,89 +2681,96 @@ if ($active_page === 'setting' && $pdo) {
 
         <?php elseif ($active_page === 'kerjasama'): ?>
             <h1 class="text-3xl font-bold text-gray-800 mb-6">Kelola Kerja Sama</h1>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">No Telp</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama Perusahaan</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Deskripsi</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Dokumen</th>
+            <?php echo $message; ?>
 
-            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Aksi</th>
-            </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-                <?php if (!empty($kerjasama_data)): ?>
-                    <?php foreach ($kerjasama_data as $kerjasama): ?>
+            <div class="bg-white p-6 rounded-xl shadow-lg overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
                         <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                <?php echo htmlspecialchars($kerjasama['nama']); ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                <?php echo htmlspecialchars($kerjasama['email']); ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                <?php echo htmlspecialchars($kerjasama['no_telp']); ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                <?php echo htmlspecialchars($kerjasama['nama_perusahaan']); ?></td>
-                            <td class="px-6 py-4 text-sm text-gray-500" style="max-width: 200px;">
-                                <div class="line-clamp-2"><?php echo htmlspecialchars($kerjasama['deskripsi_tujuan']); ?></div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                <?php if (!empty($kerjasama['file_proposal'])): ?>
-                                    <a href="<?php echo htmlspecialchars($kerjasama['file_proposal']); ?>" target="_blank"
-                                        class="text-blue-600 hover:text-blue-900">
-                                        <i class="fas fa-file-alt"></i> Lihat Dokumen
-                                    </a>
-                                <?php else: ?>
-                                    <span class="text-gray-400">-</span>
-                                <?php endif; ?>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                <?php if (empty($kerjasama['id_anggota'])): ?>
-                                    <form method="POST" class="inline-block"
-                                        id="form-kerjasama-<?php echo $kerjasama['id_kerjasama']; ?>">
-                                        <input type="hidden" name="action" value="approve_kerjasama">
-                                        <input type="hidden" name="id_kerjasama" value="<?php echo $kerjasama['id_kerjasama']; ?>">
-                                        <select name="id_anggota" required
-                                            class="px-2 py-1 border rounded text-sm focus:ring-2 focus:ring-blue-500">
-                                            <option value="">-- Pilih Anggota --</option>
-                                            <?php foreach ($anggota_list as $anggota): ?>
-                                                <option value="<?php echo $anggota['id_anggota']; ?>">
-                                                    <?php echo htmlspecialchars($anggota['nama_gelar']); ?></option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </form>
-                                <?php else: ?>
-                                    <span
-                                        class="text-sm text-green-600 font-medium"><?php echo htmlspecialchars($kerjasama['nama_gelar'] ?? 'PIC Ditunjuk'); ?></span>
-                                <?php endif; ?>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-center space-x-2">
-                                <?php if (empty($kerjasama['id_anggota'])): ?>
-                                    <button type="submit" form="form-kerjasama-<?php echo $kerjasama['id_kerjasama']; ?>"
-                                        class="text-green-600 hover:text-green-900 p-2 rounded-md hover:bg-gray-100" title="ACC">
-                                        <i class="fas fa-check"></i>
-                                    </button>
-                                    <form method="POST" class="inline-block">
-                                        <input type="hidden" name="action" value="reject_kerjasama">
-                                        <input type="hidden" name="id_kerjasama" value="<?php echo $kerjasama['id_kerjasama']; ?>">
-                                        <button type="submit" class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100"
-                                            title="Reject" onclick="return confirm('Yakin menolak kerjasama ini?')">
-                                            <i class="fas fa-times"></i>
-                                        </button>
-                                    </form>
-                                <?php else: ?>
-                                    <span
-                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Disetujui</span>
-                                <?php endif; ?>
-                            </td>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">No Telp</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama Perusahaan</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Deskripsi</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Dokumen</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Penanggung Jawab</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Aksi</th>
                         </tr>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <tr>
-                        <td colspan="8" class="px-6 py-4 text-center text-gray-500">Belum ada pengajuan kerjasama.</td>
-                    </tr>
-                <?php endif; ?>
-            </tbody>
-            </table>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <?php if (!empty($kerjasama_data)): ?>
+                            <?php foreach ($kerjasama_data as $kerjasama): ?>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        <?php echo htmlspecialchars($kerjasama['nama']); ?></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <?php echo htmlspecialchars($kerjasama['email']); ?></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <?php echo htmlspecialchars($kerjasama['no_telp']); ?></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <?php echo htmlspecialchars($kerjasama['nama_perusahaan']); ?></td>
+                                    <td class="px-6 py-4 text-sm text-gray-500" style="max-width: 200px;">
+                                        <div class="line-clamp-2"><?php echo htmlspecialchars($kerjasama['deskripsi_tujuan']); ?></div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <?php if (!empty($kerjasama['file_proposal'])): ?>
+                                            <a href="<?php echo htmlspecialchars($kerjasama['file_proposal']); ?>" target="_blank"
+                                                class="text-blue-600 hover:text-blue-900">
+                                                <i class="fas fa-file-alt"></i> Lihat Dokumen
+                                            </a>
+                                        <?php else: ?>
+                                            <span class="text-gray-400">-</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <?php if (empty($kerjasama['id_anggota'])): ?>
+                                            <form method="POST" class="inline-block"
+                                                id="form-kerjasama-<?php echo $kerjasama['id_kerjasama']; ?>">
+                                                <input type="hidden" name="action" value="approve_kerjasama">
+                                                <input type="hidden" name="id_kerjasama" value="<?php echo $kerjasama['id_kerjasama']; ?>">
+                                                <select name="id_anggota" required
+                                                    class="px-2 py-1 border rounded text-sm focus:ring-2 focus:ring-blue-500">
+                                                    <option value="">-- Pilih Anggota --</option>
+                                                    <?php foreach ($anggota_list as $anggota): ?>
+                                                        <option value="<?php echo $anggota['id_anggota']; ?>">
+                                                            <?php echo htmlspecialchars($anggota['nama_gelar']); ?></option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                            </form>
+                                        <?php else: ?>
+                                            <span
+                                                class="text-sm text-green-600 font-medium"><?php echo htmlspecialchars($kerjasama['nama_gelar'] ?? 'PIC Ditunjuk'); ?></span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-center space-x-2">
+                                        <?php if (empty($kerjasama['id_anggota'])): ?>
+                                            <button type="submit" form="form-kerjasama-<?php echo $kerjasama['id_kerjasama']; ?>"
+                                                class="text-green-600 hover:text-green-900 p-2 rounded-md hover:bg-gray-100" title="ACC">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                            <form method="POST" class="inline-block">
+                                                <input type="hidden" name="action" value="reject_kerjasama">
+                                                <input type="hidden" name="id_kerjasama" value="<?php echo $kerjasama['id_kerjasama']; ?>">
+                                                <button type="submit" class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100"
+                                                    title="Reject" onclick="return confirm('Yakin menolak kerjasama ini?')">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </form>
+                                        <?php else: ?>
+                                            <span
+                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Disetujui</span>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="8" class="px-6 py-4 text-center text-gray-500">Belum ada pengajuan kerjasama.</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
 
             <div id="approveKerjasamaModal"
                 class="modal hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-[1001]">
