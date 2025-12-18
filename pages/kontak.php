@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if (!empty($nama_lengkap) && !empty($email) && !empty($pesan)) {
                 try {
-                    $sql = "INSERT INTO pertanyaan (nama_lengkap, email, pesan, status) VALUES (:nama, :email, :pesan, 'pending')";
+                    $sql = "INSERT INTO pertanyaan (nama_lengkap, email, pesan) VALUES (:nama, :email, :pesan)";
                     $stmt = $pdo->prepare($sql);
                     $stmt->execute([
                         ':nama' => $nama_lengkap,
@@ -455,7 +455,15 @@ try {
       contactForm.addEventListener('submit', function(e) {
         const activeForm = document.querySelector('.pill-switch-btn.active').getAttribute('data-form-type');
         
+        // Disable fields in hidden form to prevent submission
+        const askInputs = document.querySelectorAll('#form-ask input, #form-ask textarea');
+        const coopInputs = document.querySelectorAll('#form-coop input, #form-coop textarea');
+        
         if (activeForm === 'ask') {
+          // Enable ask form fields, disable coop form fields
+          askInputs.forEach(input => input.disabled = false);
+          coopInputs.forEach(input => input.disabled = true);
+          
           const name = document.getElementById('ask-name').value;
           const email = document.getElementById('ask-email').value;
           const message = document.getElementById('ask-message').value;
@@ -466,6 +474,10 @@ try {
             return false;
           }
         } else if (activeForm === 'coop') {
+          // Enable coop form fields, disable ask form fields
+          coopInputs.forEach(input => input.disabled = false);
+          askInputs.forEach(input => input.disabled = true);
+          
           const name = document.getElementById('coop-name').value;
           const email = document.getElementById('coop-email').value;
           const phone = document.getElementById('coop-phone').value;

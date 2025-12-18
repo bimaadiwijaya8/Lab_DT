@@ -71,9 +71,18 @@ try {
     $stmt_member = $conn->query($sql_member);
     $member_list = $stmt_member->fetchAll();
     
+    $sql_settings = "SELECT key, value FROM settings";
+    $stmt_settings = $conn->query($sql_settings);
+    $settings_results = $stmt_settings->fetchAll();
+    $settings = [];
+    foreach ($settings_results as $setting) {
+        $settings[$setting['key']] = $setting['value'];
+    }
+    
 } catch (Exception $e) {
     $anggota_list = [];
     $member_list = [];
+    $settings = [];
     $error_message = 'Gagal mengambil data: ' . $e->getMessage();
 }
 
@@ -169,6 +178,12 @@ try {
           <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">STRUKTUR ORGANISASI</h2>
           <p class="text-lg text-gray-600 max-w-3xl mx-auto">Tim pengajar dan pengelola laboratorium yang berpengalaman dalam bidang teknologi data</p>
         </div>
+        
+        <?php if (!empty($settings['struktur_anggota'])): ?>
+        <div class="mb-12 bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+          <?php echo $settings['struktur_anggota']; ?>
+        </div>
+        <?php endif; ?>
         
         <?php 
         $struktur_organisasi = array_filter($anggota_list, function($item) {

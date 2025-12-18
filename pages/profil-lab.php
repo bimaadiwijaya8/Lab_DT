@@ -570,6 +570,12 @@ try {
           </p>
         </div>
 
+        <?php if (!empty($settings['struktur_anggota'])): ?>
+        <div class="mb-12 bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+          <?php echo $settings['struktur_anggota']; ?>
+        </div>
+        <?php endif; ?>
+
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 py-12 px-8">
           <div class="flex flex-col lg:flex-row items-start lg:items-center justify-center gap-8 lg:gap-16">
 
