@@ -6,16 +6,17 @@
  * It provides a getConnection() function that can be used throughout the application.
  */
 
-class Database {
-    private static $conn = null;
+if (!class_exists('Database')) {
+    class Database {
+        private static $conn = null;
 
-    /**
-     * Get database connection
-     * 
-     * @return PDO Returns a PDO database connection object
-     * @throws PDOException If connection fails
-     */
-    public static function getConnection() {
+        /**
+         * Get database connection
+         * 
+         * @return PDO Returns a PDO database connection object
+         * @throws PDOException If connection fails
+         */
+        public static function getConnection() {
         if (self::$conn === null) {
             try {
                 // Database connection parameters
@@ -23,7 +24,7 @@ class Database {
                 $port = '5432';
                 $dbname = 'pbl_db';
                 $user = 'postgres';
-                $password = '12345';
+                $password = '9023JN';
 
                 // Create DSN (Data Source Name)
                 $dsn = "pgsql:host=$host;port=$port;dbname=$dbname";
@@ -58,9 +59,12 @@ class Database {
     public function __wakeup() {
         throw new Exception("Cannot unserialize database connection");
     }
+    }
 }
 
 // Function to get database connection (for backward compatibility)
-function getConnection() {
-    return Database::getConnection();
+if (!function_exists('getConnection')) {
+    function getConnection() {
+        return Database::getConnection();
+    }
 }
