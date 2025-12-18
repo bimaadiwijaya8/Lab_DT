@@ -1,5 +1,21 @@
 <?php
 $active_page = 'profil-lab';
+
+// Include database connection and get settings
+include '../assets/php/db_connect.php';
+$settings = [];
+try {
+  $pdo = Database::getConnection();
+  $stmt = $pdo->prepare("SELECT key, value FROM settings");
+  $stmt->execute();
+  $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  foreach ($results as $result) {
+    $settings[$result['key']] = $result['value'];
+  }
+} catch (Exception $e) {
+  // Keep default values if there's an error
+  $settings = [];
+}
 ?>
 
 <!DOCTYPE html>
@@ -818,7 +834,7 @@ $active_page = 'profil-lab';
                   </div>
                   <div>
                     <h4 class="font-semibold text-gray-900 mb-1">Alamat</h4>
-                    <p class="text-gray-600">Jl. Soekarno Hatta No. 9, Malang<br>Jawa Timur 65141, Indonesia</p>
+                    <p class="text-gray-600"><?php echo htmlspecialchars($settings['alamat'] ?? 'Jl. Soekarno Hatta No. 9, Malang'); ?><br>Jawa Timur 65141, Indonesia</p>
                   </div>
                 </div>
 
@@ -833,7 +849,7 @@ $active_page = 'profil-lab';
                   </div>
                   <div>
                     <h4 class="font-semibold text-gray-900 mb-1">Email</h4>
-                    <p class="text-gray-600">lab.dt@polinema.ac.id<br>info@datatechlab.polinema.ac.id</p>
+                    <p class="text-gray-600"><?php echo htmlspecialchars($settings['email'] ?? 'lab.dt@polinema.ac.id'); ?><br>info@datatechlab.polinema.ac.id</p>
                   </div>
                 </div>
 
@@ -848,7 +864,7 @@ $active_page = 'profil-lab';
                   </div>
                   <div>
                     <h4 class="font-semibold text-gray-900 mb-1">Telepon</h4>
-                    <p class="text-gray-600">(0341) 404040 ext. 1234<br>Fax: (0341) 404040</p>
+                    <p class="text-gray-600"><?php echo htmlspecialchars($settings['no_telepon'] ?? '(0341) 404040'); ?> ext. 1234<br>Fax: (0341) 404040</p>
                   </div>
                 </div>
               </div>

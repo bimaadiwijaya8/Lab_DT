@@ -4,19 +4,24 @@
 // Include database connection
 include '../assets/php/db_connect.php';
 
-// Get logo from database settings
-$logo_path = '../assets/img/logo.png'; // Default fallback
+// Get all settings from database
+$settings = [];
 try {
   $pdo = Database::getConnection();
-  $stmt = $pdo->prepare("SELECT value FROM settings WHERE key = 'logo'");
+  $stmt = $pdo->prepare("SELECT key, value FROM settings");
   $stmt->execute();
-  $result = $stmt->fetch(PDO::FETCH_ASSOC);
-  if ($result && !empty($result['value']) && file_exists($result['value'])) {
-    $logo_path = $result['value'];
+  $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  foreach ($results as $result) {
+    $settings[$result['key']] = $result['value'];
   }
 } catch (Exception $e) {
-  // Keep default logo if there's an error
+  // Keep default values if there's an error
+  $settings = [];
 }
+
+// Get logo from database settings
+// Get logo from settings or use default
+$logo_path = isset($settings['logo']) && !empty($settings['logo']) && file_exists($settings['logo']) ? $settings['logo'] : '../assets/img/logo.png';
 
 // Variabel $current_year harus didefinisikan di file utama sebelum memanggil footer.
 if (!isset($current_year)) {
@@ -46,7 +51,7 @@ if (!isset($current_year)) {
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
             </svg>
-            <span>Jl. Soekarno Hatta No. 9, Malang, Jawa Timur</span>
+            <span><?php echo htmlspecialchars($settings['alamat'] ?? 'Jl. Soekarno Hatta No. 9, Malang, Jawa Timur'); ?></span>
           </div>
         </div>
 
@@ -114,7 +119,7 @@ if (!isset($current_year)) {
               </div>
               <div>
                 <div class="font-medium text-white">Email</div>
-                <div class="text-gray-300">lab.dt@polinema.ac.id</div>
+                <div class="text-gray-300"><?php echo htmlspecialchars($settings['email'] ?? 'lab.dt@polinema.ac.id'); ?></div>
               </div>
             </div>
 
@@ -126,7 +131,7 @@ if (!isset($current_year)) {
               </div>
               <div>
                 <div class="font-medium text-white">Telepon</div>
-                <div class="text-gray-300">(0341) 404040</div>
+                <div class="text-gray-300"><?php echo htmlspecialchars($settings['no_telepon'] ?? '(0341) 404040'); ?></div>
               </div>
             </div>
           </div>

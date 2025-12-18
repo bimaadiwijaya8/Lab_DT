@@ -1,5 +1,21 @@
 <?php
 $active_page = 'kontak';
+
+// Include database connection and get settings
+include '../assets/php/db_connect.php';
+$settings = [];
+try {
+  $pdo = Database::getConnection();
+  $stmt = $pdo->prepare("SELECT key, value FROM settings");
+  $stmt->execute();
+  $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  foreach ($results as $result) {
+    $settings[$result['key']] = $result['value'];
+  }
+} catch (Exception $e) {
+  // Keep default values if there's an error
+  $settings = [];
+}
 ?>
 
 <!DOCTYPE html>
@@ -127,7 +143,7 @@ $active_page = 'kontak';
                   </svg>
                   <div>
                     <p class="font-medium text-gray-900">Email</p>
-                    <p class="text-gray-600">lab.dt@polinema.ac.id</p>
+                    <p class="text-gray-600"><?php echo htmlspecialchars($settings['email'] ?? 'lab.dt@polinema.ac.id'); ?></p>
                   </div>
                 </div>
                 <div class="flex items-start gap-3">
@@ -136,7 +152,7 @@ $active_page = 'kontak';
                   </svg>
                   <div>
                     <p class="font-medium text-gray-900">Telepon</p>
-                    <p class="text-gray-600">(0341) 404040</p>
+                    <p class="text-gray-600"><?php echo htmlspecialchars($settings['no_telepon'] ?? '(0341) 404040'); ?></p>
                   </div>
                 </div>
                 <div class="flex items-start gap-3">
@@ -146,7 +162,7 @@ $active_page = 'kontak';
                   </svg>
                   <div>
                     <p class="font-medium text-gray-900">Alamat</p>
-                    <p class="text-gray-600">Jl. Soekarno Hatta No. 9, Malang</p>
+                    <p class="text-gray-600"><?php echo htmlspecialchars($settings['alamat'] ?? 'Jl. Soekarno Hatta No. 9, Malang'); ?></p>
                   </div>
                 </div>
               </div>
