@@ -8,37 +8,37 @@ $galeri_data = [];
 $message = ''; // Untuk notifikasi error
 
 if (file_exists($db_connect_path)) {
-    require_once $db_connect_path;
+  require_once $db_connect_path;
 
-    try {
-        // Panggil metode static dari class Database
-        $pdo = Database::getConnection();
-    } catch (PDOException $e) {
-        $message = "Kesalahan Koneksi Database.";
-        $pdo = null;
-    } catch (Exception $e) {
-        $message = "Kesalahan Sistem.";
-        $pdo = null;
-    }
+  try {
+    // Panggil metode static dari class Database
+    $pdo = Database::getConnection();
+  } catch (PDOException $e) {
+    $message = "Kesalahan Koneksi Database.";
+    $pdo = null;
+  } catch (Exception $e) {
+    $message = "Kesalahan Sistem.";
+    $pdo = null;
+  }
 } else {
-    $message = "Kesalahan Koneksi: File '{$db_connect_path}' tidak ditemukan. Galeri tidak dapat dimuat.";
+  $message = "Kesalahan Koneksi: File '{$db_connect_path}' tidak ditemukan. Galeri tidak dapat dimuat.";
 }
 
 // 2. Data Fetching (READ) - Diambil dari DB jika koneksi berhasil
 if ($pdo) {
-    try {
-        // READ: Mengambil data galeri yang sudah disetujui dari database
-        // Join ke tabel anggota/user untuk mendapatkan nama uploader (id_anggota)
-        $sql = "SELECT g.id_foto, g.nama_foto, g.deskripsi, g.file_foto, g.id_anggota, a.nama_gelar AS anggota_name 
+  try {
+    // READ: Mengambil data galeri yang sudah disetujui dari database
+    // Join ke tabel anggota/user untuk mendapatkan nama uploader (id_anggota)
+    $sql = "SELECT g.id_foto, g.nama_foto, g.deskripsi, g.file_foto, g.id_anggota, a.nama_gelar AS anggota_name 
                 FROM galeri g 
                 LEFT JOIN anggota a ON g.id_anggota = a.id_anggota 
                 WHERE g.status = 'approved'
                 ORDER BY g.id_foto DESC";
-        $stmt = $pdo->query($sql);
-        $galeri_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } catch (Exception $e) {
-        $message = "Gagal mengambil data galeri dari database.";
-    }
+    $stmt = $pdo->query($sql);
+    $galeri_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  } catch (Exception $e) {
+    $message = "Gagal mengambil data galeri dari database.";
+  }
 }
 // --- Akhir Bagian Logika PHP ---
 ?>
@@ -128,56 +128,50 @@ if ($pdo) {
         <div class="backdrop-blur-xl bg-white/60 border border-white/40 shadow-xl rounded-2xl p-8 mb-16">
           <div class="text-center mb-8">
             <h2 id="gallery-heading" class="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
-              Kategori <span class="bg-gradient-to-r from-[#00A0D6] to-[#6AC259] bg-clip-text text-transparent">Foto & Video</span>
+              Berbagai <span class="bg-gradient-to-r from-[#00A0D6] to-[#6AC259] bg-clip-text text-transparent">Galeri & Dokumentasi</span>
             </h2>
             <p class="text-gray-500 mb-6">Jelajahi berbagai momen yang kami dokumentasikan.</p>
-            <div class="flex flex-wrap justify-center gap-2">
-              <button class="px-4 py-2 text-sm font-semibold rounded-full bg-[#00A0D6] text-white shadow-md">Semua</button>
-              <button class="px-4 py-2 text-sm font-semibold rounded-full bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 transition-colors">Seminar</button>
-              <button class="px-4 py-2 text-sm font-semibold rounded-full bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 transition-colors">Pelatihan</button>
-              <button class="px-4 py-2 text-sm font-semibold rounded-full bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 transition-colors">Kunjungan</button>
-            </div>
           </div>
-        </div>
 
-        <div id="galeri-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          
-          <?php if (!empty($galeri_data)): ?>
-            <?php foreach ($galeri_data as $galeri): ?>
-              <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group">
-                <a href="<?php echo htmlspecialchars($galeri['file_foto']); ?>" target="_blank" class="block">
-                  <img src="<?php echo htmlspecialchars($galeri['file_foto']); ?>" alt="<?php echo htmlspecialchars($galeri['nama_foto']); ?>"
-                    class="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-110">
-                </a>
-                <div class="p-4">
-                  <h3 class="text-lg font-semibold text-gray-900 mb-1"><?php echo htmlspecialchars($galeri['nama_foto']); ?></h3>
-                  <p class="text-sm text-gray-500 line-clamp-2"><?php echo htmlspecialchars($galeri['deskripsi']); ?></p>
-                  <?php if (isset($galeri['anggota_name']) && !empty($galeri['anggota_name'])): ?>
+          <div id="galeri-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+
+            <?php if (!empty($galeri_data)): ?>
+              <?php foreach ($galeri_data as $galeri): ?>
+                <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group">
+                  <a href="<?php echo htmlspecialchars($galeri['file_foto']); ?>" target="_blank" class="block">
+                    <img src="<?php echo htmlspecialchars($galeri['file_foto']); ?>" alt="<?php echo htmlspecialchars($galeri['nama_foto']); ?>"
+                      class="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-110">
+                  </a>
+                  <div class="p-4">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-1"><?php echo htmlspecialchars($galeri['nama_foto']); ?></h3>
+                    <p class="text-sm text-gray-500 line-clamp-2"><?php echo htmlspecialchars($galeri['deskripsi']); ?></p>
+                    <?php if (isset($galeri['anggota_name']) && !empty($galeri['anggota_name'])): ?>
                       <p class="text-xs text-gray-400 mt-2">Diunggah oleh: <?php echo htmlspecialchars($galeri['anggota_name']); ?></p>
-                  <?php endif; ?>
+                    <?php endif; ?>
+                  </div>
                 </div>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <div class="col-span-full text-center py-10">
+                <p class="text-lg font-semibold text-gray-500">Tidak ada foto di galeri saat ini.</p>
+                <?php if (!empty($message)): ?>
+                  <p class="text-sm text-red-500 mt-2"><?php echo $message; ?></p>
+                <?php endif; ?>
               </div>
-            <?php endforeach; ?>
-          <?php else: ?>
-            <div class="col-span-full text-center py-10">
-              <p class="text-lg font-semibold text-gray-500">Tidak ada foto di galeri saat ini.</p>
-              <?php if (!empty($message)): ?>
-                 <p class="text-sm text-red-500 mt-2"><?php echo $message; ?></p>
-              <?php endif; ?>
-            </div>
-          <?php endif; ?>
+            <?php endif; ?>
 
-        </div>
+          </div>
 
-        <div class="text-center mt-16">
-          <?php if (empty($galeri_data)): ?>
-            <button onclick="window.location.reload()" class="inline-flex items-center gap-3 bg-gradient-to-r from-[#00A0D6] to-blue-600 text-white px-8 py-4 rounded-2xl font-semibold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-              </svg>
-              <span>Refresh Halaman</span>
-            </button>
-          <?php endif; ?>
+          <div class="text-center mt-16">
+            <?php if (empty($galeri_data)): ?>
+              <button onclick="window.location.reload()" class="inline-flex items-center gap-3 bg-gradient-to-r from-[#00A0D6] to-blue-600 text-white px-8 py-4 rounded-2xl font-semibold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                </svg>
+                <span>Refresh Halaman</span>
+              </button>
+            <?php endif; ?>
+          </div>
         </div>
       </div>
     </section>
