@@ -2,12 +2,12 @@
 -- PostgreSQL database dump
 --
 
-\restrict dUiHOFXgM1J7soEe1HDgYU4WIuPnxYG2Z8v1t15qTYwucLGJBrn1OcX7GHvo24w
+\restrict ucsIPOdKggWSVDWczsFCAbe3IrcmNPP4s6P8OPTgsZ2jPs9af53cs72L0uQgr31
 
 -- Dumped from database version 15.14
 -- Dumped by pg_dump version 15.14
 
--- Started on 2025-12-18 20:46:15
+-- Started on 2025-12-18 22:08:00
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1157,6 +1157,8 @@ COPY public.berita (id_berita, judul, gambar, informasi, tanggal, author, create
 33	TRY5N	../assets/img/berita/Screenshot_2025-11-22_140415.png	ETERERTERIEREIR	2025-11-18	\N	2025-12-13 17:37:24.832957	rejected	approved	\N	2025-12-18 15:45:40.923597	\N	\N
 49	MTYr	../assets/img/berita/a02898ed40d7711990aef44916e905f8.jpg	MTY	2025-12-11	2	2025-12-16 18:01:16.64169	pending	approved	\N	2025-12-18 19:54:00.386365	\N	\N
 52	aaaa	../assets/img/berita/Screenshot_2025-12-07_114323.png	wewijew	2025-12-18	4	2025-12-18 17:18:32.538854	pending	approved	\N	2025-12-18 20:40:52.296986	4	2025-12-18 20:40:52.296986
+53	ijiewe	../assets/img/berita/Screenshot_2025-11-20_202633.png	sjuaiwaw	2025-12-18	10	2025-12-18 21:41:40.818503	pending	rejected	\N	2025-12-18 21:42:02.794705	4	2025-12-18 21:42:02.794705
+54	EDITwejiwor	../assets/img/berita/Screenshot_2025-11-20_212723.png	EDIT	2025-12-18	5	2025-12-18 21:45:07.043148	approved	pending	5	2025-12-18 21:58:49.130969	\N	\N
 \.
 
 
@@ -1181,11 +1183,11 @@ COPY public.fasilitas (id_fasilitas, nama_fasilitas, deskripsi, foto, created_by
 --
 
 COPY public.galeri (id_foto, nama_foto, deskripsi, file_foto, id_anggota, updated_by, status, approval_status, created_at, updated_at, created_by, approved_by, approved_at) FROM stdin;
-10	HJRU	4545	../assets/img/galeri/galeri_1765794301_a02898ed40d7711990aef44916e905f8.jpg	3	1	approved	approved	2025-12-18 15:45:40.930423	2025-12-18 15:45:40.930423	\N	\N	\N
 5	IGaleri5	IGaleri5	../assets/img/galeri/galeri_1765723851_Screenshot_2025-11-22_183937.png	4	1	pending	approved	2025-12-18 15:45:40.930423	2025-12-18 15:45:40.930423	\N	\N	\N
 3	iGaleri3	ietto	../assets/img/galeri/galeri_1765673943_Screenshot_2025-11-20_170828.png	2	2	approved	approved	2025-12-18 15:45:40.930423	2025-12-18 15:45:40.930423	\N	\N	\N
 8	HJRUJH$#	423rr3wr	../assets/img/galeri/galeri_1765730619_f2c75990a45f197d9f18c2c099f8751e.jpg	4	1	approved	approved	2025-12-18 15:45:40.930423	2025-12-18 15:45:40.930423	\N	\N	\N
 7	IGaleri6	RW	../assets/img/galeri/galeri_1765729721_135224471_p0.png	4	1	approved	approved	2025-12-18 15:45:40.930423	2025-12-18 15:45:40.930423	\N	\N	\N
+10	HJRUjwejw	4545	../assets/img/galeri/galeri_1765794301_a02898ed40d7711990aef44916e905f8.jpg	3	1	approved	pending	2025-12-18 15:45:40.930423	2025-12-18 21:59:02.639038	5	\N	\N
 \.
 
 
@@ -1293,6 +1295,8 @@ COPY public.settings (id, key, value, updated_at, updated_by) FROM stdin;
 4	no_telepon	(00000) 0123456	2025-12-18 20:42:41.389109	4
 5	medsos_linkedin	https://www.linkedin.com/	2025-12-18 20:43:58.345085	4
 6	medsos_youtube	https://www.youtube.com/	2025-12-18 20:44:33.140747	4
+7	medsos_instagram	https://www.instagram.com/bima_adiwijaya_/	2025-12-18 21:20:52.267377	4
+8	visi	Menjadi organisasi riset terkemuka dalam penelitian maupun pengembangan untuk mendorong inovasi teknologi serta keilmuan di bidang penyimpanan, pengolahan, dan rekayasa sistem data yang berkelanjutan.	2025-12-18 21:30:07.177735	4
 \.
 
 
@@ -1335,7 +1339,7 @@ SELECT pg_catalog.setval('public.anggota_id_anggota_seq', 12, true);
 -- Name: berita_id_berita_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.berita_id_berita_seq', 52, true);
+SELECT pg_catalog.setval('public.berita_id_berita_seq', 54, true);
 
 
 --
@@ -1930,11 +1934,11 @@ ALTER TABLE ONLY public.pending_changes
     ADD CONSTRAINT pending_changes_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
--- Completed on 2025-12-18 20:46:15
+-- Completed on 2025-12-18 22:08:00
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict dUiHOFXgM1J7soEe1HDgYU4WIuPnxYG2Z8v1t15qTYwucLGJBrn1OcX7GHvo24w
+\unrestrict ucsIPOdKggWSVDWczsFCAbe3IrcmNPP4s6P8OPTgsZ2jPs9af53cs72L0uQgr31
 
