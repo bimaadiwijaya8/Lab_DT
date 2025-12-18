@@ -100,6 +100,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
   }
 }
+
+// Get logo from database settings
+$logo_path = '../assets/img/logo.png'; // Default fallback
+try {
+  $pdo = Database::getConnection();
+  $stmt = $pdo->prepare("SELECT value FROM settings WHERE key = 'logo'");
+  $stmt->execute();
+  $result = $stmt->fetch(PDO::FETCH_ASSOC);
+  if ($result && !empty($result['value']) && file_exists($result['value'])) {
+    $logo_path = $result['value'];
+  }
+} catch (Exception $e) {
+  // Keep default logo if there's an error
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -168,7 +182,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="bg-white/80 backdrop-blur rounded-3xl shadow-xl border border-gray-100 p-8">
               <div class="text-center mb-4">
                 <span class="inline-flex h-12 w-12 rounded-xl to-blue-600 items-center justify-center group-hover:shadow-xl transition-all duration-300">
-                  <img src="../assets/img/logo.png" alt="Lab Data Technologies Logo" class="w-full h-full object-cover rounded-xl">
+                  <img src="<?php echo htmlspecialchars($logo_path); ?>" alt="Lab Data Technologies Logo" class="w-full h-full object-cover rounded-xl">
                 </span>
               </div>
 

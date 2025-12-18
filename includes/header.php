@@ -1,6 +1,23 @@
 <?php
 // header.php
 
+// Include database connection
+include '../assets/php/db_connect.php';
+
+// Get logo from database settings
+$logo_path = '../assets/img/logo.png'; // Default fallback
+try {
+  $pdo = Database::getConnection();
+  $stmt = $pdo->prepare("SELECT value FROM settings WHERE key = 'logo'");
+  $stmt->execute();
+  $result = $stmt->fetch(PDO::FETCH_ASSOC);
+  if ($result && !empty($result['value']) && file_exists($result['value'])) {
+    $logo_path = $result['value'];
+  }
+} catch (Exception $e) {
+  // Keep default logo if there's an error
+}
+
 // Variabel $active_page harus didefinisikan di file yang memanggil (e.g., 'beranda', 'berita', 'profil-lab')
 if (!isset($active_page)) {
     // Default: jika tidak didefinisikan, tidak ada yang aktif
@@ -51,7 +68,7 @@ function get_mobile_nav_classes($page_name, $active_page) {
         <a href="../index.php" class="group">
           <div class="flex items-center gap-3">
             <span class="inline-flex h-12 w-12 rounded-xl to-blue-600 items-center justify-center group-hover:shadow-xl transition-all duration-300">
-              <img src="../assets/img/logo.png" alt="" class="w-full h-full object-cover rounded-xl">
+              <img src="<?php echo htmlspecialchars($logo_path); ?>" alt="" class="w-full h-full object-cover rounded-xl">
             </span>
             <div>
               <div class="font-bold text-[#1f2937] text-lg">Lab Data Technologies</div>

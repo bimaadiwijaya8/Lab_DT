@@ -1,6 +1,23 @@
 <?php
 // footer.php
 
+// Include database connection
+include '../assets/php/db_connect.php';
+
+// Get logo from database settings
+$logo_path = '../assets/img/logo.png'; // Default fallback
+try {
+  $pdo = Database::getConnection();
+  $stmt = $pdo->prepare("SELECT value FROM settings WHERE key = 'logo'");
+  $stmt->execute();
+  $result = $stmt->fetch(PDO::FETCH_ASSOC);
+  if ($result && !empty($result['value']) && file_exists($result['value'])) {
+    $logo_path = $result['value'];
+  }
+} catch (Exception $e) {
+  // Keep default logo if there's an error
+}
+
 // Variabel $current_year harus didefinisikan di file utama sebelum memanggil footer.
 if (!isset($current_year)) {
     // Jika lupa didefinisikan, gunakan tahun saat ini sebagai default
@@ -14,7 +31,7 @@ if (!isset($current_year)) {
         <div>
           <div class="flex items-center gap-3 mb-6">
             <span class="inline-flex h-12 w-12 rounded-xl items-center justify-center">
-              <img src="../assets/img/logo.png" alt="" class="w-full h-full object-cover rounded-xl">
+              <img src="<?php echo htmlspecialchars($logo_path); ?>" alt="" class="w-full h-full object-cover rounded-xl">
             </span>
             <div>
               <div class="font-bold text-xl text-white">Lab Data Technologies</div>
