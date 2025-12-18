@@ -2,12 +2,12 @@
 -- PostgreSQL database dump
 --
 
-\restrict LSstQO2iWcTnAXE2NcxFT3BL3r9pQ0wbKJNQja8TdNFfoBBNuMt08TnlLDsfNcR
+\restrict dAfEr20y7fvG2aZAldxcNPzdUCnWqwoYVHQ38AhZ9kAAIgxN8rfLf7Ytuuzc6Ir
 
 -- Dumped from database version 15.14
 -- Dumped by pg_dump version 15.14
 
--- Started on 2025-12-19 01:13:12
+-- Started on 2025-12-19 04:40:52
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -479,6 +479,26 @@ ALTER SEQUENCE public.jurnal_id_jurnal_seq OWNED BY public.jurnal.id_jurnal;
 
 
 --
+-- TOC entry 228 (class 1259 OID 61442)
+-- Name: kerjasama; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.kerjasama (
+    id_kerjasama integer NOT NULL,
+    nama character varying(100),
+    email character varying(100),
+    no_telp character varying(20),
+    deskripsi_tujuan text,
+    kontak_perusahaan character varying(100),
+    id_anggota integer,
+    nama_perusahaan character varying(100),
+    file_proposal character varying(255)
+);
+
+
+ALTER TABLE public.kerjasama OWNER TO postgres;
+
+--
 -- TOC entry 226 (class 1259 OID 61436)
 -- Name: pertanyaan; Type: TABLE; Schema: public; Owner: postgres
 --
@@ -521,24 +541,6 @@ ALTER SEQUENCE public.kerjasama_id_kerjasama_seq OWNED BY public.pertanyaan.id_p
 
 
 --
--- TOC entry 228 (class 1259 OID 61442)
--- Name: kerjsama; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.kerjsama (
-    id_kontak integer NOT NULL,
-    nama character varying(100),
-    email character varying(100),
-    no_telp character varying(20),
-    deskripsi_tujuan text,
-    opsi_kerjasama character varying(100),
-    id_anggota integer
-);
-
-
-ALTER TABLE public.kerjsama OWNER TO postgres;
-
---
 -- TOC entry 229 (class 1259 OID 61447)
 -- Name: kontak_id_kontak_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
@@ -560,7 +562,7 @@ ALTER TABLE public.kontak_id_kontak_seq OWNER TO postgres;
 -- Name: kontak_id_kontak_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE public.kontak_id_kontak_seq OWNED BY public.kerjsama.id_kontak;
+ALTER SEQUENCE public.kontak_id_kontak_seq OWNED BY public.kerjasama.id_kerjasama;
 
 
 --
@@ -907,10 +909,10 @@ ALTER TABLE ONLY public.jurnal ALTER COLUMN id_jurnal SET DEFAULT nextval('publi
 
 --
 -- TOC entry 3263 (class 2604 OID 61505)
--- Name: kerjsama id_kontak; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: kerjasama id_kerjasama; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.kerjsama ALTER COLUMN id_kontak SET DEFAULT nextval('public.kontak_id_kontak_seq'::regclass);
+ALTER TABLE ONLY public.kerjasama ALTER COLUMN id_kerjasama SET DEFAULT nextval('public.kontak_id_kontak_seq'::regclass);
 
 
 --
@@ -968,19 +970,19 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 --
 
 COPY public.agenda (id_agenda, nama_agenda, tgl_agenda, link_agenda, id_anggota) FROM stdin;
-2	Rapat Koordinasi Mingguan Staf Lab	2025-12-10	https://meet.google.com/rapat-lab-des	2
-3	Pelatihan Penggunaan Software CAD	2026-01-22	https://forms.gle/pelatihan-cad-2026	3
-4	agenda1	2026-01-17	youtube.com	2
-6	agenda3	2025-11-13	https://www.youtube.com/	4
-5	agenda2	2025-11-12	https://bit.ly/seminar-robotika-jan	3
-11	AGENDABRU	2025-11-12	https://bit.ly/seminar-robotika-jan	2
 1	Seminar Nasional Robotika Cerdas	2026-01-15	https://bit.ly/seminar-robotika-jan	\N
 7	rer34	2025-12-04	https://chatgpt.com/	\N
 9	533553	2025-12-05	https://chatgpt.com/	\N
 10	23245	2025-12-23	https://chatgpt.com/	\N
 12	A2323	2025-12-05	https://bit.ly/seminar-robotika-jan	\N
 13	AA	2025-12-05	https://bit.ly/seminar-robotika-jan	\N
-8	rer34	2025-12-04	https://chatgpt.com/	4
+6	agenda3	2025-11-13	https://www.youtube.com/	\N
+8	rer34	2025-12-04	https://chatgpt.com/	\N
+3	Pelatihan Penggunaan Software CAD	2026-01-22	https://forms.gle/pelatihan-cad-2026	\N
+5	agenda2	2025-11-12	https://bit.ly/seminar-robotika-jan	\N
+2	Rapat Koordinasi Mingguan Staf Lab	2025-12-10	https://meet.google.com/rapat-lab-des	\N
+4	agenda1	2026-01-17	youtube.com	\N
+11	AGENDABRU	2025-11-12	https://bit.ly/seminar-robotika-jan	\N
 \.
 
 
@@ -991,10 +993,11 @@ COPY public.agenda (id_agenda, nama_agenda, tgl_agenda, link_agenda, id_anggota)
 --
 
 COPY public.anggota (id_anggota, nama_gelar, foto, jabatan, email, no_telp, bidang_keahlian) FROM stdin;
-4	UXHDEWR		ITER432	TJEIR34@GMAIL.COM	T83U9423	TE8RJO34
-3	Citra Dewi, S.T., M.Eng.	../assets/img/anggota/anggota_1765812755_fasilitas_1765669641_a02898ed40d7711990aef44916e905f8.jpg	Asisten Laboratorium	citra.d@lab.id	085098765432	Machine Learning
-2	Ms. Eve	../assets/img/anggota/anggota_1765813246_be56a5f3e05bf1069ca08df2165b5e07.jpg	Staf Penelitr	budi.s@lab.id	081234567890	Pemrosesan Citra
-5	EDIT	../assets/img/anggota/anggota_1765815033_135224471_p0.png	EDIT	EDIT@GMAIL.COM	EDIT	EDIT
+7	Dr. Budi Santoso, M.Kom	profile1.jpg	staff	budi.s@kampus.ac.id	081234567890	Artificial Intelligence
+8	Siti Aminah, S.Si, M.Stat	profile2.jpg	anggota	siti.aminah@mail.com	085678901234	Analisis Data Statistik
+9	Ir. Ahmad Fauzi, M.T.	profile3.jpg	staff	ahmad.f@tech.id	082199887766	Arsitektur Jaringan
+10	Rina Permata, S.T.	profile4.jpg	anggota	rina_p@webmail.com	087755443322	Frontend Development
+11	Prof. Dr. Andi Wijaya	profile5.jpg	anggota	andi.wijaya@univ.edu	081122334455	Keamanan Siber
 \.
 
 
@@ -1006,9 +1009,9 @@ COPY public.anggota (id_anggota, nama_gelar, foto, jabatan, email, no_telp, bida
 
 COPY public.berita (id_berita, judul, gambar, informasi, tanggal, author, created_at, status) FROM stdin;
 33	TRY5N	../assets/img/berita/Screenshot_2025-11-22_140415.png	ETERERTERIEREIR	2025-11-18	\N	2025-12-13 17:37:24.832957	rejected
-49	MTY	../assets/img/berita/a02898ed40d7711990aef44916e905f8.jpg	MTY	2025-12-11	2	2025-12-16 18:01:16.64169	pending
-47	UHRER	../assets/img/berita/026572200_1653958351-WhatsApp_Image_2022-05-31_at_7.49.56_AM.jpeg	ijerji-2	2025-12-13	2	2025-12-14 05:59:15.527441	pending
-45	IEJR3442	../assets/img/berita/retestinger.png	daee	2025-12-17	2	2025-12-14 02:45:48.511126	pending
+49	MTY	../assets/img/berita/a02898ed40d7711990aef44916e905f8.jpg	MTY	2025-12-11	\N	2025-12-16 18:01:16.64169	pending
+47	UHRER	../assets/img/berita/026572200_1653958351-WhatsApp_Image_2022-05-31_at_7.49.56_AM.jpeg	ijerji-2	2025-12-13	\N	2025-12-14 05:59:15.527441	pending
+45	IEJR3442	../assets/img/berita/retestinger.png	daee	2025-12-17	\N	2025-12-14 02:45:48.511126	pending
 \.
 
 
@@ -1033,11 +1036,11 @@ COPY public.fasilitas (id_fasilitas, nama_fasilitas, deskripsi, foto, created_by
 --
 
 COPY public.galeri (id_foto, nama_foto, deskripsi, file_foto, id_anggota, updated_by, status) FROM stdin;
-10	HJRU	4545	../assets/img/galeri/galeri_1765794301_a02898ed40d7711990aef44916e905f8.jpg	3	1	approved
-5	IGaleri5	IGaleri5	../assets/img/galeri/galeri_1765723851_Screenshot_2025-11-22_183937.png	4	1	pending
-3	iGaleri3	ietto	../assets/img/galeri/galeri_1765673943_Screenshot_2025-11-20_170828.png	2	2	approved
-8	HJRUJH$#	423rr3wr	../assets/img/galeri/galeri_1765730619_f2c75990a45f197d9f18c2c099f8751e.jpg	4	1	approved
-7	IGaleri6	RW	../assets/img/galeri/galeri_1765729721_135224471_p0.png	4	1	approved
+5	IGaleri5	IGaleri5	../assets/img/galeri/galeri_1765723851_Screenshot_2025-11-22_183937.png	\N	1	pending
+8	HJRUJH$#	423rr3wr	../assets/img/galeri/galeri_1765730619_f2c75990a45f197d9f18c2c099f8751e.jpg	\N	1	approved
+7	IGaleri6	RW	../assets/img/galeri/galeri_1765729721_135224471_p0.png	\N	1	approved
+10	HJRU	4545	../assets/img/galeri/galeri_1765794301_a02898ed40d7711990aef44916e905f8.jpg	\N	1	approved
+3	iGaleri3	ietto	../assets/img/galeri/galeri_1765673943_Screenshot_2025-11-20_170828.png	\N	2	approved
 \.
 
 
@@ -1054,10 +1057,12 @@ COPY public.jurnal (id_jurnal, judul, tanggal_upload, penyusun, link_jurnal) FRO
 --
 -- TOC entry 3484 (class 0 OID 61442)
 -- Dependencies: 228
--- Data for Name: kerjsama; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: kerjasama; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.kerjsama (id_kontak, nama, email, no_telp, deskripsi_tujuan, opsi_kerjasama, id_anggota) FROM stdin;
+COPY public.kerjasama (id_kerjasama, nama, email, no_telp, deskripsi_tujuan, kontak_perusahaan, id_anggota, nama_perusahaan, file_proposal) FROM stdin;
+2	Bima Adiwijaya	bimaadiwijaya83@gmail.com	087877088963	Beasiswa	075756565656	\N	Google	../assets/files/publikasi/proposal_1766089888_English_Assignment_EX10.pdf
+3	Bima Adiwijaya	bimaadiwijaya83@gmail.com	087877088963	Beasiswa	075756565656	\N	Google	../assets/files/publikasi/proposal_1766092625_English_Assignment_EX10.pdf
 \.
 
 
@@ -1082,13 +1087,13 @@ COPY public.member (id_member, email, nama, foto, nim, jurusan, prodi, kelas, ta
 
 COPY public.pengumuman (id_pengumuman, judul, informasi, id_anggota, tanggal, status) FROM stdin;
 1	Pendaftaran Asisten Lab Semester Genap 2026	Pendaftaran dibuka mulai 10 hingga 20 Desember 2025. Silakan kirim CV dan transkrip nilai ke email lab.	\N	2025-01-02	pending
-2	Jadwal Review Proyek Akhir	Review proyek akhir untuk batch 2023 akan dilaksanakan pada minggu ketiga Januari 2026. Detail jadwal akan diumumkan melalui email.	2	2025-01-03	pending
 5	judul5	info judul5	\N	2025-01-01	pending
-3	Penggunaan Ruangan Komputasi	Ruangan komputasi akan ditutup sementara pada tanggal 5 Desember 2025 untuk pemeliharaan sistem. Harap simpan pekerjaan Anda sebelum tanggal tersebut.	3	2025-01-05	approved
-4	judul4	info judul4	2	2025-01-08	approved
-9	EDIT2	EDIT	5	2025-12-12	pending
-10	2323232	34343434	2	2025-12-16	approved
-11	PENDING	PENDING	5	2025-12-12	approved
+3	Penggunaan Ruangan Komputasi	Ruangan komputasi akan ditutup sementara pada tanggal 5 Desember 2025 untuk pemeliharaan sistem. Harap simpan pekerjaan Anda sebelum tanggal tersebut.	\N	2025-01-05	approved
+2	Jadwal Review Proyek Akhir	Review proyek akhir untuk batch 2023 akan dilaksanakan pada minggu ketiga Januari 2026. Detail jadwal akan diumumkan melalui email.	\N	2025-01-03	pending
+4	judul4	info judul4	\N	2025-01-08	approved
+10	2323232	34343434	\N	2025-12-16	approved
+9	EDIT2	EDIT	\N	2025-12-12	pending
+11	PENDING	PENDING	\N	2025-12-12	approved
 \.
 
 
@@ -1110,14 +1115,14 @@ COPY public.pertanyaan (id_pertanyaan, nama_lengkap, email, pesan, jawaban, id_u
 
 COPY public.publikasi (id_publikasi, judul, penulis, tanggal_terbit, file_publikasi, deskripsi, created_at, updated_at, id_anggota, status, id_member) FROM stdin;
 4	5JUDUL4	IEJRIER5	2025-12-02	../assets/files/publikasi/publikasi_1765793435_English_Assignment_EX10.pdf	EIJRIERrwr	2025-12-14 02:53:44.249846	2025-12-14 02:53:44.249846	\N	pending	1
-3	Review Metode Sensor Fusion3	Sinta Amelia, Citra Dewi	2025-11-20	file_publikasi_12.pdf	Makalah review tentang berbagai teknik fusi data sensor.	2025-12-04 00:41:54.5758	2025-12-04 00:41:54.5758	3	rejected	\N
-2	Analisis Performa Sistem Kontrol PIDe	Doni Saputra, Budi Santoso	2024-05-01	file_publikasi_11.pdf	Skripsi alumni tentang optimasi kontrol PID pada lengan robot.	2025-12-04 00:41:54.5758	2025-12-04 00:41:54.5758	2	pending	\N
-12	iu394x	33i4j34	2025-12-16	../assets/files/publikasi/publikasi_1765855692_English_Assignment_EX10.pdf	2323	2025-12-16 10:28:12.128965	2025-12-16 10:28:12.128965	2	pending	\N
-14	CRUD	CRUD	2025-12-12	../assets/files/publikasi/publikasi_1765883484_ENGLISH_U6.pdf	CRUD	2025-12-16 18:11:24.080816	2025-12-16 18:11:24.080816	3	approved	\N
-20	EDT	EDT	2025-12-12	../assets/files/publikasi/publikasi_1765902769_publikasi_1765643036_BimaAdiwijaya_Polimorfisme.pdf	EDT	2025-12-16 23:32:30.86939	2025-12-16 23:32:30.86939	5	pending	\N
-21	qqqq11	qqqq11	2025-12-16	../assets/files/publikasi/publikasi_1765902797_publikasi_1765793546_ENGLISH_U6.pdf	EEER	2025-12-16 23:33:17.48487	2025-12-16 23:33:17.48487	4	pending	\N
 9	rwwewe	ewewewee	2025-12-05	../assets/files/publikasi/publikasi_1765793546_ENGLISH_U6.pdf	ewew4wewe	2025-12-15 17:12:07.920172	2025-12-15 17:12:07.920172	\N	approved	1
 5	TRY5N	IEJRIER5	2025-12-10	../assets/files/publikasi/publikasi_1765785106_ENGLISH_U6.pdf	e42	2025-12-15 14:45:18.954999	2025-12-15 14:45:18.954999	\N	approved	1
+21	qqqq11	qqqq11	2025-12-16	../assets/files/publikasi/publikasi_1765902797_publikasi_1765793546_ENGLISH_U6.pdf	EEER	2025-12-16 23:33:17.48487	2025-12-16 23:33:17.48487	\N	pending	\N
+3	Review Metode Sensor Fusion3	Sinta Amelia, Citra Dewi	2025-11-20	file_publikasi_12.pdf	Makalah review tentang berbagai teknik fusi data sensor.	2025-12-04 00:41:54.5758	2025-12-04 00:41:54.5758	\N	rejected	\N
+14	CRUD	CRUD	2025-12-12	../assets/files/publikasi/publikasi_1765883484_ENGLISH_U6.pdf	CRUD	2025-12-16 18:11:24.080816	2025-12-16 18:11:24.080816	\N	approved	\N
+2	Analisis Performa Sistem Kontrol PIDe	Doni Saputra, Budi Santoso	2024-05-01	file_publikasi_11.pdf	Skripsi alumni tentang optimasi kontrol PID pada lengan robot.	2025-12-04 00:41:54.5758	2025-12-04 00:41:54.5758	\N	pending	\N
+12	iu394x	33i4j34	2025-12-16	../assets/files/publikasi/publikasi_1765855692_English_Assignment_EX10.pdf	2323	2025-12-16 10:28:12.128965	2025-12-16 10:28:12.128965	\N	pending	\N
+20	EDT	EDT	2025-12-12	../assets/files/publikasi/publikasi_1765902769_publikasi_1765643036_BimaAdiwijaya_Polimorfisme.pdf	EDT	2025-12-16 23:32:30.86939	2025-12-16 23:32:30.86939	\N	pending	\N
 \.
 
 
@@ -1131,11 +1136,11 @@ COPY public.settings (id, key, value, updated_at, updated_by) FROM stdin;
 4	medsos_linkedin	#	2025-12-18 23:38:11.317206	\N
 5	medsos_youtube	#	2025-12-18 23:38:11.317206	\N
 6	medsos_instagram	#	2025-12-18 23:38:11.317206	\N
-7	email	BimaAdiwijaya@polinema.ac.id	2025-12-18 23:38:37.139648	4
-8	no_telepon	087877088963	2025-12-18 23:38:45.150012	4
-9	alamat	Jl. konoha	2025-12-18 23:39:11.175931	4
 3	visi_misi	<h4>anjay</h4>	2025-12-18 23:39:18.125743	4
 2	logo_utama	../assets/img/logo_1766080272_resameork.png	2025-12-19 00:51:13.002855	4
+7	email	jiro@polinema.ac.id	2025-12-19 03:26:32.378286	4
+8	no_telepon	087777777	2025-12-19 03:26:52.730292	4
+9	alamat	Jl. tengah	2025-12-19 03:26:59.097328	4
 \.
 
 
@@ -1169,7 +1174,7 @@ SELECT pg_catalog.setval('public.agenda_id_agenda_seq', 13, true);
 -- Name: anggota_id_anggota_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.anggota_id_anggota_seq', 6, true);
+SELECT pg_catalog.setval('public.anggota_id_anggota_seq', 11, true);
 
 
 --
@@ -1223,7 +1228,7 @@ SELECT pg_catalog.setval('public.kerjasama_id_kerjasama_seq', 1, false);
 -- Name: kontak_id_kontak_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.kontak_id_kontak_seq', 1, false);
+SELECT pg_catalog.setval('public.kontak_id_kontak_seq', 4, true);
 
 
 --
@@ -1336,11 +1341,11 @@ ALTER TABLE ONLY public.pertanyaan
 
 --
 -- TOC entry 3292 (class 2606 OID 61526)
--- Name: kerjsama kontak_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: kerjasama kontak_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.kerjsama
-    ADD CONSTRAINT kontak_pkey PRIMARY KEY (id_kontak);
+ALTER TABLE ONLY public.kerjasama
+    ADD CONSTRAINT kontak_pkey PRIMARY KEY (id_kerjasama);
 
 
 --
@@ -1498,10 +1503,10 @@ ALTER TABLE ONLY public.jurnal
 
 --
 -- TOC entry 3320 (class 2606 OID 61585)
--- Name: kerjsama fk_kontak_anggota; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: kerjasama fk_kontak_anggota; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.kerjsama
+ALTER TABLE ONLY public.kerjasama
     ADD CONSTRAINT fk_kontak_anggota FOREIGN KEY (id_anggota) REFERENCES public.anggota(id_anggota) ON DELETE SET NULL;
 
 
@@ -1550,11 +1555,11 @@ ALTER TABLE ONLY public.jurnal
     ADD CONSTRAINT jurnal_penyusun_fkey FOREIGN KEY (penyusun) REFERENCES public.anggota(id_anggota) ON DELETE SET NULL;
 
 
--- Completed on 2025-12-19 01:13:13
+-- Completed on 2025-12-19 04:40:53
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict LSstQO2iWcTnAXE2NcxFT3BL3r9pQ0wbKJNQja8TdNFfoBBNuMt08TnlLDsfNcR
+\unrestrict dAfEr20y7fvG2aZAldxcNPzdUCnWqwoYVHQ38AhZ9kAAIgxN8rfLf7Ytuuzc6Ir
 
