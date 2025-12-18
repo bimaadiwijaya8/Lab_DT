@@ -101,8 +101,8 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'publikasi
         // 3. Simpan ke database jika upload berhasil
         if ($upload_ok) {
             try {
-                $sql = "INSERT INTO publikasi (judul, penulis, tanggal_terbit, file_publikasi, deskripsi, id_member, approval_status, created_by) 
-                        VALUES (:judul, :penulis, :tanggal_terbit, :file_publikasi, :deskripsi, :id_member, 'pending', :created_by)";
+                $sql = "INSERT INTO publikasi (judul, penulis, tanggal_terbit, file_publikasi, deskripsi, id_member, created_by) 
+                        VALUES (:judul, :penulis, :tanggal_terbit, :file_publikasi, :deskripsi, :id_member, :created_by)";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([
                     ':judul' => $judul,
@@ -172,7 +172,6 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'publikasi
                             file_publikasi = :file_publikasi, 
                             deskripsi = :deskripsi,
                             id_member = :id_member,
-                            approval_status = 'pending',
                             created_by = :created_by
                         WHERE id_publikasi = :id";
                 $stmt = $pdo->prepare($sql);

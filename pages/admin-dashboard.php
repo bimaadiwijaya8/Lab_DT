@@ -26,7 +26,6 @@ $db_connect_path = '../assets/php/db_connect.php';
 
 if (file_exists($db_connect_path)) {
     require_once $db_connect_path;
-    require_once '../assets/php/approval_helper.php';
 
     try {
         // Panggil metode static dari class Database
@@ -49,40 +48,6 @@ if (file_exists($db_connect_path)) {
 } else {
     $db_error = true;
     $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Kesalahan Koneksi: File '{$db_connect_path}' tidak ditemukan. CRUD tidak dapat berjalan.</div>";
-}
-
-// 2.1 Penanganan Approval Management (Hanya jika koneksi berhasil)
-if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'approval') {
-    $action = $_POST['action'] ?? '';
-    $message_type = '';
-
-    if ($action === 'approve_direct') {
-        $table_name = $_POST['table_name'];
-        $record_id = (int)$_POST['record_id'];
-        $primary_key = ApprovalHelper::getPrimaryKey($table_name);
-
-        try {
-            $sql = "UPDATE $table_name SET approval_status = 'approved', approved_by = :admin_id, approved_at = NOW() WHERE $primary_key = :id";
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute([':admin_id' => $admin_user_id, ':id' => $record_id]);
-            $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Konten berhasil disetujui!</div>";
-        } catch (Exception $e) {
-            $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Error: " . htmlspecialchars($e->getMessage()) . "</div>";
-        }
-    } elseif ($action === 'reject_direct') {
-        $table_name = $_POST['table_name'];
-        $record_id = (int)$_POST['record_id'];
-        $primary_key = ApprovalHelper::getPrimaryKey($table_name);
-
-        try {
-            $sql = "UPDATE $table_name SET approval_status = 'rejected', approved_by = :admin_id, approved_at = NOW() WHERE $primary_key = :id";
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute([':admin_id' => $admin_user_id, ':id' => $record_id]);
-            $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Konten berhasil ditolak!</div>";
-        } catch (Exception $e) {
-            $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Error: " . htmlspecialchars($e->getMessage()) . "</div>";
-        }
-    }
 }
 
 // 3. Penanganan Operasi CRUD Berita (Hanya jika koneksi berhasil)
@@ -1456,86 +1421,6 @@ if ($active_page === 'pengumuman' && $pdo) {
         $stmt = $pdo->query($sql);
         $pengumuman_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
-        $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Gagal mengambil data pengumuman: " . htmlspecialchars($e->getMessage()) . "</div>";
-    }
-}
-// --- END: Data Pengumuman ---
-
-// --- START: Data Approval Management (READ - Diambil dari DB jika koneksi berhasil) ---
-$pending_berita = [];
-$pending_publikasi = [];
-$pending_galeri = [];
-$pending_pengumuman = [];
-$pending_fasilitas = [];
-$pending_anggota = [];
-$total_pending_content = 0;
-
-if ($active_page === 'approval' && $pdo) {
-    try {
-        $sql_berita = "SELECT b.*, a.nama_gelar as author_name, u.username as created_by_name 
-                       FROM berita b 
-                       LEFT JOIN anggota a ON b.author = a.id_anggota 
-                       LEFT JOIN users u ON b.created_by = u.id
-                       WHERE b.approval_status = 'pending' OR b.status = 'pending'
-                       ORDER BY b.created_at DESC";
-        $stmt = $pdo->query($sql_berita);
-        $pending_berita = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        $sql_publikasi = "SELECT p.*, a.nama_gelar as author_name, u.username as created_by_name 
-                          FROM publikasi p 
-                          LEFT JOIN anggota a ON p.id_anggota = a.id_anggota 
-                          LEFT JOIN users u ON p.created_by = u.id
-                          WHERE p.approval_status = 'pending' OR p.status = 'pending'
-                          ORDER BY p.created_at DESC";
-        $stmt = $pdo->query($sql_publikasi);
-        $pending_publikasi = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        $sql_galeri = "SELECT g.*, a.nama_gelar as author_name, u.username as created_by_name 
-                       FROM galeri g 
-                       LEFT JOIN anggota a ON g.id_anggota = a.id_anggota 
-                       LEFT JOIN users u ON g.created_by = u.id
-                       WHERE g.approval_status = 'pending' OR g.status = 'pending'
-                       ORDER BY g.created_at DESC";
-        $stmt = $pdo->query($sql_galeri);
-        $pending_galeri = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        $sql_pengumuman = "SELECT p.*, a.nama_gelar as author_name, u.username as created_by_name 
-                           FROM pengumuman p 
-                           LEFT JOIN anggota a ON p.id_anggota = a.id_anggota 
-                           LEFT JOIN users u ON p.created_by = u.id
-                           WHERE p.approval_status = 'pending'
-                           ORDER BY p.created_at DESC";
-        $stmt = $pdo->query($sql_pengumuman);
-        $pending_pengumuman = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        $sql_fasilitas = "SELECT f.*, u.username as created_by_name 
-                          FROM fasilitas f 
-                          LEFT JOIN users u ON f.created_by = u.id
-                          WHERE f.approval_status = 'pending'
-                          ORDER BY f.created_at DESC";
-        $stmt = $pdo->query($sql_fasilitas);
-        $pending_fasilitas = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        $sql_anggota = "SELECT a.*, u.username as created_by_name 
-                        FROM anggota a 
-                        LEFT JOIN users u ON a.created_by = u.id
-                        WHERE a.approval_status = 'pending'
-                        ORDER BY a.created_at DESC";
-        $stmt = $pdo->query($sql_anggota);
-        $pending_anggota = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        $total_pending_content = count($pending_berita) + count($pending_publikasi) + count($pending_galeri) +
-            count($pending_pengumuman) + count($pending_fasilitas) + count($pending_anggota);
-    } catch (Exception $e) {
-        error_log("Error fetching pending content: " . $e->getMessage());
-    }
-}
-// --- END: Data Approval Management ---
-
-// --- Get Current Logo for Settings Page ---
-$current_logo = '';
-if ($pdo) {
-    try {
         $sql = "SELECT value FROM settings WHERE key = 'logo'";
         $stmt = $pdo->prepare($sql);
         $stmt->execute();
@@ -1681,32 +1566,6 @@ if ($pdo) {
                     <li><a href="admin-dashboard.php?page=publikasi" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 <?php echo $active_page === 'publikasi' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'; ?>"><i class="fas fa-book-open w-5 h-5 mr-3 flex items-center justify-center"></i> Kelola Publikasi</a></li>
                     <li><a href="admin-dashboard.php?page=pengumuman" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 <?php echo $active_page === 'pengumuman' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'; ?>"><i class="fas fa-bullhorn w-5 h-5 mr-3 flex items-center justify-center"></i> Kelola Pengumuman</a></li>
                     <li><a href="admin-dashboard.php?page=anggota" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 <?php echo $active_page === 'anggota' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'; ?>"><i class="fas fa-users w-5 h-5 mr-3 flex items-center justify-center"></i> Kelola Anggota</a></li>
-                    <li>
-                        <a href="admin-dashboard.php?page=approval" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 <?php echo $active_page === 'approval' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'; ?>">
-                            <i class="fas fa-check-circle w-5 h-5 mr-3 flex items-center justify-center"></i>
-                            Approval Management
-                            <?php
-                            if ($pdo) {
-                                try {
-                                    $pending_count = 0;
-                                    $tables = ['berita', 'publikasi', 'galeri', 'pengumuman', 'fasilitas', 'anggota'];
-                                    foreach ($tables as $table) {
-                                        $sql = "SELECT COUNT(*) as count FROM $table WHERE approval_status = 'pending' OR status = 'pending'";
-                                        $stmt = $pdo->query($sql);
-                                        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-                                        $pending_count += (int)$result['count'];
-                                    }
-                                    if ($pending_count > 0):
-                            ?>
-                                        <span class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full"><?php echo $pending_count; ?></span>
-                            <?php
-                                    endif;
-                                } catch (Exception $e) {
-                                }
-                            }
-                            ?>
-                        </a>
-                    </li>
                     <li><a href="admin-dashboard.php?page=settings" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 <?php echo $active_page === 'settings' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'; ?>"><i class="fas fa-cog w-5 h-5 mr-3 flex items-center justify-center"></i> Settings</a></li>
                 </ul>
             </nav>
@@ -2322,9 +2181,7 @@ if ($pdo) {
                                         <button onclick="openEditAnggotaModal(this)" class="text-indigo-600 hover:text-indigo-900 p-2 rounded-md hover:bg-gray-100">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <a href="admin-dashboard.php?page=anggota&action=delete&id=<?php echo $anggota['id_anggota']; ?>"
-                                            onclick="return confirm('Apakah Anda yakin ingin menghapus anggota ini? Foto juga akan terhapus dari server.')"
-                                            class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
+                                        <a href="admin-dashboard.php?page=anggota&action=delete&id=<?php echo $anggota['id_anggota']; ?>" onclick="return confirm('Apakah Anda yakin ingin menghapus anggota ini? Foto juga akan terhapus dari server.')" class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100">
                                             <i class="fas fa-trash"></i>
                                         </a>
                                     </td>
@@ -2338,178 +2195,6 @@ if ($pdo) {
                     </tbody>
                 </table>
             </div>
-
-        <?php elseif ($active_page === 'approval'): ?>
-            <h1 class="text-3xl font-bold text-gray-800 mb-6"><i class="fas fa-check-circle text-blue-600 mr-2"></i>Approval Management</h1>
-            <p class="text-gray-600 mb-6">Kelola semua perubahan yang memerlukan persetujuan dari editor dan member</p>
-
-            <?php echo $message; ?>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="bg-white rounded-lg shadow p-6">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-gray-500 text-sm">Total Pending</p>
-                            <p class="text-3xl font-bold text-blue-600"><?php echo $total_pending_content; ?></p>
-                        </div>
-                        <div class="bg-blue-100 rounded-full p-3">
-                            <i class="fas fa-clock text-blue-600 text-2xl"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-lg shadow p-6">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-gray-500 text-sm">Berita Pending</p>
-                            <p class="text-3xl font-bold text-yellow-600"><?php echo count($pending_berita); ?></p>
-                        </div>
-                        <div class="bg-yellow-100 rounded-full p-3">
-                            <i class="fas fa-newspaper text-yellow-600 text-2xl"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-lg shadow p-6">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-gray-500 text-sm">Publikasi Pending</p>
-                            <p class="text-3xl font-bold text-purple-600"><?php echo count($pending_publikasi); ?></p>
-                        </div>
-                        <div class="bg-purple-100 rounded-full p-3">
-                            <i class="fas fa-file-alt text-purple-600 text-2xl"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <?php if (count($pending_berita) > 0): ?>
-                <div class="bg-white rounded-lg shadow mb-6">
-                    <div class="px-6 py-4 border-b border-gray-200">
-                        <h2 class="text-xl font-semibold text-gray-900">
-                            <i class="fas fa-newspaper text-yellow-600 mr-2"></i>
-                            Berita Menunggu Approval (<?php echo count($pending_berita); ?>)
-                        </h2>
-                    </div>
-                    <div class="p-6">
-                        <div class="grid grid-cols-1 gap-4">
-                            <?php foreach ($pending_berita as $berita): ?>
-                                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
-                                    <div class="flex justify-between items-start">
-                                        <div class="flex-1">
-                                            <h3 class="font-semibold text-lg text-gray-900 mb-2"><?php echo htmlspecialchars($berita['judul']); ?></h3>
-                                            <p class="text-gray-600 text-sm mb-2"><?php echo substr(htmlspecialchars($berita['informasi']), 0, 150); ?>...</p>
-                                            <div class="flex items-center gap-4 text-sm text-gray-500">
-                                                <span><i class="fas fa-user mr-1"></i><?php echo htmlspecialchars($berita['author_name'] ?? 'Unknown'); ?></span>
-                                                <span><i class="fas fa-calendar mr-1"></i><?php echo htmlspecialchars($berita['tanggal']); ?></span>
-                                            </div>
-                                        </div>
-                                        <?php if (!empty($berita['gambar'])): ?>
-                                            <img src="<?php echo htmlspecialchars($berita['gambar']); ?>" alt="Preview" class="w-24 h-24 object-cover rounded ml-4">
-                                        <?php endif; ?>
-                                    </div>
-                                    <div class="mt-4 flex gap-2">
-                                        <form method="POST" class="inline">
-                                            <input type="hidden" name="action" value="approve_direct">
-                                            <input type="hidden" name="table_name" value="berita">
-                                            <input type="hidden" name="record_id" value="<?php echo $berita['id_berita']; ?>">
-                                            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-                                                <i class="fas fa-check mr-1"></i>Setujui
-                                            </button>
-                                        </form>
-                                        <button onclick="showRejectModal('berita', <?php echo $berita['id_berita']; ?>)" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
-                                            <i class="fas fa-times mr-1"></i>Tolak
-                                        </button>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-                </div>
-            <?php endif; ?>
-
-            <?php if (count($pending_publikasi) > 0): ?>
-                <div class="bg-white rounded-lg shadow mb-6">
-                    <div class="px-6 py-4 border-b border-gray-200">
-                        <h2 class="text-xl font-semibold text-gray-900">
-                            <i class="fas fa-file-alt text-purple-600 mr-2"></i>
-                            Publikasi Menunggu Approval (<?php echo count($pending_publikasi); ?>)
-                        </h2>
-                    </div>
-                    <div class="p-6">
-                        <div class="grid grid-cols-1 gap-4">
-                            <?php foreach ($pending_publikasi as $pub): ?>
-                                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
-                                    <h3 class="font-semibold text-lg text-gray-900 mb-2"><?php echo htmlspecialchars($pub['judul']); ?></h3>
-                                    <p class="text-gray-600 text-sm mb-2"><?php echo substr(htmlspecialchars($pub['deskripsi'] ?? ''), 0, 150); ?>...</p>
-                                    <div class="flex items-center gap-4 text-sm text-gray-500 mb-4">
-                                        <span><i class="fas fa-user mr-1"></i><?php echo htmlspecialchars($pub['penulis']); ?></span>
-                                        <span><i class="fas fa-calendar mr-1"></i><?php echo htmlspecialchars($pub['tanggal_terbit']); ?></span>
-                                    </div>
-                                    <div class="flex gap-2">
-                                        <form method="POST" class="inline">
-                                            <input type="hidden" name="action" value="approve_direct">
-                                            <input type="hidden" name="table_name" value="publikasi">
-                                            <input type="hidden" name="record_id" value="<?php echo $pub['id_publikasi']; ?>">
-                                            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-                                                <i class="fas fa-check mr-1"></i>Setujui
-                                            </button>
-                                        </form>
-                                        <button onclick="showRejectModal('publikasi', <?php echo $pub['id_publikasi']; ?>)" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
-                                            <i class="fas fa-times mr-1"></i>Tolak
-                                        </button>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-                </div>
-            <?php endif; ?>
-
-            <?php if (count($pending_galeri) > 0): ?>
-                <div class="bg-white rounded-lg shadow mb-6">
-                    <div class="px-6 py-4 border-b border-gray-200">
-                        <h2 class="text-xl font-semibold text-gray-900">
-                            <i class="fas fa-images text-green-600 mr-2"></i>
-                            Galeri Menunggu Approval (<?php echo count($pending_galeri); ?>)
-                        </h2>
-                    </div>
-                    <div class="p-6">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <?php foreach ($pending_galeri as $foto): ?>
-                                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
-                                    <?php if (!empty($foto['file_foto'])): ?>
-                                        <img src="<?php echo htmlspecialchars($foto['file_foto']); ?>" alt="<?php echo htmlspecialchars($foto['nama_foto']); ?>" class="w-full h-48 object-cover rounded mb-3">
-                                    <?php endif; ?>
-                                    <h3 class="font-semibold text-gray-900 mb-2"><?php echo htmlspecialchars($foto['nama_foto']); ?></h3>
-                                    <p class="text-gray-600 text-sm mb-2"><?php echo htmlspecialchars($foto['deskripsi'] ?? ''); ?></p>
-                                    <div class="mt-4 flex gap-2">
-                                        <form method="POST" class="inline">
-                                            <input type="hidden" name="action" value="approve_direct">
-                                            <input type="hidden" name="table_name" value="galeri">
-                                            <input type="hidden" name="record_id" value="<?php echo $foto['id_foto']; ?>">
-                                            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 text-sm">
-                                                <i class="fas fa-check mr-1"></i>Setujui
-                                            </button>
-                                        </form>
-                                        <button onclick="showRejectModal('galeri', <?php echo $foto['id_foto']; ?>)" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 text-sm">
-                                            <i class="fas fa-times mr-1"></i>Tolak
-                                        </button>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-                </div>
-            <?php endif; ?>
-
-            <?php if ($total_pending_content === 0): ?>
-                <div class="bg-white rounded-lg shadow p-12 text-center">
-                    <i class="fas fa-check-circle text-green-500 text-6xl mb-4"></i>
-                    <h3 class="text-2xl font-semibold text-gray-900 mb-2">Tidak Ada Pending Approval</h3>
-                    <p class="text-gray-600">Semua konten telah disetujui atau ditolak</p>
-                </div>
-            <?php endif; ?>
 
         <?php elseif ($active_page === 'settings'): ?>
             <h1 class="text-3xl font-bold text-gray-800 mb-6">Pengaturan Sistem</h1>
@@ -4005,37 +3690,8 @@ if ($pdo) {
             }
         }
 
-        // --- Approval Management Functions ---
-        function showRejectModal(tableName, recordId) {
-            document.getElementById('reject_table_name').value = tableName;
-            document.getElementById('reject_record_id').value = recordId;
-            document.getElementById('rejectModal').classList.remove('hidden');
-        }
-
-        function closeRejectModal() {
-            document.getElementById('rejectModal').classList.add('hidden');
-        }
     </script>
 
-    <!-- Reject Modal -->
-    <div id="rejectModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1002]">
-        <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 class="text-xl font-semibold mb-4">Tolak Konten</h3>
-            <form method="POST" action="admin-dashboard.php?page=approval">
-                <input type="hidden" name="action" value="reject_direct">
-                <input type="hidden" name="table_name" id="reject_table_name">
-                <input type="hidden" name="record_id" id="reject_record_id">
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">Alasan Penolakan (Opsional)</label>
-                    <textarea name="reason" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" rows="4" placeholder="Masukkan alasan penolakan..."></textarea>
-                </div>
-                <div class="flex gap-2">
-                    <button type="button" onclick="closeRejectModal()" class="flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400">Batal</button>
-                    <button type="submit" class="flex-1 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Tolak</button>
-                </div>
-            </form>
-        </div>
-    </div>
 </body>
 
 </html>
