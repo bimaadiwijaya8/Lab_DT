@@ -24,7 +24,7 @@ if (!class_exists('Database')) {
                 $port = '5432';
                 $dbname = 'pbl_db';
                 $user = 'postgres';
-                $password = '9023JN';
+                $password = '12345';
 
                 // Create DSN (Data Source Name)
                 $dsn = "pgsql:host=$host;port=$port;dbname=$dbname";

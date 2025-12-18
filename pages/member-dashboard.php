@@ -101,8 +101,8 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'publikasi
         // 3. Simpan ke database jika upload berhasil
         if ($upload_ok) {
             try {
-                $sql = "INSERT INTO publikasi (judul, penulis, tanggal_terbit, file_publikasi, deskripsi, id_member, created_by) 
-                        VALUES (:judul, :penulis, :tanggal_terbit, :file_publikasi, :deskripsi, :id_member, :created_by)";
+                $sql = "INSERT INTO publikasi (judul, penulis, tanggal_terbit, file_publikasi, deskripsi, id_member, status) 
+                        VALUES (:judul, :penulis, :tanggal_terbit, :file_publikasi, :deskripsi, :id_member, :status)";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([
                     ':judul' => $judul,
@@ -111,7 +111,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'publikasi
                     ':file_publikasi' => $file_path_for_db,
                     ':deskripsi' => $deskripsi,
                     ':id_member' => $hardcoded_member_id,
-                    ':created_by' => $hardcoded_member_id
+                    ':status' => 'pending' // Default status for new publications
                 ]);
                 $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Publikasi baru berhasil ditambahkan!</div>";
             } catch (Exception $e) {
@@ -172,7 +172,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'publikasi
                             file_publikasi = :file_publikasi, 
                             deskripsi = :deskripsi,
                             id_member = :id_member,
-                            created_by = :created_by
+                            status = 'pending'
                         WHERE id_publikasi = :id";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([
@@ -182,7 +182,6 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'publikasi
                     ':file_publikasi' => $file_path_for_db, // Path baru atau lama
                     ':deskripsi' => $deskripsi,
                     ':id_member' => $hardcoded_member_id,
-                    ':created_by' => $hardcoded_member_id,
                     ':id' => $id_publikasi
                 ]);
                 $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Publikasi ID {$id_publikasi} berhasil diupdate!</div>";
