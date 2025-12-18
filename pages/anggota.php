@@ -37,8 +37,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             }
         }
         
-        $sql = "INSERT INTO member (nama, nim, email, jurusan, prodi, kelas, tahun_angkatan, no_telp, foto, status, password) 
-                VALUES (:nama, :nim, :email, :jurusan, :prodi, :kelas, :tahun_angkatan, :no_telp, :foto, 'aktif', :password)";
+        $sql = "INSERT INTO member (nama, nim, email, jurusan, prodi, kelas, tahun_angkatan, no_telp, foto, status, password, approval_status) 
+                VALUES (:nama, :nim, :email, :jurusan, :prodi, :kelas, :tahun_angkatan, :no_telp, :foto, 'aktif', :password, 'pending')";
         
         $stmt = $conn->prepare($sql);
         $stmt->execute([
@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             ':password' => $password
         ]);
         
-        $success_message = 'Pendaftaran berhasil! Silakan tunggu konfirmasi dari admin.';
+        $success_message = 'Pendaftaran berhasil! Data Anda akan ditampilkan setelah disetujui oleh admin.';
     } catch (Exception $e) {
         $error_message = 'Terjadi kesalahan: ' . $e->getMessage();
     }
@@ -67,7 +67,7 @@ try {
     $stmt_anggota = $conn->query($sql_anggota);
     $anggota_list = $stmt_anggota->fetchAll();
     
-    $sql_member = "SELECT * FROM member WHERE status = 'aktif' ORDER BY id_member ASC";
+    $sql_member = "SELECT * FROM member WHERE status = 'aktif' AND approval_status = 'approved' ORDER BY id_member ASC";
     $stmt_member = $conn->query($sql_member);
     $member_list = $stmt_member->fetchAll();
     
