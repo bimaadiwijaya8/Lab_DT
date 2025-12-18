@@ -1489,6 +1489,52 @@ if ($active_page === 'pertanyaan' && $pdo) {
 }
 // --- END: Data Pertanyaan ---
 
+// --- START: Penanganan Operasi Kerjasama ---
+if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'kerjasama') {
+    $action = $_POST['action'] ?? '';
+    
+    if ($action === 'approve_kerjasama') {
+        $id_kerjasama = (int)$_POST['id_kerjasama'];
+        $id_anggota = (int)$_POST['id_anggota'];
+        
+        try {
+            $sql = "UPDATE kerjasama SET id_anggota = :id_anggota WHERE id_kerjasama = :id";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([':id_anggota' => $id_anggota, ':id' => $id_kerjasama]);
+            $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Kerjasama berhasil disetujui!</div>";
+        } catch (Exception $e) {
+            $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Gagal menyetujui kerjasama: " . htmlspecialchars($e->getMessage()) . "</div>";
+        }
+    }
+    
+    if ($action === 'reject_kerjasama') {
+        $id_kerjasama = (int)$_POST['id_kerjasama'];
+        
+        try {
+            $sql = "DELETE FROM kerjasama WHERE id_kerjasama = :id";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([':id' => $id_kerjasama]);
+            $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' role='alert'>Kerjasama berhasil ditolak!</div>";
+        } catch (Exception $e) {
+            $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Gagal menolak kerjasama: " . htmlspecialchars($e->getMessage()) . "</div>";
+        }
+    }
+}
+// --- END: Penanganan Operasi Kerjasama ---
+
+// --- START: Data Kerjasama ---
+$kerjasama_data = [];
+if ($active_page === 'kerjasama' && $pdo) {
+    try {
+        $sql = "SELECT k.*, a.nama_gelar FROM kerjasama k LEFT JOIN anggota a ON k.id_anggota = a.id_anggota ORDER BY k.id_kerjasama DESC";
+        $stmt = $pdo->query($sql);
+        $kerjasama_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Gagal mengambil data kerjasama: " . htmlspecialchars($e->getMessage()) . "</div>";
+    }
+}
+// --- END: Data Kerjasama ---
+
 // --- START: Data Setting ---
 $settings_data = [];
 if ($active_page === 'setting' && $pdo) {
@@ -1643,6 +1689,7 @@ if ($active_page === 'setting' && $pdo) {
                     <li><a href="admin-dashboard.php?page=anggota" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 <?php echo $active_page === 'anggota' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'; ?>"><i class="fas fa-users w-5 h-5 mr-3 flex items-center justify-center"></i> Kelola Anggota</a></li>
                     <li><a href="admin-dashboard.php?page=verifikasi-member" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 <?php echo $active_page === 'verifikasi-member' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'; ?>"><i class="fas fa-user-check w-5 h-5 mr-3 flex items-center justify-center"></i> Verifikasi Member</a></li>
                     <li><a href="admin-dashboard.php?page=pertanyaan" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 <?php echo $active_page === 'pertanyaan' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'; ?>"><i class="fas fa-question-circle w-5 h-5 mr-3 flex items-center justify-center"></i> Pertanyaan</a></li>
+                    <li><a href="admin-dashboard.php?page=kerjasama" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 <?php echo $active_page === 'kerjasama' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'; ?>"><i class="fas fa-handshake w-5 h-5 mr-3 flex items-center justify-center"></i> Kerja Sama</a></li>
                     <li><a href="admin-dashboard.php?page=setting" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 <?php echo $active_page === 'setting' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'; ?>"><i class="fas fa-cog w-5 h-5 mr-3 flex items-center justify-center"></i> Setting</a></li>
                 </ul>
             </nav>
@@ -2286,8 +2333,12 @@ if ($active_page === 'setting' && $pdo) {
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Foto</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">NIM</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Jurusan</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Prodi</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kelas</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tahun Angkatan</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">No Telp</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
                             <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Aksi</th>
                         </tr>
                     </thead>
@@ -2300,8 +2351,12 @@ if ($active_page === 'setting' && $pdo) {
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-900"><?php echo htmlspecialchars($member['nama']); ?></td>
                                     <td class="px-6 py-4 text-sm text-gray-500"><?php echo htmlspecialchars($member['nim']); ?></td>
-                                    <td class="px-6 py-4 text-sm text-gray-500"><?php echo htmlspecialchars($member['email']); ?></td>
+                                    <td class="px-6 py-4 text-sm text-gray-500"><?php echo htmlspecialchars($member['jurusan']); ?></td>
                                     <td class="px-6 py-4 text-sm text-gray-500"><?php echo htmlspecialchars($member['prodi']); ?></td>
+                                    <td class="px-6 py-4 text-sm text-gray-500"><?php echo htmlspecialchars($member['kelas']); ?></td>
+                                    <td class="px-6 py-4 text-sm text-gray-500"><?php echo htmlspecialchars($member['tahun_angkatan']); ?></td>
+                                    <td class="px-6 py-4 text-sm text-gray-500"><?php echo htmlspecialchars($member['no_telp']); ?></td>
+                                    <td class="px-6 py-4 text-sm text-gray-500"><?php echo htmlspecialchars($member['email']); ?></td>
                                     <td class="px-6 py-4 text-center space-x-2">
                                         <form method="POST" class="inline-block">
                                             <input type="hidden" name="action" value="approve_member">
@@ -2322,7 +2377,7 @@ if ($active_page === 'setting' && $pdo) {
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="6" class="px-6 py-4 text-center text-gray-500">Tidak ada member yang menunggu verifikasi.</td>
+                                <td colspan="10" class="px-6 py-4 text-center text-gray-500">Tidak ada member yang menunggu verifikasi.</td>
                             </tr>
                         <?php endif; ?>
                     </tbody>
@@ -2405,6 +2460,88 @@ if ($active_page === 'setting' && $pdo) {
                 </div>
             </div>
 
+        <?php elseif ($active_page === 'kerjasama'): ?>
+            <h1 class="text-3xl font-bold text-gray-800 mb-6">Kelola Kerja Sama</h1>
+            <?php echo $message; ?>
+            
+            <div class="bg-white p-6 rounded-xl shadow-lg overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">No Telp</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama Perusahaan</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Deskripsi</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">PIC Anggota</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <?php if (!empty($kerjasama_data)): ?>
+                            <?php foreach ($kerjasama_data as $kerjasama): ?>
+                                <tr>
+                                    <td class="px-6 py-4 text-sm text-gray-900"><?php echo htmlspecialchars($kerjasama['nama']); ?></td>
+                                    <td class="px-6 py-4 text-sm text-gray-500"><?php echo htmlspecialchars($kerjasama['email']); ?></td>
+                                    <td class="px-6 py-4 text-sm text-gray-500"><?php echo htmlspecialchars($kerjasama['no_telp']); ?></td>
+                                    <td class="px-6 py-4 text-sm text-gray-500"><?php echo htmlspecialchars($kerjasama['nama_perusahaan']); ?></td>
+                                    <td class="px-6 py-4 text-sm text-gray-500 line-clamp-2" style="max-width: 300px;"><?php echo htmlspecialchars($kerjasama['deskripsi_tujuan']); ?></td>
+                                    <td class="px-6 py-4 text-sm text-gray-500"><?php echo htmlspecialchars($kerjasama['nama_gelar'] ?? '-'); ?></td>
+                                    <td class="px-6 py-4 text-center space-x-2">
+                                        <?php if (empty($kerjasama['id_anggota'])): ?>
+                                        <button onclick="openApproveKerjasamaModal(<?php echo $kerjasama['id_kerjasama']; ?>)" class="text-green-600 hover:text-green-900 p-2 rounded-md hover:bg-gray-100" title="ACC">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                        <form method="POST" class="inline-block">
+                                            <input type="hidden" name="action" value="reject_kerjasama">
+                                            <input type="hidden" name="id_kerjasama" value="<?php echo $kerjasama['id_kerjasama']; ?>">
+                                            <button type="submit" class="text-red-600 hover:text-red-900 p-2 rounded-md hover:bg-gray-100" title="Reject" onclick="return confirm('Yakin menolak kerjasama ini?')">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </form>
+                                        <?php else: ?>
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Disetujui</span>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="7" class="px-6 py-4 text-center text-gray-500">Belum ada pengajuan kerjasama.</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div id="approveKerjasamaModal" class="modal hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-[1001]">
+                <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold">ACC Kerja Sama</h3>
+                        <button onclick="closeApproveKerjasamaModal()" class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <form method="POST">
+                        <input type="hidden" name="action" value="approve_kerjasama">
+                        <input type="hidden" name="id_kerjasama" id="approve_kerjasama_id">
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-2">Pilih PIC Anggota:</label>
+                            <select name="id_anggota" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option value="">-- Pilih Anggota --</option>
+                                <?php foreach ($anggota_list as $anggota): ?>
+                                    <option value="<?php echo $anggota['id_anggota']; ?>"><?php echo htmlspecialchars($anggota['nama_gelar']); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="flex justify-end gap-2">
+                            <button type="button" onclick="closeApproveKerjasamaModal()" class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">Batal</button>
+                            <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">ACC</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
         <?php elseif ($active_page === 'setting'): ?>
             <h1 class="text-3xl font-bold text-gray-800 mb-6">Setting Website</h1>
             <?php echo $message; ?>
@@ -2455,15 +2592,27 @@ if ($active_page === 'setting' && $pdo) {
                     </form>
                 </div>
                 
-                <div class="bg-white p-6 rounded-xl shadow-lg lg:col-span-2">
-                    <h3 class="text-lg font-semibold mb-4">Visi & Misi</h3>
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h3 class="text-lg font-semibold mb-4">Visi</h3>
                     <form method="POST">
                         <input type="hidden" name="action" value="update_setting">
-                        <input type="hidden" name="key" value="visi_misi">
+                        <input type="hidden" name="key" value="visi">
                         <div class="mb-4">
-                            <textarea name="value" id="visi_misi_editor" class="w-full"><?php echo htmlspecialchars($settings_data['visi_misi'] ?? ''); ?></textarea>
+                            <textarea name="value" id="visi_editor" class="w-full" rows="5"><?php echo htmlspecialchars($settings_data['visi'] ?? ''); ?></textarea>
                         </div>
-                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Simpan Visi Misi</button>
+                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Simpan Visi</button>
+                    </form>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h3 class="text-lg font-semibold mb-4">Misi</h3>
+                    <form method="POST">
+                        <input type="hidden" name="action" value="update_setting">
+                        <input type="hidden" name="key" value="misi">
+                        <div class="mb-4">
+                            <textarea name="value" id="misi_editor" class="w-full" rows="5"><?php echo htmlspecialchars($settings_data['misi'] ?? ''); ?></textarea>
+                        </div>
+                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Simpan Misi</button>
                     </form>
                 </div>
                 
@@ -3743,26 +3892,23 @@ if ($active_page === 'setting' && $pdo) {
             }
         }
 
-        // --- Reply Modal Functions ---
-        function openReplyModal(pertanyaan) {
-            document.getElementById('reply_id').value = pertanyaan.id_pertanyaan;
-            document.getElementById('reply_email').value = pertanyaan.email;
-            document.getElementById('reply_question').textContent = pertanyaan.pesan;
-            document.getElementById('reply_answer').value = '';
-            document.getElementById('replyModal').classList.remove('hidden');
-            document.body.classList.add('modal-open');
-        }
-
-        function closeReplyModal() {
-            document.getElementById('replyModal').classList.add('hidden');
-            document.body.classList.remove('modal-open');
-        }
-
-        // --- Initialize Summernote for Visi Misi ---
+        // --- Initialize Summernote for Visi and Misi ---
         $(document).ready(function() {
-            if ($('#visi_misi_editor').length) {
-                $('#visi_misi_editor').summernote({
-                    height: 300,
+            if ($('#visi_editor').length) {
+                $('#visi_editor').summernote({
+                    height: 200,
+                    toolbar: [
+                        ['style', ['style']],
+                        ['font', ['bold', 'italic', 'underline', 'clear']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['insert', ['link']],
+                        ['view', ['codeview', 'help']]
+                    ]
+                });
+            }
+            if ($('#misi_editor').length) {
+                $('#misi_editor').summernote({
+                    height: 200,
                     toolbar: [
                         ['style', ['style']],
                         ['font', ['bold', 'italic', 'underline', 'clear']],
