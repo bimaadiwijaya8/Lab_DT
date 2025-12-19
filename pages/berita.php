@@ -32,19 +32,21 @@ if (file_exists($db_connect_path)) {
     $pdo = Database::getConnection();
 
     // =======================================================
-    // 1. QUERY UNTUK BERITA (TIDAK DIUBAH)
-    // Tidak ada view atau stored procedure yang tersedia di database untuk berita
+    // 1. QUERY UNTUK BERITA (MODIFIED FOR POPUP)
     // =======================================================
     $sql_berita = "SELECT 
-                    id_berita, 
-                    judul, 
-                    gambar, 
-                    informasi,
-                    tanggal, 
-                    status 
-                FROM berita 
-                WHERE status = 'approved'
-                ORDER BY tanggal DESC";
+                    b.id_berita, 
+                    b.judul, 
+                    b.gambar, 
+                    b.informasi,
+                    LEFT(b.informasi, 150) as summary, 
+                    b.tanggal, 
+                    b.status,
+                    a.nama_gelar as author_name
+                FROM berita b
+                LEFT JOIN anggota a ON b.author = a.id_anggota
+                WHERE b.status = 'approved'
+                ORDER BY b.tanggal DESC";
 
     $stmt_berita = $pdo->query($sql_berita);
     $berita_results = $stmt_berita->fetchAll(PDO::FETCH_ASSOC);
@@ -62,8 +64,9 @@ if (file_exists($db_connect_path)) {
         'category' => $category,
         'image_thumb' => $gambar_path,
         'title' => htmlspecialchars($row['judul']),
-        'summary' => htmlspecialchars(substr($row['informasi'], 0, 150)) . '...',
-        'informasi' => $row['informasi'],
+        'summary' => htmlspecialchars($row['summary']) . '...',
+        'content' => $row['informasi'],
+        'author_name' => $row['author_name'],
         'date_raw' => strtotime($row['tanggal']),
         'date' => date('d M Y', strtotime($row['tanggal'])),
         'gambar' => $row['gambar'],
@@ -73,13 +76,13 @@ if (file_exists($db_connect_path)) {
     }
 
     // =======================================================
-    // 2. QUERY UNTUK PENGUMUMAN (TETAP MASUK KE MAIN CONTENT)
-    // Tidak ada view atau stored procedure yang tersedia di database untuk pengumuman
+    // 2. QUERY UNTUK PENGUMUMAN (MODIFIED FOR POPUP)
     // =======================================================
     $sql_pengumuman = "SELECT 
                             id_pengumuman, 
                             judul, 
                             informasi,
+                            LEFT(informasi, 150) as summary, 
                             tanggal 
                         FROM pengumuman 
                         WHERE status = 'approved'
@@ -95,8 +98,9 @@ if (file_exists($db_connect_path)) {
         'category' => 'pengumuman',
         'image_thumb' => '',
         'title' => htmlspecialchars($row['judul']),
-        'summary' => htmlspecialchars(substr($row['informasi'], 0, 150)) . '...',
-        'informasi' => $row['informasi'],
+        'summary' => htmlspecialchars($row['summary']) . '...',
+        'content' => $row['informasi'],
+        'author_name' => '',
         'date_raw' => strtotime($row['tanggal']),
         'date' => date('d M Y', strtotime($row['tanggal'])),
         'gambar' => '',
@@ -307,6 +311,58 @@ $is_news_available = count($news_items) > 0;
         });
       }
     });
+
+    // News Modal Functions
+    function showNewsDetail(news) {
+      // Set modal content
+      document.getElementById('modalTitle').textContent = news.title;
+      document.getElementById('modalDate').textContent = news.date;
+
+      // Set author if available
+      const modalAuthor = document.getElementById('modalAuthor');
+      if (news.author_name && news.author_name.trim() !== '') {
+        modalAuthor.textContent = 'Oleh ' + news.author_name;
+        modalAuthor.style.display = 'inline';
+      } else {
+        modalAuthor.style.display = 'none';
+      }
+
+      // Set image
+      const modalImage = document.getElementById('modalImage');
+      if (news.image_thumb && news.image_thumb.trim() !== '') {
+        modalImage.src = news.image_thumb;
+        modalImage.style.display = 'block';
+      } else {
+        modalImage.style.display = 'none';
+      }
+      modalImage.alt = news.title;
+
+      // Set content
+      document.getElementById('modalContent').innerHTML = news.content || '<p>Tidak ada konten yang tersedia.</p>';
+
+      // Show modal
+      document.getElementById('newsModal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeNewsModal() {
+      document.getElementById('newsModal').classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    }
+
+    // Close modal when clicking outside content
+    document.getElementById('newsModal').addEventListener('click', function (e) {
+      if (e.target === this) {
+        closeNewsModal();
+      }
+    });
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        closeNewsModal();
+      }
+    });
   </script>
 </head>
 
@@ -467,8 +523,7 @@ $is_news_available = count($news_items) > 0;
                             </svg>
                             <?php echo $item['date']; ?>
                           </p>
-                          <button onclick="showNewsDetail(<?php echo htmlspecialchars(json_encode($item)); ?>)" 
-                                  class="text-sm font-semibold text-[#00A0D6] group-hover:text-[#6AC259] transition-colors flex items-center gap-1">
+                          <button onclick="showNewsDetail(<?php echo htmlspecialchars(json_encode($item)); ?>)" class="text-sm font-semibold text-[#00A0D6] group-hover:text-[#6AC259] transition-colors">
                             Baca Selengkapnya
                             <svg class="w-4 h-4 inline-block group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
@@ -738,6 +793,35 @@ $is_news_available = count($news_items) > 0;
       });
     </script>
   </main>
+
+  <!-- News Detail Modal -->
+  <div id="newsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+      <div class="p-6">
+        <div class="flex justify-between items-start mb-4">
+          <h3 id="modalTitle" class="text-2xl font-bold text-gray-900"></h3>
+          <button onclick="closeNewsModal()" class="text-gray-400 hover:text-gray-500">
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div class="mb-4">
+          <span id="modalDate" class="text-sm text-gray-500"></span>
+          <span id="modalAuthor" class="ml-2 text-sm text-gray-600"></span>
+        </div>
+        <div class="mb-6">
+          <img id="modalImage" src="" alt="" class="w-full h-64 object-cover rounded-lg mb-4">
+          <div id="modalContent" class="prose max-w-none"></div>
+        </div>
+        <div class="flex justify-end">
+          <button onclick="closeNewsModal()" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors">
+            Tutup
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <?php
   require_once '../includes/footer.php';
