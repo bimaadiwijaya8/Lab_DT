@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $kelas = trim($_POST['kelas']);
         $tahun_angkatan = (int)$_POST['tahun_angkatan'];
         $no_telp = trim($_POST['no_telp']);
-        $password = password_hash('123456', PASSWORD_DEFAULT);
+        $password = md5('123456');
         
         $foto = null;
         if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
