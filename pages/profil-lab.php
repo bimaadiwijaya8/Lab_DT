@@ -23,6 +23,32 @@ try {
   $member_count = $conn->query("SELECT COUNT(*) FROM member where approval_status = 'pending'")->fetchColumn();
   $alumni_count = $anggota_count + $member_count;
   
+  // Query organizational structure data
+  $struktur_org = [];
+  $jabatan_list = [
+    'Ketua Laboratorium' => 'ketua',
+    'Sekretaris Laboratorium' => 'sekretaris', 
+    'Kepala Biro Sub-Bidang 1' => 'kepala_biro_1',
+    'Kepala Biro Sub-Bidang 2' => 'kepala_biro_2'
+  ];
+  
+  foreach ($jabatan_list as $jabatan => $key) {
+    $stmt = $conn->prepare("SELECT nama_gelar, foto, jabatan, email, no_telp FROM anggota WHERE jabatan = ? LIMIT 1");
+    $stmt->execute([$jabatan]);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    $struktur_org[$key] = $result ?: null;
+  }
+  
+  // Query fasilitas data (ID 1, 2, 3)
+  $fasilitas_data = [];
+  $fasilitas_ids = [1, 2, 3];
+  foreach ($fasilitas_ids as $id) {
+    $stmt = $conn->prepare("SELECT id_fasilitas, nama_fasilitas, deskripsi, foto FROM fasilitas WHERE id_fasilitas = ? LIMIT 1");
+    $stmt->execute([$id]);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    $fasilitas_data[$id] = $result ?: null;
+  }
+  
 } catch (PDOException $e) {
   // Fallback to default values if database fails
   $settings = [];
@@ -456,43 +482,71 @@ try {
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 py-12 px-8">
           <div class="flex flex-col lg:flex-row items-start lg:items-center justify-center gap-8 lg:gap-16">
 
+            <!-- Ketua Laboratorium -->
             <div class="org-line text-center flex-shrink-0">
               <div
                 class="w-24 h-24 rounded-2xl bg-gradient-to-br from-[#00A0D6] to-blue-600 mx-auto mb-4 flex items-center justify-center shadow-lg">
-                <img src="../assets/img/KepalaLab.jpg" alt="" class="w-full h-full object-cover rounded-xl">
+                <?php if (!empty($struktur_org['ketua']['foto'])): ?>
+                  <img src="<?php echo htmlspecialchars($struktur_org['ketua']['foto']); ?>" alt="<?php echo htmlspecialchars($struktur_org['ketua']['nama_gelar']); ?>" class="w-full h-full object-cover rounded-xl">
+                <?php else: ?>
+                  <img src="../assets/img/KepalaLab.jpg" alt="Ketua Laboratorium" class="w-full h-full object-cover rounded-xl">
+                <?php endif; ?>
               </div>
               <h3 class="font-bold text-gray-900 mb-2">Ketua Laboratorium</h3>
-              <p class="text-sm text-gray-600 font-medium">Dr. Ahmad Saikhu, S.T., M.T.</p>
+              <p class="text-sm text-gray-600 font-medium">
+                <?php echo !empty($struktur_org['ketua']['nama_gelar']) ? htmlspecialchars($struktur_org['ketua']['nama_gelar']) : 'Dr. Ahmad Saikhu, S.T., M.T.'; ?>
+              </p>
               <p class="text-xs text-gray-500 mt-2 mx-auto max-w-36">Menyusun kebijakan dan strategi pengembangan</p>
             </div>
 
+            <!-- Sekretaris Laboratorium -->
             <div class="org-line text-center flex-shrink-0">
               <div
                 class="w-24 h-24 rounded-2xl bg-gradient-to-br from-[#6AC259] to-green-600 mx-auto mb-4 flex items-center justify-center shadow-lg">
-                <img src="../assets/img/KoordinatorLab.jpg" alt="" class="w-full h-full object-cover rounded-xl">
+                <?php if (!empty($struktur_org['sekretaris']['foto'])): ?>
+                  <img src="<?php echo htmlspecialchars($struktur_org['sekretaris']['foto']); ?>" alt="<?php echo htmlspecialchars($struktur_org['sekretaris']['nama_gelar']); ?>" class="w-full h-full object-cover rounded-xl">
+                <?php else: ?>
+                  <img src="../assets/img/KoordinatorLab.jpg" alt="Sekretaris Laboratorium" class="w-full h-full object-cover rounded-xl">
+                <?php endif; ?>
               </div>
               <h3 class="font-bold text-gray-900 mb-2">Sekretaris Laboratorium</h3>
-              <p class="text-sm text-gray-600 font-medium">Ir. Sari Widya, S.T., M.T.</p>
+              <p class="text-sm text-gray-600 font-medium">
+                <?php echo !empty($struktur_org['sekretaris']['nama_gelar']) ? htmlspecialchars($struktur_org['sekretaris']['nama_gelar']) : 'Ir. Sari Widya, S.T., M.T.'; ?>
+              </p>
               <p class="text-xs text-gray-500 mt-2 mx-auto max-w-36">Mengelola operasional harian dan sumber daya</p>
             </div>
 
+            <!-- Kepala Biro Sub-Bidang 1 -->
             <div class="org-line text-center flex-shrink-0">
               <div
                 class="w-24 h-24 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 mx-auto mb-4 flex items-center justify-center shadow-lg">
-                <img src="../assets/img/Sekretaris.jpg" alt="" class="w-full h-full object-cover rounded-xl">
+                <?php if (!empty($struktur_org['kepala_biro_1']['foto'])): ?>
+                  <img src="<?php echo htmlspecialchars($struktur_org['kepala_biro_1']['foto']); ?>" alt="<?php echo htmlspecialchars($struktur_org['kepala_biro_1']['nama_gelar']); ?>" class="w-full h-full object-cover rounded-xl">
+                <?php else: ?>
+                  <img src="../assets/img/Sekretaris.jpg" alt="Kepala Biro Sub-Bidang 1" class="w-full h-full object-cover rounded-xl">
+                <?php endif; ?>
               </div>
-              <h3 class="font-bold text-gray-900 mb-2">Ketua Biro Sub-Bidang 1</h3>
-              <p class="text-sm text-gray-600 font-medium">Dian Pratiwi, S.Kom., M.T.</p>
+              <h3 class="font-bold text-gray-900 mb-2">Kepala Biro Sub-Bidang 1</h3>
+              <p class="text-sm text-gray-600 font-medium">
+                <?php echo !empty($struktur_org['kepala_biro_1']['nama_gelar']) ? htmlspecialchars($struktur_org['kepala_biro_1']['nama_gelar']) : 'Dian Pratiwi, S.Kom., M.T.'; ?>
+              </p>
               <p class="text-xs text-gray-500 mt-2 mx-auto max-w-36">Merancang arah kebijakan dan Memimpin staf</p>
             </div>
 
+            <!-- Kepala Biro Sub-Bidang 2 -->
             <div class="text-center flex-shrink-0">
               <div
                 class="w-24 h-24 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 mx-auto mb-4 flex items-center justify-center shadow-lg">
-                <img src="../assets/img/TimLaboran.jpg" alt="" class="w-full h-full object-cover rounded-xl">
+                <?php if (!empty($struktur_org['kepala_biro_2']['foto'])): ?>
+                  <img src="<?php echo htmlspecialchars($struktur_org['kepala_biro_2']['foto']); ?>" alt="<?php echo htmlspecialchars($struktur_org['kepala_biro_2']['nama_gelar']); ?>" class="w-full h-full object-cover rounded-xl">
+                <?php else: ?>
+                  <img src="../assets/img/TimLaboran.jpg" alt="Kepala Biro Sub-Bidang 2" class="w-full h-full object-cover rounded-xl">
+                <?php endif; ?>
               </div>
-              <h3 class="font-bold text-gray-900 mb-2">Ketua Biro Sub-Bidang 2</h3>
-              <p class="text-sm text-gray-600 font-medium">5 Laboran & 12 Asisten</p>
+              <h3 class="font-bold text-gray-900 mb-2">Kepala Biro Sub-Bidang 2</h3>
+              <p class="text-sm text-gray-600 font-medium">
+                <?php echo !empty($struktur_org['kepala_biro_2']['nama_gelar']) ? htmlspecialchars($struktur_org['kepala_biro_2']['nama_gelar']) : '5 Laboran & 12 Asisten'; ?>
+              </p>
               <p class="text-xs text-gray-500 mt-2 mx-auto max-w-36">Merancang arah kebijakan dan Memimpin staf</p>
             </div>
           </div>
@@ -526,49 +580,69 @@ try {
       </div>
 
       <div class="grid md:grid-cols-3 gap-8">
+        <!-- Fasilitas 1 -->
         <div class="card-hover bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
           <div
             class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#00A0D6] to-blue-600 flex items-center justify-center mb-6">
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
-              </path>
-            </svg>
+            <?php if (!empty($fasilitas_data[1]['foto'])): ?>
+              <img src="<?php echo htmlspecialchars($fasilitas_data[1]['foto']); ?>" alt="<?php echo htmlspecialchars($fasilitas_data[1]['nama_fasilitas']); ?>" class="w-full h-full object-cover rounded-xl">
+            <?php else: ?>
+              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                </path>
+              </svg>
+            <?php endif; ?>
           </div>
-          <h3 class="text-xl font-bold text-gray-900 mb-3">Workstation High-End</h3>
+          <h3 class="text-xl font-bold text-gray-900 mb-3">
+            <?php echo !empty($fasilitas_data[1]['nama_fasilitas']) ? htmlspecialchars($fasilitas_data[1]['nama_fasilitas']) : 'Workstation High-End'; ?>
+          </h3>
           <p class="text-gray-600 leading-relaxed">
-            Komputer workstation dengan spesifikasi tinggi untuk machine learning, data processing, dan simulasi
-            kompleks.
+            <?php echo !empty($fasilitas_data[1]['deskripsi']) ? htmlspecialchars($fasilitas_data[1]['deskripsi']) : 'Komputer workstation dengan spesifikasi tinggi untuk machine learning, data processing, dan simulasi kompleks.'; ?>
           </p>
         </div>
 
+        <!-- Fasilitas 2 -->
         <div class="card-hover bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
           <div
             class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#6AC259] to-green-600 flex items-center justify-center mb-6">
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h6m-7 8a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h2a2 2 0 012 2v4a2 2 0 01-2 2H9a2 2 0 01-2-2V6a2 2 0 012-2h2m7 0V4a2 2 0 00-2-2H9a2 2 0 00-2 2v2m8 0V4a2 2 0 00-2-2H9a2 2 0 00-2 2v2">
-              </path>
-            </svg>
+            <?php if (!empty($fasilitas_data[2]['foto'])): ?>
+              <img src="<?php echo htmlspecialchars($fasilitas_data[2]['foto']); ?>" alt="<?php echo htmlspecialchars($fasilitas_data[2]['nama_fasilitas']); ?>" class="w-full h-full object-cover rounded-xl">
+            <?php else: ?>
+              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h6m-7 8a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h2a2 2 0 012 2v4a2 2 0 01-2 2H9a2 2 0 01-2-2V6a2 2 0 012-2h2m7 0V4a2 2 0 00-2-2H9a2 2 0 00-2 2v2m8 0V4a2 2 0 00-2-2H9a2 2 0 00-2 2v2">
+                </path>
+              </svg>
+            <?php endif; ?>
           </div>
-          <h3 class="text-xl font-bold text-gray-900 mb-3">Server Cluster</h3>
+          <h3 class="text-xl font-bold text-gray-900 mb-3">
+            <?php echo !empty($fasilitas_data[2]['nama_fasilitas']) ? htmlspecialchars($fasilitas_data[2]['nama_fasilitas']) : 'Server Cluster'; ?>
+          </h3>
           <p class="text-gray-600 leading-relaxed">
-            Infrastruktur server untuk big data processing, distributed computing, dan cloud-based applications.
+            <?php echo !empty($fasilitas_data[2]['deskripsi']) ? htmlspecialchars($fasilitas_data[2]['deskripsi']) : 'Infrastruktur server untuk big data processing, distributed computing, dan cloud-based applications.'; ?>
           </p>
         </div>
 
+        <!-- Fasilitas 3 -->
         <div class="card-hover bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
           <div
             class="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mb-6">
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z">
-              </path>
-            </svg>
+            <?php if (!empty($fasilitas_data[3]['foto'])): ?>
+              <img src="<?php echo htmlspecialchars($fasilitas_data[3]['foto']); ?>" alt="<?php echo htmlspecialchars($fasilitas_data[3]['nama_fasilitas']); ?>" class="w-full h-full object-cover rounded-xl">
+            <?php else: ?>
+              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z">
+                </path>
+              </svg>
+            <?php endif; ?>
           </div>
-          <h3 class="text-xl font-bold text-gray-900 mb-3">Research Tools</h3>
+          <h3 class="text-xl font-bold text-gray-900 mb-3">
+            <?php echo !empty($fasilitas_data[3]['nama_fasilitas']) ? htmlspecialchars($fasilitas_data[3]['nama_fasilitas']) : 'Research Tools'; ?>
+          </h3>
           <p class="text-gray-600 leading-relaxed">
-            Software dan tools penelitian seperti MATLAB, Python, R, TensorFlow, dan platform analisis data lainnya.
+            <?php echo !empty($fasilitas_data[3]['deskripsi']) ? htmlspecialchars($fasilitas_data[3]['deskripsi']) : 'Software dan tools penelitian seperti MATLAB, Python, R, TensorFlow, dan platform analisis data lainnya.'; ?>
           </p>
         </div>
       </div>
