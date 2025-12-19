@@ -23,6 +23,22 @@ try {
   $member_count = $conn->query("SELECT COUNT(*) FROM member where approval_status = 'pending'")->fetchColumn();
   $alumni_count = $anggota_count + $member_count;
   
+  // Query organizational structure data
+  $struktur_org = [];
+  $jabatan_list = [
+    'Ketua Laboratorium' => 'ketua',
+    'Sekretaris Laboratorium' => 'sekretaris', 
+    'Kepala Biro Sub-Bidang 1' => 'kepala_biro_1',
+    'Kepala Biro Sub-Bidang 2' => 'kepala_biro_2'
+  ];
+  
+  foreach ($jabatan_list as $jabatan => $key) {
+    $stmt = $conn->prepare("SELECT nama_gelar, foto, jabatan, email, no_telp FROM anggota WHERE jabatan = ? LIMIT 1");
+    $stmt->execute([$jabatan]);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    $struktur_org[$key] = $result ?: null;
+  }
+  
 } catch (PDOException $e) {
   // Fallback to default values if database fails
   $settings = [];
@@ -456,43 +472,71 @@ try {
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 py-12 px-8">
           <div class="flex flex-col lg:flex-row items-start lg:items-center justify-center gap-8 lg:gap-16">
 
+            <!-- Ketua Laboratorium -->
             <div class="org-line text-center flex-shrink-0">
               <div
                 class="w-24 h-24 rounded-2xl bg-gradient-to-br from-[#00A0D6] to-blue-600 mx-auto mb-4 flex items-center justify-center shadow-lg">
-                <img src="../assets/img/KepalaLab.jpg" alt="" class="w-full h-full object-cover rounded-xl">
+                <?php if (!empty($struktur_org['ketua']['foto'])): ?>
+                  <img src="<?php echo htmlspecialchars($struktur_org['ketua']['foto']); ?>" alt="<?php echo htmlspecialchars($struktur_org['ketua']['nama_gelar']); ?>" class="w-full h-full object-cover rounded-xl">
+                <?php else: ?>
+                  <img src="../assets/img/KepalaLab.jpg" alt="Ketua Laboratorium" class="w-full h-full object-cover rounded-xl">
+                <?php endif; ?>
               </div>
               <h3 class="font-bold text-gray-900 mb-2">Ketua Laboratorium</h3>
-              <p class="text-sm text-gray-600 font-medium">Dr. Ahmad Saikhu, S.T., M.T.</p>
+              <p class="text-sm text-gray-600 font-medium">
+                <?php echo !empty($struktur_org['ketua']['nama_gelar']) ? htmlspecialchars($struktur_org['ketua']['nama_gelar']) : 'Dr. Ahmad Saikhu, S.T., M.T.'; ?>
+              </p>
               <p class="text-xs text-gray-500 mt-2 mx-auto max-w-36">Menyusun kebijakan dan strategi pengembangan</p>
             </div>
 
+            <!-- Sekretaris Laboratorium -->
             <div class="org-line text-center flex-shrink-0">
               <div
                 class="w-24 h-24 rounded-2xl bg-gradient-to-br from-[#6AC259] to-green-600 mx-auto mb-4 flex items-center justify-center shadow-lg">
-                <img src="../assets/img/KoordinatorLab.jpg" alt="" class="w-full h-full object-cover rounded-xl">
+                <?php if (!empty($struktur_org['sekretaris']['foto'])): ?>
+                  <img src="<?php echo htmlspecialchars($struktur_org['sekretaris']['foto']); ?>" alt="<?php echo htmlspecialchars($struktur_org['sekretaris']['nama_gelar']); ?>" class="w-full h-full object-cover rounded-xl">
+                <?php else: ?>
+                  <img src="../assets/img/KoordinatorLab.jpg" alt="Sekretaris Laboratorium" class="w-full h-full object-cover rounded-xl">
+                <?php endif; ?>
               </div>
               <h3 class="font-bold text-gray-900 mb-2">Sekretaris Laboratorium</h3>
-              <p class="text-sm text-gray-600 font-medium">Ir. Sari Widya, S.T., M.T.</p>
+              <p class="text-sm text-gray-600 font-medium">
+                <?php echo !empty($struktur_org['sekretaris']['nama_gelar']) ? htmlspecialchars($struktur_org['sekretaris']['nama_gelar']) : 'Ir. Sari Widya, S.T., M.T.'; ?>
+              </p>
               <p class="text-xs text-gray-500 mt-2 mx-auto max-w-36">Mengelola operasional harian dan sumber daya</p>
             </div>
 
+            <!-- Kepala Biro Sub-Bidang 1 -->
             <div class="org-line text-center flex-shrink-0">
               <div
                 class="w-24 h-24 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 mx-auto mb-4 flex items-center justify-center shadow-lg">
-                <img src="../assets/img/Sekretaris.jpg" alt="" class="w-full h-full object-cover rounded-xl">
+                <?php if (!empty($struktur_org['kepala_biro_1']['foto'])): ?>
+                  <img src="<?php echo htmlspecialchars($struktur_org['kepala_biro_1']['foto']); ?>" alt="<?php echo htmlspecialchars($struktur_org['kepala_biro_1']['nama_gelar']); ?>" class="w-full h-full object-cover rounded-xl">
+                <?php else: ?>
+                  <img src="../assets/img/Sekretaris.jpg" alt="Kepala Biro Sub-Bidang 1" class="w-full h-full object-cover rounded-xl">
+                <?php endif; ?>
               </div>
-              <h3 class="font-bold text-gray-900 mb-2">Ketua Biro Sub-Bidang 1</h3>
-              <p class="text-sm text-gray-600 font-medium">Dian Pratiwi, S.Kom., M.T.</p>
+              <h3 class="font-bold text-gray-900 mb-2">Kepala Biro Sub-Bidang 1</h3>
+              <p class="text-sm text-gray-600 font-medium">
+                <?php echo !empty($struktur_org['kepala_biro_1']['nama_gelar']) ? htmlspecialchars($struktur_org['kepala_biro_1']['nama_gelar']) : 'Dian Pratiwi, S.Kom., M.T.'; ?>
+              </p>
               <p class="text-xs text-gray-500 mt-2 mx-auto max-w-36">Merancang arah kebijakan dan Memimpin staf</p>
             </div>
 
+            <!-- Kepala Biro Sub-Bidang 2 -->
             <div class="text-center flex-shrink-0">
               <div
                 class="w-24 h-24 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 mx-auto mb-4 flex items-center justify-center shadow-lg">
-                <img src="../assets/img/TimLaboran.jpg" alt="" class="w-full h-full object-cover rounded-xl">
+                <?php if (!empty($struktur_org['kepala_biro_2']['foto'])): ?>
+                  <img src="<?php echo htmlspecialchars($struktur_org['kepala_biro_2']['foto']); ?>" alt="<?php echo htmlspecialchars($struktur_org['kepala_biro_2']['nama_gelar']); ?>" class="w-full h-full object-cover rounded-xl">
+                <?php else: ?>
+                  <img src="../assets/img/TimLaboran.jpg" alt="Kepala Biro Sub-Bidang 2" class="w-full h-full object-cover rounded-xl">
+                <?php endif; ?>
               </div>
-              <h3 class="font-bold text-gray-900 mb-2">Ketua Biro Sub-Bidang 2</h3>
-              <p class="text-sm text-gray-600 font-medium">5 Laboran & 12 Asisten</p>
+              <h3 class="font-bold text-gray-900 mb-2">Kepala Biro Sub-Bidang 2</h3>
+              <p class="text-sm text-gray-600 font-medium">
+                <?php echo !empty($struktur_org['kepala_biro_2']['nama_gelar']) ? htmlspecialchars($struktur_org['kepala_biro_2']['nama_gelar']) : '5 Laboran & 12 Asisten'; ?>
+              </p>
               <p class="text-xs text-gray-500 mt-2 mx-auto max-w-36">Merancang arah kebijakan dan Memimpin staf</p>
             </div>
           </div>
