@@ -3739,56 +3739,58 @@ if ($active_page === 'setting' && $pdo) {
 
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Tambah Anggota Baru</h3>
-                        <label for="nama_gelar" class="block text-sm font-medium text-gray-700">Nama & Gelar</label>
-                        <input type="text" name="nama_gelar" id="nama_gelar" required
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2">
+                        <div class="space-y-4">
+                            <div>
+                                <label for="nama_gelar" class="block text-sm font-medium text-gray-700">Nama & Gelar</label>
+                                <input type="text" name="nama_gelar" id="nama_gelar" required
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2">
+                            </div>
+                            <div>
+                                <label for="jabatan" class="block text-sm font-medium text-gray-700">Jabatan</label>
+                                <select name="jabatan" id="jabatan" required
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2">
+                                    <option value="">-- Pilih Jabatan --</option>
+                                    <option value="Anggota">Anggota</option>
+                                    <option value="Staff">Staff</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                                <input type="email" name="email" id="email" required
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2">
+                            </div>
+                            <div>
+                                <label for="no_telp" class="block text-sm font-medium text-gray-700">Nomor Telepon</label>
+                                <input type="text" name="no_telp" id="no_telp"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2">
+                            </div>
+                            <div>
+                                <label for="bidang_keahlian" class="block text-sm font-medium text-gray-700">Bidang
+                                    Keahlian</label>
+                                <textarea name="bidang_keahlian" id="bidang_keahlian" rows="3"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2"></textarea>
+                            </div>
+                            <div>
+                                <label for="foto_anggota" class="block text-sm font-medium text-gray-700">Foto Anggota
+                                    (Wajib)</label>
+                                <input type="file" name="foto" id="foto_anggota" required accept="image/*"
+                                    class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-dark">
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <label for="jabatan" class="block text-sm font-medium text-gray-700">Jabatan</label>
-                        <select name="jabatan" id="jabatan" required
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2">
-                            <option value="">-- Pilih Jabatan --</option>
-                            <option value="Anggota">Anggota</option>
-                            <option value="Staff">Staff</option>
-                        </select>
+                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                        <button type="submit"
+                            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary text-base font-medium text-white hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:ml-3 sm:w-auto sm:text-sm">
+                            Simpan
+                        </button>
+                        <button type="button" onclick="closeAddAnggotaModal()"
+                            class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                            Batal
+                        </button>
                     </div>
-                    <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                        <input type="email" name="email" id="email" required
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2">
-                    </div>
-                    <div>
-                        <label for="no_telp" class="block text-sm font-medium text-gray-700">Nomor Telepon</label>
-                        <input type="text" name="no_telp" id="no_telp"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2">
-                    </div>
-                    <div>
-                        <label for="bidang_keahlian" class="block text-sm font-medium text-gray-700">Bidang
-                            Keahlian</label>
-                        <textarea name="bidang_keahlian" id="bidang_keahlian" rows="3"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2"></textarea>
-                    </div>
-                    <div>
-                        <label for="foto_anggota" class="block text-sm font-medium text-gray-700">Foto Anggota
-                            (Wajib)</label>
-                        <input type="file" name="foto" id="foto_anggota" required accept="image/*"
-                            class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-dark">
-                    </div>
+                </form>
             </div>
         </div>
-        <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-            <button type="submit"
-                class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary text-base font-medium text-white hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:ml-3 sm:w-auto sm:text-sm">
-                Simpan
-            </button>
-            <button type="button" onclick="closeAddAnggotaModal()"
-                class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                Batal
-            </button>
-        </div>
-        </form>
-    </div>
-    </div>
     </div>
 
     <div id="editAnggotaModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-[1001] hidden overflow-y-auto"
