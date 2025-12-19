@@ -461,7 +461,7 @@ try {
                 class="w-24 h-24 rounded-2xl bg-gradient-to-br from-[#00A0D6] to-blue-600 mx-auto mb-4 flex items-center justify-center shadow-lg">
                 <img src="../assets/img/KepalaLab.jpg" alt="" class="w-full h-full object-cover rounded-xl">
               </div>
-              <h3 class="font-bold text-gray-900 mb-2">Kepala Laboratorium</h3>
+              <h3 class="font-bold text-gray-900 mb-2">Ketua Laboratorium</h3>
               <p class="text-sm text-gray-600 font-medium">Dr. Ahmad Saikhu, S.T., M.T.</p>
               <p class="text-xs text-gray-500 mt-2 mx-auto max-w-36">Menyusun kebijakan dan strategi pengembangan</p>
             </div>
@@ -471,7 +471,7 @@ try {
                 class="w-24 h-24 rounded-2xl bg-gradient-to-br from-[#6AC259] to-green-600 mx-auto mb-4 flex items-center justify-center shadow-lg">
                 <img src="../assets/img/KoordinatorLab.jpg" alt="" class="w-full h-full object-cover rounded-xl">
               </div>
-              <h3 class="font-bold text-gray-900 mb-2">Koordinator Lab</h3>
+              <h3 class="font-bold text-gray-900 mb-2">Sekretaris Laboratorium</h3>
               <p class="text-sm text-gray-600 font-medium">Ir. Sari Widya, S.T., M.T.</p>
               <p class="text-xs text-gray-500 mt-2 mx-auto max-w-36">Mengelola operasional harian dan sumber daya</p>
             </div>
@@ -481,9 +481,9 @@ try {
                 class="w-24 h-24 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 mx-auto mb-4 flex items-center justify-center shadow-lg">
                 <img src="../assets/img/Sekretaris.jpg" alt="" class="w-full h-full object-cover rounded-xl">
               </div>
-              <h3 class="font-bold text-gray-900 mb-2">Sekretaris</h3>
+              <h3 class="font-bold text-gray-900 mb-2">Ketua Biro Sub-Bidang 1</h3>
               <p class="text-sm text-gray-600 font-medium">Dian Pratiwi, S.Kom., M.T.</p>
-              <p class="text-xs text-gray-500 mt-2 mx-auto max-w-36">Administrasi dan dokumentasi kegiatan</p>
+              <p class="text-xs text-gray-500 mt-2 mx-auto max-w-36">Merancang arah kebijakan dan Memimpin staf</p>
             </div>
 
             <div class="text-center flex-shrink-0">
@@ -491,9 +491,9 @@ try {
                 class="w-24 h-24 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 mx-auto mb-4 flex items-center justify-center shadow-lg">
                 <img src="../assets/img/TimLaboran.jpg" alt="" class="w-full h-full object-cover rounded-xl">
               </div>
-              <h3 class="font-bold text-gray-900 mb-2">Tim Laboran & Asisten</h3>
+              <h3 class="font-bold text-gray-900 mb-2">Ketua Biro Sub-Bidang 2</h3>
               <p class="text-sm text-gray-600 font-medium">5 Laboran & 12 Asisten</p>
-              <p class="text-xs text-gray-500 mt-2 mx-auto max-w-36">Mendukung praktikum dan penelitian</p>
+              <p class="text-xs text-gray-500 mt-2 mx-auto max-w-36">Merancang arah kebijakan dan Memimpin staf</p>
             </div>
           </div>
 
