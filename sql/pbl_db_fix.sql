@@ -2,12 +2,12 @@
 -- PostgreSQL database dump
 --
 
-\restrict EMogRqy9fh17D47O67D2USFimOXburzzCrdXH2sk119RcHUf1N79pEdQY6tpkTi
+\restrict ZkYQSTy8Xm5AL0aBcqgEm5kSSKt2i4eO7hA4Az6Y1ggyTQCFHfvfWJEgEeIOkmw
 
 -- Dumped from database version 15.14
 -- Dumped by pg_dump version 15.14
 
--- Started on 2025-12-19 06:15:00
+-- Started on 2025-12-19 08:24:56
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -993,18 +993,20 @@ COPY public.agenda (id_agenda, nama_agenda, tgl_agenda, link_agenda, id_anggota)
 --
 
 COPY public.anggota (id_anggota, nama_gelar, foto, jabatan, email, no_telp, bidang_keahlian) FROM stdin;
-7	Dr. Budi Santoso, M.Kom	profile1.jpg	staff	budi.s@kampus.ac.id	081234567890	Artificial Intelligence
 8	Siti Aminah, S.Si, M.Stat	profile2.jpg	anggota	siti.aminah@mail.com	085678901234	Analisis Data Statistik
 9	Ir. Ahmad Fauzi, M.T.	profile3.jpg	staff	ahmad.f@tech.id	082199887766	Arsitektur Jaringan
 10	Rina Permata, S.T.	profile4.jpg	anggota	rina_p@webmail.com	087755443322	Frontend Development
 11	Prof. Dr. Andi Wijaya	profile5.jpg	anggota	andi.wijaya@univ.edu	081122334455	Keamanan Siber
 12	Gunawan Budiprasetyo, S.T., M.MT., Ph.D.	gunawan.jpg	anggota	gunawan@polinema.ac.id	081200000001	Teknologi Informasi
 13	Luqman Affandi, S.Kom., M.MSI.	luqman.jpg	anggota	luqman@polinema.ac.id	081200000002	Sistem Informasi
-14	Dika Rizky Yunianto, S.Kom., M.Kom.	dika.jpg	anggota	dika@polinema.ac.id	081200000003	Teknologi Informasi
-15	Habibie Ed Dien, S.Kom., M.T.	habibie.jpg	anggota	habibie@polinema.ac.id	081200000004	Teknologi Informasi
 16	Hasyim Ratsanjani, S.Kom., M.Kom.	hasyim.jpg	anggota	hasyim@polinema.ac.id	081200000005	Teknologi Informasi
 17	Vit Zuraida, S.Kom., M.Kom.	vit.jpg	anggota	vit@polinema.ac.id	081200000006	Teknologi Informasi
-18	Yoppy Yunhasnawa, S.ST., M.Sc.	yoppy.jpg	Ketua Lab	yoppy@polinema.ac.id	081200000007	Teknologi Informasi
+18	Yoppy Yunhasnawa, S.ST., M.Sc.	yoppy.jpg	Anggota	yoppy@polinema.ac.id	081200000007	Teknologi Informasi
+14	Dika Rizky Yunianto, S.Kom., M.Kom.	dika.jpg	Sekretaris Laboratorium	dika@polinema.ac.id	081200000003	Teknologi Informasi
+7	Dr. Budi Santoso, M.Kom	profile1.jpg	Kepala Biro Sub-Bidang 1	budi.s@kampus.ac.id	081234567890	Artificial Intelligence
+20	DUmmy	../assets/img/anggota/anggota_1766106501_LabDT-Photoroom.png	Kepala Biro Sub-Bidang 2	22323135@gmail.com	23433434	45422
+15	Habibie Ed Dien, S.Kom., M.T.	habibie.jpg	Staff	habibie@polinema.ac.id	081200000004	Teknologi Informasi
+19	Agus Setiawan .SPd.SP	../assets/img/anggota/anggota_1766105129_elon-musk-olursem-sizi-tanimak-guzeldi-aAvf4ima.jpg	Ketua Laboratorium	233423@gmail.com	23433434	232
 \.
 
 
@@ -1069,7 +1071,7 @@ COPY public.jurnal (id_jurnal, judul, tanggal_upload, penyusun, link_jurnal) FRO
 
 COPY public.kerjasama (id_kerjasama, nama, email, no_telp, deskripsi_tujuan, kontak_perusahaan, id_anggota, nama_perusahaan, file_proposal) FROM stdin;
 2	Bima Adiwijaya	bimaadiwijaya83@gmail.com	087877088963	Beasiswa	075756565656	\N	Google	../assets/files/publikasi/proposal_1766089888_English_Assignment_EX10.pdf
-3	Bima Adiwijaya	bimaadiwijaya83@gmail.com	087877088963	Beasiswa	075756565656	\N	Google	../assets/files/publikasi/proposal_1766092625_English_Assignment_EX10.pdf
+3	Bima Adiwijaya	bimaadiwijaya83@gmail.com	087877088963	Beasiswa	075756565656	9	Google	../assets/files/publikasi/proposal_1766092625_English_Assignment_EX10.pdf
 \.
 
 
@@ -1084,6 +1086,11 @@ COPY public.member (id_member, email, nama, foto, nim, jurusan, prodi, kelas, ta
 3	sinta.a@mhs.id	Sinta Amelia	foto_sinta.jpg	456003	Teknik Mesin	Mekatronika	TM-C	2023	082887766554	luar_lab	pass_hash_sinta	pending	\N	\N
 1	rani.p@mhs.id	Phrolova	../assets/img/profile/profile_1_1765883634.jpg	22222	Teknik Elektro	Informatika	TI-2G	2022	22222222	aktif	e10adc3949ba59abbe56e057f20f883e	approved	2025-12-19 00:36:46.580754	4
 4	aaa@gmail.com	tes_member	\N	23232	tes_member	tes_member	tes_member	2025	2232324	aktif	$2y$10$oMJ3C9vsxZJ2LVqkOHOaVuEpYaaBBExU9ZedjaH5Ci9q4ArFGkQy.	approved	\N	\N
+5	aa12a@gmail.com	member12	\N	2323223j2	tes_member	tes_member	tes_member	2025	2232324	aktif	$2y$10$lXgSAVvcrZ6fp343pMKO3ezmzV4GKZBAypMduwg2PAXBIeqMxxm4y	approved	\N	\N
+6	aa312a@gmail.com	member123	\N	2323223j2wiw	tes_member	tes_member	tes_member	2025	2232324d	aktif	a510166163833c79aa703646f59c04bb	approved	\N	\N
+7	bimaadiwijaya13@gmail.com	BimaA	../assets/img/member/member_1766102614_69449656cebc1.jpg	244	Sistem Informasi Bisnis	TI	TI-2G	2023	08888888	aktif	$2y$10$1HUa4lg6tcNClydB17Ds/efjK/yHk22AMzGoLfn8Pmww5S/rpzzcS	approved	2025-12-18 16:03:56.797925	4
+10	bimaadi323wijaya13@gmail.com	BimaA23	../assets/img/member/member_1766103125_6944985520f83.png	244	Teknik Informatika	TI	TI-2G	2023	08888888	aktif	$2y$10$0OmafUHSPeeeeeCZ3yEcle6.4q2S4ZGG2hherAZQ/quAeI5nBLHz2	approved	2025-12-18 16:13:53.145581	4
+11	bimaa123di323wijaya13@gmail.com	BimaA232323	\N	244232	Teknik Informatika	TI	TI-2G	2023	08888888	aktif	e10adc3949ba59abbe56e057f20f883e	pending	\N	\N
 \.
 
 
@@ -1112,6 +1119,7 @@ COPY public.pengumuman (id_pengumuman, judul, informasi, id_anggota, tanggal, st
 --
 
 COPY public.pertanyaan (id_pertanyaan, nama_lengkap, email, pesan, jawaban, id_user) FROM stdin;
+1	Jiro	ammar@gmail.com	wok32	\N	\N
 \.
 
 
@@ -1141,14 +1149,14 @@ COPY public.publikasi (id_publikasi, judul, penulis, tanggal_terbit, file_publik
 --
 
 COPY public.settings (id, key, value, updated_at, updated_by) FROM stdin;
-4	medsos_linkedin	#	2025-12-18 23:38:11.317206	\N
-6	medsos_instagram	#	2025-12-18 23:38:11.317206	\N
 7	email	jiro@polinema.ac.id	2025-12-19 03:26:32.378286	4
 8	no_telepon	087777777	2025-12-19 03:26:52.730292	4
 9	alamat	Jl. tengah	2025-12-19 03:26:59.097328	4
 2	logo_utama	../assets/img/logo_1766094331_LabDT-Photoroom.png	2025-12-18 13:45:31.662091	4
-5	medsos_youtube	https://www.youtube.com/	2025-12-18 23:38:11.317206	\N
 3	visi	<h4>Menjadi organisasi riset terkemuka dalam penelitian maupun pengembangan untuk mendorong inovasi\r\nteknologi serta keilmuan di bidang <b>penyimpanan</b>, <b>pengolahan</b>, dan <b>rekayasa sistem data </b>yang \r\nberkelanjutan.</h4>	2025-12-18 14:11:00.645047	4
+4	medsos_linkedin	https://www.youtube.com/	2025-12-18 16:25:44.014019	4
+5	medsos_youtube	https://github.com/bimaadiwijaya8/Lab_DT	2025-12-18 16:27:19.233853	4
+6	medsos_instagram	https://www.youtube.com/	2025-12-18 16:27:23.156542	4
 10	misi	<p></p><p></p><ol></ol><p></p><li><p data-path-to-node="3,0,0"><b data-path-to-node="3,0,0" data-index-in-node="0">Mendukung visi dan misi Jurusan Teknologi Informasi Polinema</b> melalui penelitian dan pengembangan di bidang penyimpanan, pengolahan, serta rekayasa sistem data.</p></li><li><p data-path-to-node="3,1,0"><b data-path-to-node="3,1,0" data-index-in-node="0">Melakukan penelitian berkualitas tinggi</b> yang berkontribusi pada kemajuan ilmu pengetahuan dan teknologi di bidang data, selaras dengan agenda riset JTI Polinema.</p></li><li><p data-path-to-node="3,2,0"><b data-path-to-node="3,2,0" data-index-in-node="0">Mengembangkan inovasi teknologi data</b> yang dapat diterapkan dalam dunia industri, pendidikan, dan pemerintahan guna meningkatkan daya saing lulusan JTI Polinema.</p></li><li><p data-path-to-node="3,3,0"><b data-path-to-node="3,3,0" data-index-in-node="0">Membangun infrastruktur dan sistem data yang skalabel dan efisien</b> untuk mendukung kebutuhan analitik, kecerdasan buatan, dan Big Data, serta memperkuat keunggulan akademik JTI Polinema.</p></li><li><p data-path-to-node="3,4,0"><b data-path-to-node="3,4,0" data-index-in-node="0">Menjalin kolaborasi dengan akademisi, industri, dan pemerintah</b> dalam pengembangan solusi teknologi data yang inovatif, sejalan dengan misi JTI Polinema dalam memperkuat sinergi dengan dunia kerja.</p></li><li><p data-path-to-node="3,5,0"><b data-path-to-node="3,5,0" data-index-in-node="0">Meningkatkan kapasitas dan kompetensi sumber daya manusia</b> di lingkungan JTI Polinema melalui pelatihan, penelitian, seminar, dan publikasi ilmiah di bidang teknologi data.</p></li><li><p data-path-to-node="3,6,0"><b data-path-to-node="3,6,0" data-index-in-node="0">Menyediakan layanan dan rekomendasi berbasis riset</b> bagi JTI Polinema serta mitra industri dan akademik untuk mengoptimalkan pengelolaan dan pemanfaatan data.</p></li><li><p data-path-to-node="3,7,0"><b data-path-to-node="3,7,0" data-index-in-node="0">Menjaga etika dan keamanan data</b> dalam setiap penelitian dan pengembangan teknologi, mendukung prinsip tata kelola data yang baik dalam lingkungan akademik dan industri.</p></li><li><p data-path-to-node="3,8,0"><b data-path-to-node="3,8,0" data-index-in-node="0">Mengembangkan praktik riset dan infrastruktur teknologi data yang berkelanjutan</b> melalui penerapan prinsip efisiensi energi, optimalisasi sumber daya, serta pengelolaan siklus hidup data yang ramah lingkungan.</p></li>	2025-12-18 14:23:24.334432	4
 \.
 
@@ -1183,7 +1191,7 @@ SELECT pg_catalog.setval('public.agenda_id_agenda_seq', 13, true);
 -- Name: anggota_id_anggota_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.anggota_id_anggota_seq', 11, true);
+SELECT pg_catalog.setval('public.anggota_id_anggota_seq', 20, true);
 
 
 --
@@ -1228,7 +1236,7 @@ SELECT pg_catalog.setval('public.jurnal_id_jurnal_seq', 1, false);
 -- Name: kerjasama_id_kerjasama_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.kerjasama_id_kerjasama_seq', 1, false);
+SELECT pg_catalog.setval('public.kerjasama_id_kerjasama_seq', 1, true);
 
 
 --
@@ -1246,7 +1254,7 @@ SELECT pg_catalog.setval('public.kontak_id_kontak_seq', 4, true);
 -- Name: member_id_member_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.member_id_member_seq', 4, true);
+SELECT pg_catalog.setval('public.member_id_member_seq', 11, true);
 
 
 --
@@ -1564,11 +1572,11 @@ ALTER TABLE ONLY public.jurnal
     ADD CONSTRAINT jurnal_penyusun_fkey FOREIGN KEY (penyusun) REFERENCES public.anggota(id_anggota) ON DELETE SET NULL;
 
 
--- Completed on 2025-12-19 06:15:00
+-- Completed on 2025-12-19 08:24:56
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict EMogRqy9fh17D47O67D2USFimOXburzzCrdXH2sk119RcHUf1N79pEdQY6tpkTi
+\unrestrict ZkYQSTy8Xm5AL0aBcqgEm5kSSKt2i4eO7hA4Az6Y1ggyTQCFHfvfWJEgEeIOkmw
 
