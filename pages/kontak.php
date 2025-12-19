@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 try {
   $pdo = Database::getConnection();
-  $stmt = $pdo->prepare("SELECT key, value FROM settings");
+  $stmt = $pdo->prepare("SELECT key, value FROM vw_settings_users");
   $stmt->execute();
   $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
   foreach ($results as $result) {

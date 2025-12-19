@@ -22,6 +22,7 @@ if (file_exists($db_connect_path)) {
         $pdo = Database::getConnection(); 
         
         // Query untuk mengambil semua data fasilitas
+        // Tidak ada view yang tersedia di database untuk fasilitas, menggunakan query langsung
         $sql = "SELECT id_fasilitas, nama_fasilitas, deskripsi, foto FROM fasilitas ORDER BY id_fasilitas DESC";
         $stmt = $pdo->query($sql);
         $fasilitas_data = $stmt->fetchAll(PDO::FETCH_ASSOC);

@@ -38,20 +38,18 @@ $publikasi_data_full = []; // Variabel baru untuk menampung SEMUA data sebelum p
 $publikasi_error = '';
 if ($pdo) {
   try {
-    // Mengambil data publikasi yang sudah disetujui, diurutkan dari terbaru
+    // Mengambil data publikasi yang sudah disetujui menggunakan view yang ada
     $sql = "SELECT 
-                    p.id_publikasi, 
-                    p.judul, 
-                    p.penulis, 
-                    p.tanggal_terbit, 
-                    p.deskripsi,
-                    p.file_publikasi
+                    id_publikasi, 
+                    judul, 
+                    penulis, 
+                    tanggal_terbit, 
+                    deskripsi,
+                    file_publikasi
                 FROM 
-                    publikasi p
-                WHERE 
-                    p.status = 'approved'
+                    vw_publikasi_member
                 ORDER BY 
-                    p.tanggal_terbit DESC";
+                    tanggal_terbit DESC";
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
     $publikasi_data_full = $stmt->fetchAll(PDO::FETCH_ASSOC);

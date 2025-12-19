@@ -8,8 +8,8 @@ $settings = [];
 try {
   $conn = Database::getConnection();
   
-  // Get settings
-  $stmt = $conn->prepare("SELECT key, value FROM settings");
+  // Get settings using existing view
+  $stmt = $conn->prepare("SELECT key, value FROM vw_settings_users");
   $stmt->execute();
   $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
   foreach ($results as $result) {

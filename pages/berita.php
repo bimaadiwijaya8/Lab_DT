@@ -33,12 +33,13 @@ if (file_exists($db_connect_path)) {
 
     // =======================================================
     // 1. QUERY UNTUK BERITA (TIDAK DIUBAH)
+    // Tidak ada view atau stored procedure yang tersedia di database untuk berita
     // =======================================================
     $sql_berita = "SELECT 
                     id_berita, 
                     judul, 
                     gambar, 
-                    LEFT(informasi, 150) as summary, 
+                    informasi,
                     tanggal, 
                     status 
                 FROM berita 
@@ -61,19 +62,24 @@ if (file_exists($db_connect_path)) {
         'category' => $category,
         'image_thumb' => $gambar_path,
         'title' => htmlspecialchars($row['judul']),
-        'summary' => htmlspecialchars($row['summary']) . '...',
+        'summary' => htmlspecialchars(substr($row['informasi'], 0, 150)) . '...',
+        'informasi' => $row['informasi'],
         'date_raw' => strtotime($row['tanggal']),
         'date' => date('d M Y', strtotime($row['tanggal'])),
+        'gambar' => $row['gambar'],
+        'judul' => $row['judul'],
+        'tanggal' => $row['tanggal']
       ];
     }
 
     // =======================================================
     // 2. QUERY UNTUK PENGUMUMAN (TETAP MASUK KE MAIN CONTENT)
+    // Tidak ada view atau stored procedure yang tersedia di database untuk pengumuman
     // =======================================================
     $sql_pengumuman = "SELECT 
                             id_pengumuman, 
                             judul, 
-                            LEFT(informasi, 150) as summary, 
+                            informasi,
                             tanggal 
                         FROM pengumuman 
                         WHERE status = 'approved'
@@ -89,14 +95,19 @@ if (file_exists($db_connect_path)) {
         'category' => 'pengumuman',
         'image_thumb' => '',
         'title' => htmlspecialchars($row['judul']),
-        'summary' => htmlspecialchars($row['summary']) . '...',
+        'summary' => htmlspecialchars(substr($row['informasi'], 0, 150)) . '...',
+        'informasi' => $row['informasi'],
         'date_raw' => strtotime($row['tanggal']),
         'date' => date('d M Y', strtotime($row['tanggal'])),
+        'gambar' => '',
+        'judul' => $row['judul'],
+        'tanggal' => $row['tanggal']
       ];
     }
 
     // =======================================================
     // 3. QUERY UNTUK AGENDA (DENGAN PAGINATION)
+    // Tidak ada view atau stored procedure yang tersedia di database untuk agenda
     // =======================================================
 
     // A. Hitung Total Agenda
@@ -431,7 +442,7 @@ $is_news_available = count($news_items) > 0;
                   $style = get_category_style($item['category']);
                 ?>
                   <article class="news-item" data-category="<?php echo htmlspecialchars($item['category']); ?>">
-                    <a href="detail-berita.php?id=<?php echo $item['id']; ?>" class="group bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden block hover:shadow-2xl hover:scale-[1.02] transition-all duration-300">
+                    <div class="group bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden block hover:shadow-2xl hover:scale-[1.02] transition-all duration-300">
                       <div class="news-card-image">
                         <img src="<?php echo htmlspecialchars($item['image_thumb']); ?>"
                           alt="<?php echo htmlspecialchars($item['title']); ?>"
@@ -456,15 +467,16 @@ $is_news_available = count($news_items) > 0;
                             </svg>
                             <?php echo $item['date']; ?>
                           </p>
-                          <span class="text-sm font-semibold text-[#00A0D6] group-hover:text-[#6AC259] transition-colors">
+                          <button onclick="showNewsDetail(<?php echo htmlspecialchars(json_encode($item)); ?>)" 
+                                  class="text-sm font-semibold text-[#00A0D6] group-hover:text-[#6AC259] transition-colors flex items-center gap-1">
                             Baca Selengkapnya
-                            <svg class="w-4 h-4 inline-block ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4 inline-block group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
                             </svg>
-                          </span>
+                          </button>
                         </div>
                       </div>
-                    </a>
+                    </div>
                   </article>
               <?php
                 }
@@ -637,6 +649,94 @@ $is_news_available = count($news_items) > 0;
         </div>
       </div>
     </section>
+
+    <!-- News Detail Modal -->
+    <div id="newsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
+      <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="p-6">
+          <div class="flex justify-between items-start mb-4">
+            <h3 id="modalTitle" class="text-2xl font-bold text-gray-900"></h3>
+            <button onclick="closeNewsModal()" class="text-gray-400 hover:text-gray-500">
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <div class="mb-4">
+            <span id="modalDate" class="text-sm text-gray-500"></span>
+            <span id="modalAuthor" class="ml-2 text-sm text-gray-600"></span>
+          </div>
+          <div class="mb-6">
+            <img id="modalImage" src="" alt="" class="w-full h-64 object-cover rounded-lg mb-4">
+            <div id="modalContent" class="prose max-w-none"></div>
+          </div>
+          <div class="flex justify-end">
+            <button onclick="closeNewsModal()" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors">
+              Tutup
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function showNewsDetail(news) {
+        // Set modal content
+        document.getElementById('modalTitle').textContent = news.judul;
+        document.getElementById('modalDate').textContent = new Date(news.tanggal).toLocaleDateString('id-ID', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+        
+        // Set author if available
+        const modalAuthor = document.getElementById('modalAuthor');
+        if (news.author_name && news.author_name.trim() !== '') {
+          modalAuthor.textContent = 'Oleh ' + news.author_name;
+          modalAuthor.style.display = 'inline';
+        } else {
+          modalAuthor.style.display = 'none';
+        }
+        
+        // Set image (prioritize gambar field, then extract from content, then use default)
+        let imgSrc;
+        if (news.gambar && news.gambar.trim() !== '') {
+          imgSrc = news.gambar;
+        } else {
+          const content = news.informasi || '';
+          const imgMatch = content.match(/<img.+?src=["'](.+?)["'].*?>/i);
+          imgSrc = imgMatch ? imgMatch[1] : 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?q=80&w=800&auto=format&fit=crop';
+        }
+        document.getElementById('modalImage').src = imgSrc;
+        document.getElementById('modalImage').alt = news.judul;
+        
+        // Set content (sanitize if needed)
+        document.getElementById('modalContent').innerHTML = news.informasi || '<p>Tidak ada konten yang tersedia.</p>';
+        
+        // Show modal
+        document.getElementById('newsModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      }
+      
+      function closeNewsModal() {
+        document.getElementById('newsModal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
+      }
+      
+      // Close modal when clicking outside content
+      document.getElementById('newsModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+          closeNewsModal();
+        }
+      });
+      
+      // Close modal with Escape key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          closeNewsModal();
+        }
+      });
+    </script>
   </main>
 
   <?php

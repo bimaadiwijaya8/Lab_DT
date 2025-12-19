@@ -37,6 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             }
         }
         
+        // No stored procedure exists in database for member registration
         $sql = "INSERT INTO member (nama, nim, email, jurusan, prodi, kelas, tahun_angkatan, no_telp, foto, status, password, approval_status) 
                 VALUES (:nama, :nim, :email, :jurusan, :prodi, :kelas, :tahun_angkatan, :no_telp, :foto, 'aktif', :password, 'pending')";
         
@@ -63,15 +64,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 try {
     $conn = Database::getConnection();
     
+    // No stored procedure exists in database for anggota data
     $sql_anggota = "SELECT * FROM anggota ORDER BY id_anggota ASC";
     $stmt_anggota = $conn->query($sql_anggota);
     $anggota_list = $stmt_anggota->fetchAll();
     
+    // No stored procedure exists in database for member data
     $sql_member = "SELECT * FROM member WHERE status = 'aktif' AND approval_status = 'approved' ORDER BY id_member ASC";
     $stmt_member = $conn->query($sql_member);
     $member_list = $stmt_member->fetchAll();
     
-    $sql_settings = "SELECT key, value FROM settings";
+    // Using existing view from database: vw_settings_users
+    $sql_settings = "SELECT key, value FROM vw_settings_users";
     $stmt_settings = $conn->query($sql_settings);
     $settings_results = $stmt_settings->fetchAll();
     $settings = [];

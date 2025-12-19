@@ -8,7 +8,8 @@ include '../assets/php/db_connect.php';
 $settings = [];
 try {
   $pdo = Database::getConnection();
-  $stmt = $pdo->prepare("SELECT key, value FROM settings");
+  // Using existing view from database: vw_settings_users
+  $stmt = $pdo->prepare("SELECT key, value FROM vw_settings_users");
   $stmt->execute();
   $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
   foreach ($results as $result) {

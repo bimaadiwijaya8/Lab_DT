@@ -9,7 +9,7 @@ try {
     $conn = Database::getConnection();
     
     // Query counts for each category
-    $publikasi_count = $conn->query("SELECT COUNT(*) FROM publikasi where status = 'approved'")->fetchColumn();
+    $publikasi_count = $conn->query("SELECT COUNT(*) FROM vw_publikasi_member WHERE status = 'approved'")->fetchColumn();
     $berita_count = $conn->query("SELECT COUNT(*) FROM berita WHERE status = 'approved'")->fetchColumn();
     $fasilitas_count = $conn->query("SELECT COUNT(*) FROM fasilitas")->fetchColumn();
     $anggota_count = $conn->query("SELECT COUNT(*) FROM anggota")->fetchColumn();
@@ -22,7 +22,7 @@ try {
     $latest_publikasi = [];
     try {
         $stmt = $conn->query("SELECT id_publikasi, judul, penulis, tanggal_terbit, deskripsi, file_publikasi 
-                             FROM publikasi 
+                             FROM vw_publikasi_member 
                              WHERE status = 'approved' 
                              ORDER BY tanggal_terbit DESC 
                              LIMIT 4");
