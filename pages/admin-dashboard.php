@@ -901,6 +901,55 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'anggota')
         }
     }
 
+    // --- Jabatan Validation Function ---
+    function validateJabatanUniqueness($pdo, $jabatan, $exclude_id = null) {
+        // Positions that must be unique
+        $unique_positions = [
+            'Ketua Laboratorium',
+            'Sekretaris Laboratorium', 
+            'Kepala Biro Sub-Bidang 1',
+            'Kepala Biro Sub-Bidang 2'
+        ];
+        
+        // Non-unique positions that don't need validation
+        $non_unique_positions = ['Anggota', 'Staff'];
+        
+        // Skip validation for non-unique positions
+        if (in_array($jabatan, $non_unique_positions)) {
+            return ['valid' => true, 'message' => ''];
+        }
+        
+        // Check if this is a unique position that needs validation
+        if (!in_array($jabatan, $unique_positions)) {
+            return ['valid' => true, 'message' => ''];
+        }
+        
+        // Check for existing anggota with the same jabatan
+        $sql = "SELECT id_anggota, nama_gelar FROM anggota WHERE jabatan = :jabatan";
+        $params = [':jabatan' => $jabatan];
+        
+        // Exclude current record during edit
+        if ($exclude_id) {
+            $sql .= " AND id_anggota != :exclude_id";
+            $params[':exclude_id'] = $exclude_id;
+        }
+        
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+        $existing = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($existing) {
+            return [
+                'valid' => false, 
+                'message' => "Jabatan '{$jabatan}' sudah dipegang oleh {$existing['nama_gelar']}. Apakah ingin melakukan pergantian jabatan?",
+                'existing_id' => $existing['id_anggota'],
+                'existing_name' => $existing['nama_gelar']
+            ];
+        }
+        
+        return ['valid' => true, 'message' => ''];
+    }
+
     // --- CREATE (Tambah Anggota Baru) ---
     if ($action === 'add_anggota' && $pdo) {
         $nama_gelar = trim($_POST['nama_gelar']);
@@ -909,11 +958,17 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'anggota')
         $no_telp = trim($_POST['no_telp']);
         $bidang_keahlian = trim($_POST['bidang_keahlian']);
 
+                
         $upload_ok = true;
         $foto_path_for_db = '';
         $upload_message = '';
 
-        if (isset($_FILES['foto']) && $_FILES['foto']['error'] == UPLOAD_ERR_OK) {
+        // Handle confirmation case
+        if (isset($_POST['confirm_swap']) && $_POST['confirm_swap'] === 'yes' && isset($_SESSION['temp_foto_path'])) {
+            // Use the temporarily stored file path
+            $foto_path_for_db = $_SESSION['temp_foto_path'];
+            unset($_SESSION['temp_foto_path']); // Clean up
+        } elseif (isset($_FILES['foto']) && $_FILES['foto']['error'] == UPLOAD_ERR_OK) {
 
             // 1. Tentukan nama file
             $file_name = basename($_FILES['foto']['name']);
@@ -935,7 +990,46 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'anggota')
             $upload_message = "Terjadi error saat upload file. Kode error: " . $_FILES['foto']['error'];
         }
 
-        // 3. Simpan ke database jika upload berhasil
+        // 3. Validate jabatan uniqueness before database operations
+        $jabatan_validation = validateJabatanUniqueness($pdo, $jabatan);
+        if (!$jabatan_validation['valid']) {
+            // If there's a conflict, check if user wants to proceed with swapping
+            if (isset($_POST['confirm_swap']) && $_POST['confirm_swap'] === 'yes') {
+                // Perform the swap: update existing anggota's jabatan to 'Anggota'
+                try {
+                    $swap_sql = "UPDATE anggota SET jabatan = 'Anggota' WHERE id_anggota = :existing_id";
+                    $swap_stmt = $pdo->prepare($swap_sql);
+                    $swap_stmt->execute([':existing_id' => $jabatan_validation['existing_id']]);
+                } catch (Exception $e) {
+                    $upload_ok = false;
+                    $upload_message = "Gagal melakukan pergantian jabatan: " . $e->getMessage();
+                }
+            } else {
+                // Store the uploaded file path in session for confirmation
+                if ($upload_ok && !empty($foto_path_for_db)) {
+                    $_SESSION['temp_foto_path'] = $foto_path_for_db;
+                }
+                
+                // Show confirmation dialog
+                $upload_ok = false;
+                $upload_message = $jabatan_validation['message'] . "
+                <form method='POST' style='display: inline; margin-left: 10px;'>
+                    <input type='hidden' name='action' value='add_anggota'>
+                    <input type='hidden' name='confirm_swap' value='yes'>
+                    <input type='hidden' name='nama_gelar' value='" . htmlspecialchars($nama_gelar) . "'>
+                    <input type='hidden' name='jabatan' value='" . htmlspecialchars($jabatan) . "'>
+                    <input type='hidden' name='email' value='" . htmlspecialchars($email) . "'>
+                    <input type='hidden' name='no_telp' value='" . htmlspecialchars($no_telp) . "'>
+                    <input type='hidden' name='bidang_keahlian' value='" . htmlspecialchars($bidang_keahlian) . "'>
+                    <button type='submit' class='px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600'>Ya, Tukar Jabatan</button>
+                </form>
+                <form method='POST' style='display: inline; margin-left: 5px;'>
+                    <button type='submit' class='px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600'>Batal</button>
+                </form>";
+            }
+        }
+
+        // 4. Simpan ke database jika upload berhasil
         if ($upload_ok) {
             try {
                 $sql = "INSERT INTO anggota (nama_gelar, foto, jabatan, email, no_telp, bidang_keahlian) 
@@ -964,6 +1058,7 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'anggota')
 
     // --- UPDATE (Edit Anggota) ---
     if ($action === 'edit_anggota' && $pdo) {
+                
         $id_anggota = (int) $_POST['id_anggota'];
         $nama_gelar = trim($_POST['nama_gelar']);
         $jabatan = trim($_POST['jabatan']);
@@ -975,6 +1070,15 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'anggota')
         $current_file_path = $_POST['current_foto']; // Path foto lama
         $foto_path_for_db = $current_file_path;      // Default: gunakan foto lama
         $upload_ok = true;
+
+        // Handle confirmation case for edit
+        if (isset($_POST['confirm_swap']) && $_POST['confirm_swap'] === 'yes' && isset($_SESSION['temp_foto_path'])) {
+            // Use the temporarily stored file path
+            $foto_path_for_db = $_SESSION['temp_foto_path'];
+            $current_file_path = $_SESSION['temp_current_foto'] ?? $current_file_path;
+            unset($_SESSION['temp_foto_path']); // Clean up
+            unset($_SESSION['temp_current_foto']); // Clean up
+        }
 
         // Cek apakah ada file baru yang diupload
         if (isset($_FILES['foto']) && $_FILES['foto']['error'] == UPLOAD_ERR_OK && !empty($new_file_name)) {
@@ -995,6 +1099,48 @@ if ($pdo && $_SERVER['REQUEST_METHOD'] === 'POST' && $active_page === 'anggota')
             } else {
                 $upload_ok = false;
                 $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Gagal mengupload foto baru. Perubahan DB dibatalkan.</div>";
+            }
+        }
+
+        // Validate jabatan uniqueness before database operations
+        $jabatan_validation = validateJabatanUniqueness($pdo, $jabatan, $id_anggota);
+        if (!$jabatan_validation['valid']) {
+            // If there's a conflict, check if user wants to proceed with swapping
+            if (isset($_POST['confirm_swap']) && $_POST['confirm_swap'] === 'yes') {
+                // Perform the swap: update existing anggota's jabatan to 'Anggota'
+                try {
+                    $swap_sql = "UPDATE anggota SET jabatan = 'Anggota' WHERE id_anggota = :existing_id";
+                    $swap_stmt = $pdo->prepare($swap_sql);
+                    $swap_stmt->execute([':existing_id' => $jabatan_validation['existing_id']]);
+                } catch (Exception $e) {
+                    $upload_ok = false;
+                    $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4' role='alert'>Gagal melakukan pergantian jabatan: " . $e->getMessage() . "</div>";
+                }
+            } else {
+                // Store uploaded file info if there's a new file
+                if ($upload_ok && isset($_FILES['foto']) && $_FILES['foto']['error'] == UPLOAD_ERR_OK && !empty($new_file_name)) {
+                    $_SESSION['temp_foto_path'] = $foto_path_for_db;
+                    $_SESSION['temp_current_foto'] = $current_file_path;
+                }
+                
+                // Show confirmation dialog with proper form
+                $upload_ok = false;
+                $message = "<div class='bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative mb-4' role='alert'>" . $jabatan_validation['message'] . "
+                <form method='POST' style='display: inline; margin-left: 10px;'>
+                    <input type='hidden' name='action' value='edit_anggota'>
+                    <input type='hidden' name='confirm_swap' value='yes'>
+                    <input type='hidden' name='id_anggota' value='" . $id_anggota . "'>
+                    <input type='hidden' name='nama_gelar' value='" . htmlspecialchars($nama_gelar) . "'>
+                    <input type='hidden' name='jabatan' value='" . htmlspecialchars($jabatan) . "'>
+                    <input type='hidden' name='email' value='" . htmlspecialchars($email) . "'>
+                    <input type='hidden' name='no_telp' value='" . htmlspecialchars($no_telp) . "'>
+                    <input type='hidden' name='bidang_keahlian' value='" . htmlspecialchars($bidang_keahlian) . "'>
+                    <input type='hidden' name='current_foto' value='" . htmlspecialchars($current_file_path) . "'>
+                    <button type='submit' class='px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600'>Ya, Tukar Jabatan</button>
+                </form>
+                <form method='POST' style='display: inline; margin-left: 5px;'>
+                    <button type='submit' class='px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600'>Batal</button>
+                </form></div>";
             }
         }
 
@@ -3733,6 +3879,10 @@ if ($active_page === 'setting' && $pdo) {
                                 <select name="jabatan" id="jabatan" required
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2">
                                     <option value="">-- Pilih Jabatan --</option>
+                                    <option value="Ketua Laboratorium">Ketua Laboratorium</option>
+                                    <option value="Sekretaris Laboratorium">Sekretaris Laboratorium</option>
+                                    <option value="Kepala Biro Sub-Bidang 1">Kepala Biro Sub-Bidang 1</option>
+                                    <option value="Kepala Biro Sub-Bidang 2">Kepala Biro Sub-Bidang 2</option>
                                     <option value="Anggota">Anggota</option>
                                     <option value="Staff">Staff</option>
                                 </select>
@@ -3800,6 +3950,11 @@ if ($active_page === 'setting' && $pdo) {
                                     class="block text-sm font-medium text-gray-700">Jabatan</label>
                                 <select name="jabatan" id="edit_jabatan" required
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2">
+                                    <option value="">-- Pilih Jabatan --</option>
+                                    <option value="Ketua Laboratorium">Ketua Laboratorium</option>
+                                    <option value="Sekretaris Laboratorium">Sekretaris Laboratorium</option>
+                                    <option value="Kepala Biro Sub-Bidang 1">Kepala Biro Sub-Bidang 1</option>
+                                    <option value="Kepala Biro Sub-Bidang 2">Kepala Biro Sub-Bidang 2</option>
                                     <option value="Anggota">Anggota</option>
                                     <option value="Staff">Staff</option>
                                 </select>
