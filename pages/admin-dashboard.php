@@ -2936,23 +2936,6 @@ if ($active_page === 'setting' && $pdo) {
                         </form>
                     </div>
                 </div>
-
-                <div class="bg-white p-6 rounded-xl shadow-lg lg:col-span-2">
-                    <h3 class="text-lg font-semibold mb-4">Struktur Anggota</h3>
-                    <form method="POST">
-                        <input type="hidden" name="action" value="update_setting">
-                        <input type="hidden" name="key" value="struktur_anggota">
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium mb-2">Gambar Struktur Organisasi</label>
-                            <textarea name="value" id="struktur_anggota_editor" class="w-full"
-                                rows="8"><?php echo htmlspecialchars($settings_data['struktur_anggota'] ?? ''); ?></textarea>
-                            <p class="text-xs text-gray-500 mt-2">Masukkan HTML untuk menampilkan struktur organisasi
-                                (contoh: tag &lt;img&gt; atau HTML lainnya)</p>
-                        </div>
-                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Simpan
-                            Struktur</button>
-                    </form>
-                </div>
             </div>
 
         <?php else: ?>
